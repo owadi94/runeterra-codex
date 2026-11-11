@@ -4,461 +4,464 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Runeterra Codex</title>
-<meta name="description" content="Lore games for League of Legends fans: a daily champion riddle, quizzes, and an atlas of the thirteen regions of Runeterra.">
-<meta name="theme-color" content="#05080d">
+<meta name="description" content="League of Legends games for fans: a daily champion riddle, Splash Zoom, Ability Check, Title Match and lore quizzes across the regions of Runeterra.">
+<meta name="theme-color" content="#010a13">
 <meta property="og:title" content="Runeterra Codex">
-<meta property="og:description" content="Seven lore games across the thirteen regions of Runeterra, with a new champion riddle every day.">
+<meta property="og:description" content="Eight League of Legends games, with a new champion riddle every day.">
 <meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%2305080d'/%3E%3Crect x='5' y='5' width='18' height='18' transform='rotate(45 14 14)' fill='none' stroke='%23c8a96a' stroke-width='1.5'/%3E%3Crect x='9.5' y='9.5' width='9' height='9' transform='rotate(45 14 14)' fill='%23c8a96a'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23010a13'/%3E%3Cpath d='M16 3 27 9.5v13L16 29 5 22.5v-13Z' fill='none' stroke='%23c8aa6e' stroke-width='2'/%3E%3Cpath d='M16 10l6 3.5v5L16 22l-6-3.5v-5Z' fill='%23c89b3c'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://ddragon.leagueoflegends.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Source+Sans+3:wght@400;600;700&display=swap">
 <style>
-/* Layout: an image-led game site. Full-bleed champion art behind the hero, tall art tiles for games
-   and regions, gold hairline frames with cut corners. One committed dark look, like a game client at night. */
+/* =====================================================================
+   RUNETERRA CODEX · DESIGN SYSTEM
+   Two typefaces only:
+     Marcellus      display: headings, buttons, nav, labels. Always uppercase, tracked.
+     Source Sans 3  interface: body text, numbers, inputs.
+   Colour: a hextech palette. Gold for structure and text, blue for "live" states.
+   Shape: square corners everywhere, 1px gold borders, a double inner line on panels.
+   Spacing: 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 96.
+   ===================================================================== */
 :root{
-  --void:#05080d; --ink:#0a1018; --panel:#0d151f; --panel2:#132030; --line:#1d2a3a; --line2:#2b3c52;
-  --text:#ebe5d6; --muted:#8e98a6; --gold:#c8a96a; --gold-hi:#f0dfb0; --gold-dim:#77592a; --teal:#2fc7b8;
-  --good:#5fd39b; --bad:#e8705f; --on-gold:#1b1206;
-  --display:"Cormorant Garamond",Georgia,"Times New Roman",serif;
-  --cond:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
-  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  /* palette */
+  --black:#010a13; --blue-7:#050f1c; --blue-6:#091428; --blue-5:#0a323c; --blue-4:#005a82; --blue-3:#0397ab; --blue-2:#0ac8b9; --blue-1:#cdfafa;
+  --gold-6:#231b0d; --gold-5:#463714; --gold-4:#785a28; --gold-3:#c89b3c; --gold-2:#c8aa6e; --gold-1:#f0e6d2;
+  --grey-4:#1e2328; --grey-3:#3c3c41; --grey-2:#5b5a56; --grey-1:#a09b8c;
+  --red:#e84057; --green:#2fc48d;
+  /* roles */
+  --bg:var(--black); --surface:var(--blue-7); --raised:var(--grey-4);
+  --line:var(--gold-5); --line-strong:var(--gold-4); --text:var(--gold-1); --text-2:var(--grey-1); --accent:var(--gold-2); --accent-hi:var(--gold-3); --live:var(--blue-2);
+  /* type */
+  --display:"Marcellus","Trajan Pro",Georgia,serif;
+  --ui:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --fs-hero:clamp(2.6rem,6.5vw,5rem); --fs-1:clamp(1.9rem,3.6vw,2.6rem); --fs-2:1.5rem; --fs-3:1.125rem;
+  --fs-body:1rem; --fs-sm:.875rem; --fs-xs:.75rem; --track:.08em; --track-wide:.14em;
+  /* space */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:64px; --s9:96px;
+  /* motion */
+  --ease:cubic-bezier(.2,.7,.2,1); --fast:.15s; --slow:.45s;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 [hidden]{display:none!important}
-img{max-width:100%}
-body{margin:0;background:var(--void);color:var(--text);font-family:var(--body);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--void)}
-h1,h2,h3{font-family:var(--display);font-weight:600;margin:0;text-wrap:balance;line-height:1.05}
-h2{font-size:clamp(2.1rem,4.6vw,3.2rem)}
-h3{font-size:1.55rem}
+img{max-width:100%;display:block}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--ui);font-size:var(--fs-body);line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
 p{margin:0}
-a{color:var(--gold-hi)}
+a{color:var(--accent)}
 button{font:inherit;color:inherit;cursor:pointer}
-:is(a,button,input):focus-visible{outline:2px solid var(--teal);outline-offset:3px}
-.band{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.inner{max-width:1200px;margin:0 auto}
-.label{font-family:var(--cond);font-weight:600;font-size:.82rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
-.muted{color:var(--muted)}
-.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
-.orn{display:inline-flex;align-items:center;gap:12px}
-.orn::before{content:"";width:34px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
-.orn i{width:6px;height:6px;border:1px solid var(--gold);transform:rotate(45deg);flex:none}
-.section{padding-block:72px}
-.head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px 32px;margin-bottom:28px}
-.head .t{display:flex;flex-direction:column;gap:12px}
-.head p{max-width:52ch;color:var(--muted)}
+:is(a,button,input):focus-visible{outline:2px solid var(--live);outline-offset:2px}
 
-/* Buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 28px;font-family:var(--cond);font-weight:600;font-size:1rem;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;color:var(--on-gold);background:linear-gradient(180deg,var(--gold-hi),var(--gold) 55%,#a3824a);border:0;clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px);transition:filter .2s}
-.btn:hover:not(:disabled){filter:brightness(1.1)}
-.btn.ghost{color:var(--gold-hi);background:rgba(200,169,106,.07);clip-path:none;border:1px solid var(--gold-dim)}
-.btn.ghost:hover:not(:disabled){background:rgba(200,169,106,.14);border-color:var(--gold)}
-.btn:disabled{opacity:.4;cursor:default}
-.link{font-family:var(--cond);font-weight:600;letter-spacing:.16em;text-transform:uppercase;font-size:.9rem;color:var(--gold-hi);text-decoration:none;border-bottom:1px solid var(--gold-dim);padding-bottom:3px}
-.link:hover{border-color:var(--gold-hi)}
+/* ---------- Type styles ---------- */
+.t-hero,.t-1,.t-2,.t-3,.t-label{font-family:var(--display);font-weight:400;text-transform:uppercase;margin:0;text-wrap:balance}
+.t-hero{font-size:var(--fs-hero);line-height:.95;letter-spacing:.02em}
+.t-1{font-size:var(--fs-1);line-height:1.05;letter-spacing:.03em}
+.t-2{font-size:var(--fs-2);line-height:1.1;letter-spacing:.04em}
+.t-3{font-size:var(--fs-3);line-height:1.2;letter-spacing:var(--track)}
+.t-label{font-size:var(--fs-xs);letter-spacing:var(--track-wide);color:var(--accent)}
+.t-body{font-size:var(--fs-body);color:var(--text-2);max-width:62ch}
+.t-sm{font-size:var(--fs-sm);color:var(--text-2)}
+.num{font-variant-numeric:tabular-nums}
 
-/* Frame: gold corner brackets */
-.frame{position:relative;border:1px solid var(--line2);background:linear-gradient(180deg,rgba(19,32,48,.82),rgba(10,16,24,.92))}
-.frame::before,.frame::after{content:"";position:absolute;width:16px;height:16px;pointer-events:none}
-.frame::before{top:-1px;left:-1px;border-top:2px solid var(--gold);border-left:2px solid var(--gold)}
-.frame::after{bottom:-1px;right:-1px;border-bottom:2px solid var(--gold);border-right:2px solid var(--gold)}
+/* ---------- Layout ---------- */
+.band{padding-left:max(var(--s4),env(safe-area-inset-left,0px));padding-right:max(var(--s4),env(safe-area-inset-right,0px))}
+.wrap{max-width:1200px;margin:0 auto}
+.section{padding-block:var(--s8)}
+.stack{display:flex;flex-direction:column;gap:var(--s4)}
+.row{display:flex;flex-wrap:wrap;gap:var(--s3);align-items:center}
+.title{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:var(--s4) var(--s6);margin-bottom:var(--s5);padding-bottom:var(--s4);border-bottom:1px solid var(--line)}
+.title .stack{gap:var(--s2)}
 
-/* Header */
-header.site{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(5,8,13,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(200,169,106,.18)}
-.nav{display:flex;align-items:center;gap:28px;min-height:66px}
-.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text);white-space:nowrap}
-.brand b{font-family:var(--cond);font-weight:700;font-size:1.15rem;letter-spacing:.2em;text-transform:uppercase}
-.brand b span{color:var(--gold)}
-.links{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0;align-self:stretch}
-.links::-webkit-scrollbar{display:none}
-.links a{display:flex;align-items:center;color:var(--muted);text-decoration:none;font-family:var(--cond);font-weight:600;font-size:.95rem;letter-spacing:.16em;text-transform:uppercase;padding:0 14px;white-space:nowrap;border-bottom:2px solid transparent;transition:color .2s}
-.links a:hover{color:var(--text)}
-.links a[aria-current="page"]{color:var(--gold-hi);border-bottom-color:var(--gold)}
-.rankpill{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-family:var(--cond);font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:.82rem;white-space:nowrap;font-variant-numeric:tabular-nums}
-.rankpill .gem{width:12px;height:12px;transform:rotate(45deg);background:linear-gradient(135deg,var(--gold-hi),var(--gold-dim));box-shadow:0 0 12px rgba(200,169,106,.5)}
-.rankpill .xp{color:var(--gold)}
-@media (max-width:780px){.nav{flex-wrap:wrap;gap:0 14px;min-height:56px}.links{order:3;flex-basis:100%;margin-inline:-14px;min-height:44px}.rankpill{margin-left:auto}.rankpill .rk{display:none}}
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--s2);min-height:44px;padding:0 var(--s5);font-family:var(--display);font-size:var(--fs-sm);letter-spacing:var(--track);text-transform:uppercase;text-decoration:none;color:var(--gold-1);background:linear-gradient(180deg,var(--blue-6),var(--black));border:2px solid var(--gold-3);box-shadow:inset 0 0 0 1px var(--black),inset 0 0 18px rgba(200,155,60,.18);transition:box-shadow var(--fast),border-color var(--fast),color var(--fast)}
+.btn:hover:not(:disabled){border-color:var(--gold-2);box-shadow:inset 0 0 0 1px var(--black),inset 0 0 24px rgba(200,155,60,.35),0 0 18px rgba(200,155,60,.25);color:#fff}
+.btn.secondary{border:1px solid var(--line-strong);background:var(--raised);box-shadow:none;color:var(--gold-2)}
+.btn.secondary:hover:not(:disabled){border-color:var(--gold-2);color:var(--gold-1);box-shadow:none}
+.btn:disabled{opacity:.45;cursor:default}
+.link{font-family:var(--display);font-size:var(--fs-sm);letter-spacing:var(--track);text-transform:uppercase;color:var(--gold-2);text-decoration:none}
+.link:hover{color:var(--gold-1)}
 
-/* Art layers. Images load from Riot's own servers; the gradient underneath shows if they cannot. */
-.art{position:absolute;inset:0;background-size:cover;background-position:center 22%;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+/* ---------- Panel: double gold line ---------- */
+.panel{background:linear-gradient(180deg,rgba(9,20,40,.94),rgba(1,10,19,.97));border:1px solid var(--line-strong);box-shadow:inset 0 0 0 3px var(--bg),inset 0 0 0 4px var(--gold-6)}
 
-/* Hero */
-.hero{position:relative;overflow:hidden;min-height:clamp(560px,80vh,780px);display:flex;align-items:flex-end;background:radial-gradient(ellipse 60% 70% at 72% 30%,#1d3048 0%,transparent 70%),var(--void)}
-.hero .s{position:absolute;inset:0;background-size:cover;background-position:70% 20%;opacity:0;transition:opacity 1.8s ease}
-.hero .s.on{opacity:1;animation:drift 16s ease-out forwards}
-@keyframes drift{from{transform:scale(1.1)}to{transform:scale(1.01)}}
-.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--void) 0%,rgba(5,8,13,.88) 30%,rgba(5,8,13,.35) 62%,rgba(5,8,13,.15) 100%),linear-gradient(0deg,var(--void) 0%,rgba(5,8,13,0) 45%)}
-@media (max-width:900px){.hero::after{background:linear-gradient(0deg,var(--void) 18%,rgba(5,8,13,.72) 55%,rgba(5,8,13,.35) 100%)}}
-.hero .inner{position:relative;z-index:2;width:100%;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.9fr);gap:56px;align-items:end;padding-block:140px 64px}
-@media (max-width:900px){.hero .inner{grid-template-columns:minmax(0,1fr);gap:36px;padding-block:120px 44px}}
-.hero .copy{display:flex;flex-direction:column;gap:24px;min-width:0}
-.hero h1{font-size:clamp(2.7rem,10.5vw,8rem);line-height:.86;letter-spacing:.01em;text-transform:uppercase;font-weight:600;text-shadow:0 4px 40px rgba(0,0,0,.6)}
-.hero h1 small{display:flex;align-items:center;gap:16px;font-family:var(--cond);font-weight:600;font-size:clamp(.95rem,1.6vw,1.2rem);letter-spacing:.7em;color:var(--gold);margin-top:18px;text-shadow:none}
-.hero h1 small::after{content:"";height:1px;width:80px;background:linear-gradient(90deg,var(--gold),transparent)}
-.hero .lede{font-size:1.15rem;max-width:44ch;color:#c9c6bd}
-.stats{display:flex;flex-wrap:wrap;gap:0;margin-top:6px}
-.stats div{display:flex;flex-direction:column;padding:2px 26px 2px 0;margin-right:26px;border-right:1px solid var(--line2)}
-.stats div:last-child{border:0}
-.stats b{font-family:var(--display);font-size:2.1rem;font-weight:600;line-height:1;color:var(--gold-hi);font-variant-numeric:tabular-nums}
-.stats span{font-family:var(--cond);letter-spacing:.16em;text-transform:uppercase;font-size:.75rem;color:var(--muted)}
-.credit{position:absolute;z-index:2;right:max(16px,env(safe-area-inset-right,0px));top:84px;font-family:var(--cond);letter-spacing:.14em;text-transform:uppercase;font-size:.7rem;color:rgba(235,229,214,.55)}
-@media (max-width:900px){.credit{display:none}}
+/* ---------- Tags ---------- */
+.tag{display:inline-flex;align-items:center;gap:var(--s1);font-family:var(--display);font-size:var(--fs-xs);letter-spacing:var(--track);text-transform:uppercase;color:var(--text-2);border:1px solid var(--grey-3);padding:2px var(--s2);white-space:nowrap}
+.tag.gold{color:var(--gold-2);border-color:var(--gold-4)}
+.tag.good{color:var(--green);border-color:var(--green)} .tag.bad{color:var(--red);border-color:var(--red)}
 
-/* Riddle card */
-.riddle{padding:28px;display:flex;flex-direction:column;gap:16px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-.riddle .top{display:flex;justify-content:space-between;gap:12px}
-.riddle blockquote{margin:0;font-family:var(--display);font-style:italic;font-weight:500;font-size:1.7rem;line-height:1.25;color:var(--text)}
-.pips{display:flex;gap:6px}
-.pips i{flex:1;height:3px;background:var(--line2)}
-.pips i.win{background:var(--good)} .pips i.miss{background:var(--bad)}
+/* ---------- Header ---------- */
+.site-head{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(1,10,19,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:var(--s6);min-height:64px}
+.logo{display:flex;align-items:center;gap:var(--s3);text-decoration:none;color:var(--gold-1);font-family:var(--display);font-size:var(--fs-3);letter-spacing:var(--track);text-transform:uppercase;white-space:nowrap}
+.tabs{display:flex;align-self:stretch;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{display:flex;align-items:center;padding:0 var(--s4);font-family:var(--display);font-size:var(--fs-sm);letter-spacing:var(--track);text-transform:uppercase;color:var(--text-2);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;transition:color var(--fast)}
+.tabs a:hover{color:var(--gold-1)}
+.tabs a[aria-current="page"]{color:var(--gold-1);border-bottom-color:var(--gold-3);background:linear-gradient(0deg,rgba(200,155,60,.14),transparent 70%)}
+.profile{display:flex;align-items:center;gap:var(--s3);text-decoration:none;color:var(--text)}
+.profile .lvl{position:relative;width:36px;height:36px;display:grid;place-items:center;font-family:var(--display);font-size:var(--fs-sm);color:var(--gold-1)}
+.profile .lvl svg{position:absolute;inset:0}
+.profile .who{display:flex;flex-direction:column;line-height:1.2}
+.profile .who b{font-family:var(--display);font-weight:400;font-size:var(--fs-sm);letter-spacing:var(--track);text-transform:uppercase}
+.profile .who span{font-size:var(--fs-xs);color:var(--text-2)}
+@media (max-width:820px){.nav{flex-wrap:wrap;gap:0 var(--s4);min-height:56px}.tabs{order:3;flex-basis:100%;min-height:44px;margin-inline:calc(var(--s4)*-1)}.profile{margin-left:auto}.profile .who{display:none}}
 
-/* Tiles */
-.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.tiles.three{grid-template-columns:repeat(3,minmax(0,1fr))}
-@media (max-width:980px){.tiles,.tiles.three{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:540px){.tiles,.tiles.three{grid-template-columns:1fr}}
-.tile{position:relative;display:flex;flex-direction:column;justify-content:flex-end;aspect-ratio:3/4;max-width:100%;overflow:hidden;text-decoration:none;color:var(--text);border:1px solid var(--line);background:var(--panel);isolation:isolate;transition:border-color .3s}
-@media (max-width:540px){.tile{aspect-ratio:4/3}}
-.tile .art{z-index:-2}
-.tile::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,rgba(5,8,13,.97) 8%,rgba(5,8,13,.55) 45%,rgba(5,8,13,.05) 75%)}
-.tile:hover{border-color:var(--gold)}
-.tile:hover .art{transform:scale(1.07)}
-.tile .c{padding:22px;display:flex;flex-direction:column;gap:8px}
-.tile h3{font-size:1.75rem}
-.tile p{color:#b9b8b1;font-size:.95rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.tile .meta{display:flex;flex-wrap:wrap;gap:4px 16px;font-family:var(--cond);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:.74rem;color:var(--muted)}
-.tile .meta b{color:var(--gold-hi);font-weight:600}
-.tile.wide{grid-column:1/-1;aspect-ratio:auto;min-height:300px}
-.tile.wide .c{max-width:560px;padding:36px}
-.tile.wide::before{background:linear-gradient(90deg,rgba(5,8,13,.96) 20%,rgba(5,8,13,.4) 65%,rgba(5,8,13,.1))}
-.tile.wide .art{background-position:center 25%}
+/* ---------- Art (Riot's Data Dragon). A dark gradient sits under every image. ---------- */
+.art{background-color:var(--blue-6);background-size:cover;background-position:center 20%;background-repeat:no-repeat}
 
-/* Region rail */
-.rail{display:grid;grid-auto-flow:column;grid-auto-columns:max(170px,calc((100% - 78px)/6.5));gap:13px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:14px;scrollbar-width:thin;scrollbar-color:var(--gold-dim) transparent}
-.rtile{position:relative;aspect-ratio:11/18;overflow:hidden;scroll-snap-align:start;border:1px solid var(--line);background:var(--panel);text-align:left;padding:0;display:flex;flex-direction:column;justify-content:flex-end;isolation:isolate;transition:border-color .3s}
-.rtile .art{z-index:-2;background-position:center top}
-.rtile::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,rgba(5,8,13,.96) 5%,rgba(5,8,13,.2) 50%,transparent)}
-.rtile:hover{border-color:var(--gold)}
-.rtile:hover .art{transform:scale(1.06)}
-.rtile .c{padding:16px;display:flex;flex-direction:column;gap:4px}
-.rtile strong{font-family:var(--display);font-weight:600;font-size:1.45rem;line-height:1}
-.rtile small{font-family:var(--cond);letter-spacing:.14em;text-transform:uppercase;font-size:.7rem;color:var(--muted)}
-.rtile .hue{width:22px;height:2px}
+/* ---------- Hero ---------- */
+.hero{position:relative;overflow:hidden;isolation:isolate;border-bottom:1px solid var(--line)}
+.hero .slide{position:absolute;inset:0;z-index:-2;opacity:0;transition:opacity 1.6s ease;background-position:70% 18%}
+.hero .slide.on{opacity:1}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,var(--bg) 0%,rgba(1,10,19,.9) 32%,rgba(1,10,19,.25) 70%),linear-gradient(0deg,var(--bg),transparent 40%)}
+@media (max-width:900px){.hero::before{background:linear-gradient(0deg,var(--bg) 20%,rgba(1,10,19,.75) 60%,rgba(1,10,19,.35))}}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.85fr);gap:var(--s7);align-items:end;padding-block:var(--s9) var(--s7)}
+@media (max-width:900px){.hero .wrap{grid-template-columns:minmax(0,1fr);gap:var(--s6);padding-block:var(--s8) var(--s6)}}
+.hero .copy{display:flex;flex-direction:column;gap:var(--s5);min-width:0}
+.hero .t-hero span{display:block;color:var(--gold-2)}
+.hero .credit{position:absolute;right:max(var(--s4),env(safe-area-inset-right,0px));top:var(--s4)}
 
-/* Support band */
-.cta-band{position:relative;overflow:hidden;border-block:1px solid var(--line);isolation:isolate}
-.cta-band .art{z-index:-2;background-position:center 30%;opacity:.5}
-.cta-band::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,var(--void) 30%,rgba(5,8,13,.6))}
-.cta-band .inner{padding-block:72px;display:flex;flex-direction:column;gap:18px;align-items:flex-start}
-.cta-band p{max-width:52ch;color:#c9c6bd}
+/* ---------- Daily panel ---------- */
+.daily{padding:var(--s5);display:flex;flex-direction:column;gap:var(--s4)}
+.daily .quote{font-family:var(--display);font-size:1.4rem;line-height:1.3;color:var(--gold-1)}
+.pips{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s1)}
+.pips i{height:4px;background:var(--grey-3)}
+.pips i.win{background:var(--green)} .pips i.miss{background:var(--red)}
 
-/* Record */
-.record{display:grid;grid-template-columns:minmax(0,1.5fr) repeat(3,minmax(0,1fr));margin-bottom:22px}
-.record>div{padding:22px 24px;display:flex;flex-direction:column;gap:8px;border-left:1px solid var(--line);min-width:0}
+/* ---------- Card (games and regions share it) ---------- */
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s4)}
+@media (max-width:1000px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{display:flex;flex-direction:column;text-decoration:none;color:var(--text);background:var(--surface);border:1px solid var(--line);transition:border-color var(--fast),transform var(--slow) var(--ease);min-width:0;text-align:left;padding:0}
+.card:hover{border-color:var(--gold-2);transform:translateY(-3px)}
+.card .pic{aspect-ratio:16/10;max-width:100%;border-bottom:1px solid var(--line);position:relative}
+.card .pic .tag{position:absolute;left:var(--s3);top:var(--s3);background:rgba(1,10,19,.85)}
+.card .body{padding:var(--s4);display:flex;flex-direction:column;gap:var(--s2);flex:1}
+.card .body p{font-size:var(--fs-sm);color:var(--text-2)}
+.card .foot{margin-top:auto;padding-top:var(--s3);display:flex;justify-content:space-between;gap:var(--s2);font-size:var(--fs-xs);color:var(--text-2);border-top:1px solid var(--grey-4)}
+.card .foot b{color:var(--gold-2);font-weight:600}
+.card.region .pic{aspect-ratio:3/4;background-position:center top}
+.rail{display:grid;grid-auto-flow:column;grid-auto-columns:max(160px,calc((100% - 5 * var(--s4)) / 6));gap:var(--s4);overflow-x:auto;padding-bottom:var(--s3);scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:var(--gold-4) transparent}
+.rail .card{scroll-snap-align:start}
+.swatch{display:inline-block;width:8px;height:8px;transform:rotate(45deg);flex:none}
+
+/* ---------- Support band ---------- */
+.band-cta{border-block:1px solid var(--line);background:linear-gradient(90deg,var(--blue-6),var(--bg))}
+.band-cta .wrap{display:flex;flex-wrap:wrap;gap:var(--s5);align-items:center;justify-content:space-between;padding-block:var(--s7)}
+
+/* ---------- Record ---------- */
+.record{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));margin-bottom:var(--s6)}
+.record>div{padding:var(--s5);display:flex;flex-direction:column;gap:var(--s2);border-left:1px solid var(--line);min-width:0}
 .record>div:first-child{border-left:0}
-@media (max-width:760px){.record{grid-template-columns:repeat(3,minmax(0,1fr))}.record .lead{grid-column:1/-1;border-bottom:1px solid var(--line)}.record>div:nth-child(2){border-left:0}}
-.record .v{font-family:var(--display);font-size:2.3rem;line-height:1;font-weight:600;font-variant-numeric:tabular-nums}
-.record .rankname{font-family:var(--display);font-size:1.9rem;line-height:1;color:var(--gold-hi)}
-.bar{height:4px;background:var(--line2)}
-.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold-hi));transition:width .6s}
-.small{font-family:var(--cond);letter-spacing:.12em;text-transform:uppercase;font-size:.75rem;color:var(--muted)}
+@media (max-width:760px){.record{grid-template-columns:repeat(3,minmax(0,1fr))}.record>div:first-child{grid-column:1/-1;border-bottom:1px solid var(--line)}.record>div:nth-child(2){border-left:0}}
+.record .v{font-size:2rem;font-weight:600;line-height:1;font-variant-numeric:tabular-nums;color:var(--gold-1)}
+.meter{height:6px;background:var(--grey-4);border:1px solid var(--gold-5)}
+.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--blue-3),var(--blue-2));box-shadow:0 0 10px var(--blue-2);transition:width var(--slow)}
 
-/* Game stage */
+/* ---------- Game stage ---------- */
 .stage{position:relative;overflow:hidden;isolation:isolate;border-bottom:1px solid var(--line)}
-.stage .art{z-index:-2;background-position:center 25%;opacity:.55}
-.stage::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,var(--void) 25%,rgba(5,8,13,.55)),linear-gradient(0deg,var(--void),transparent 60%)}
-.stage .inner{padding-block:56px 40px;display:flex;flex-direction:column;gap:14px}
-.stage h1{font-size:clamp(2.6rem,6vw,4.4rem);text-transform:uppercase;letter-spacing:.01em}
-.stage p{max-width:58ch;color:#c9c6bd}
-.back{font-family:var(--cond);font-weight:600;letter-spacing:.16em;text-transform:uppercase;font-size:.8rem;color:var(--muted);text-decoration:none}
-.back:hover{color:var(--gold-hi)}
-.game{padding:clamp(20px,3.4vw,36px);display:flex;flex-direction:column;gap:20px;min-height:340px}
-.hud{display:flex;flex-wrap:wrap;gap:8px 28px;font-family:var(--cond);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums;padding-bottom:16px;border-bottom:1px solid var(--line)}
-.hud b{color:var(--gold-hi);font-weight:600}
-.q{font-family:var(--display);font-weight:600;font-size:clamp(1.5rem,3vw,2rem);line-height:1.2;max-width:34ch}
-.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-@media (max-width:560px){.opts{grid-template-columns:1fr}}
-.opt{position:relative;background:rgba(19,32,48,.7);border:1px solid var(--line2);padding:15px 18px 15px 44px;text-align:left;font-weight:500;transition:border-color .15s,background .15s}
-.opt::before{content:"";position:absolute;left:18px;top:50%;width:8px;height:8px;margin-top:-4px;border:1px solid var(--gold-dim);transform:rotate(45deg);transition:background .15s}
-.opt:hover:not(:disabled){border-color:var(--gold);background:rgba(200,169,106,.08)}
-.opt:hover:not(:disabled)::before{background:var(--gold)}
-.opt:disabled{cursor:default}
-.opt.right{border-color:var(--good);background:rgba(95,211,155,.12)} .opt.right::before{background:var(--good);border-color:var(--good)}
-.opt.wrong{border-color:var(--bad);background:rgba(232,112,95,.12)} .opt.wrong::before{background:var(--bad);border-color:var(--bad)}
-.explain{border-left:2px solid var(--gold);padding-left:16px;color:#c9c6bd;max-width:62ch;flex:1;min-width:220px}
-.split{display:grid;grid-template-columns:200px minmax(0,1fr);gap:28px;align-items:start}
-@media (max-width:640px){.split{grid-template-columns:1fr}.split .portrait{max-width:160px}}
-.portrait{position:relative;aspect-ratio:11/20;max-width:100%;overflow:hidden;border:1px solid var(--line2);background:var(--panel2)}
-.portrait .nm{position:absolute;inset:auto 0 0;padding:28px 12px 10px;background:linear-gradient(0deg,rgba(5,8,13,.95),transparent);font-family:var(--display);font-weight:600;font-size:1.2rem}
-.clues{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
-.clues li{display:grid;grid-template-columns:5.5em minmax(0,1fr);gap:14px;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--line)}
-.clues .n{font-family:var(--cond);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:.75rem;color:var(--gold)}
-.clues li span:last-child{font-size:1.08rem}
+.stage .art{position:absolute;inset:0;z-index:-2;opacity:.45}
+.stage::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,var(--bg) 30%,rgba(1,10,19,.5)),linear-gradient(0deg,var(--bg),transparent 70%)}
+.stage .wrap{padding-block:var(--s7) var(--s6);display:flex;flex-direction:column;gap:var(--s3)}
+.game{padding:var(--s6);display:flex;flex-direction:column;gap:var(--s5);min-height:360px}
+@media (max-width:600px){.game{padding:var(--s4)}}
+.hud{display:flex;flex-wrap:wrap;gap:var(--s2)}
+.hud .tag b{color:var(--gold-1);font-family:var(--ui);font-weight:600;margin-left:var(--s1)}
+.prompt{font-family:var(--display);font-size:clamp(1.35rem,2.6vw,1.8rem);line-height:1.25;letter-spacing:.02em;max-width:36ch}
+
+/* text options */
+.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s2)}
+@media (max-width:560px){.options{grid-template-columns:minmax(0,1fr)}}
+.option{background:var(--raised);border:1px solid var(--gold-5);padding:var(--s3) var(--s4);text-align:left;font-weight:600;transition:border-color var(--fast),background var(--fast)}
+.option:hover:not(:disabled){border-color:var(--gold-3);background:#252b31}
+.option:disabled{cursor:default}
+.option.right,.choice.right{border-color:var(--green);background:rgba(47,196,141,.12)}
+.option.wrong,.choice.wrong{border-color:var(--red);background:rgba(232,64,87,.12)}
+
+/* champion choices: like a champion select grid */
+.choices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s3)}
+@media (max-width:560px){.choices{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.choice{display:flex;flex-direction:column;align-items:center;gap:var(--s2);padding:var(--s3);background:var(--raised);border:1px solid var(--gold-5);transition:border-color var(--fast),box-shadow var(--fast)}
+.choice:hover:not(:disabled){border-color:var(--gold-2);box-shadow:0 0 14px rgba(200,155,60,.25)}
+.choice:disabled{cursor:default}
+.choice span{font-weight:600;font-size:var(--fs-sm);text-align:center}
+.icon{width:72px;height:72px;border:1px solid var(--gold-4);box-shadow:inset 0 0 0 2px var(--bg);flex:none}
+.icon.sm{width:32px;height:32px}
+.icon.lg{width:96px;height:96px;border:2px solid var(--gold-3)}
+
+.note{border-left:2px solid var(--gold-3);padding-left:var(--s4);color:var(--text-2);flex:1;min-width:220px;max-width:62ch}
+.between{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:var(--s4)}
+
+/* splash zoom */
+.zoom{aspect-ratio:16/9;max-width:100%;border:1px solid var(--line-strong);background-color:var(--blue-6);background-repeat:no-repeat;transition:background-size .7s var(--ease),background-position .7s var(--ease)}
+.zoomsteps{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--s1)}
+.zoomsteps i{height:4px;background:var(--grey-3)} .zoomsteps i.on{background:var(--gold-3)}
+
+/* ability */
+.ability{display:flex;align-items:center;gap:var(--s5);padding:var(--s4);background:var(--surface);border:1px solid var(--line)}
+.ability .key{font-family:var(--display);font-size:var(--fs-2);color:var(--gold-2);min-width:2ch}
+
+/* champion picker */
+.picker{position:relative;max-width:520px}
+.field{width:100%;background:var(--black);border:1px solid var(--gold-4);padding:var(--s3) var(--s4);color:var(--text);font:inherit}
+.field:focus{border-color:var(--gold-2);outline:none;box-shadow:0 0 0 1px var(--gold-2)}
+.field::placeholder{color:var(--grey-2)}
+.pk-list{position:absolute;left:0;right:0;top:100%;z-index:5;list-style:none;margin:0;padding:var(--s1) 0;background:var(--blue-7);border:1px solid var(--gold-4);border-top:0;max-height:300px;overflow-y:auto}
+.pk-list button{display:flex;align-items:center;gap:var(--s3);width:100%;padding:var(--s2) var(--s3);background:none;border:0;text-align:left;font-weight:600}
+.pk-list button:hover,.pk-list button.hl{background:var(--raised);color:var(--gold-1)}
+.formmsg{font-size:var(--fs-sm);color:var(--red);min-height:1.5em}
+
+/* clue list */
+.clues{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.clues li{display:grid;grid-template-columns:72px minmax(0,1fr);gap:var(--s4);padding:var(--s3) 0;border-bottom:1px solid var(--line);align-items:baseline}
 .clues li.locked{opacity:.4}
-.reveal{position:relative;overflow:hidden;min-height:240px;display:flex;align-items:flex-end;border:1px solid var(--line2);isolation:isolate}
-.reveal .art{z-index:-2;background-position:center 20%}
-.reveal::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(5,8,13,.95) 25%,rgba(5,8,13,.3))}
-.reveal .c{padding:28px;display:flex;flex-direction:column;gap:12px;max-width:560px}
-.result{display:flex;flex-direction:column;gap:18px}
-.result .big{font-family:var(--display);font-size:clamp(3.4rem,8vw,5rem);line-height:.9;font-weight:600;color:var(--gold-hi);font-variant-numeric:tabular-nums}
-.result .verdict{font-family:var(--display);font-size:2rem;font-weight:600}
-.ages{display:flex;flex-direction:column;gap:8px}
-.age{display:grid;grid-template-columns:3em minmax(0,1fr);gap:14px;align-items:center;background:rgba(19,32,48,.7);border:1px solid var(--line2);padding:13px 16px;text-align:left}
-.age:hover:not(:disabled){border-color:var(--gold-dim)}
-.age .slot{font-family:var(--display);font-weight:700;font-size:1.3rem;color:var(--gold-hi);text-align:center;border:1px dashed var(--gold-dim);min-height:1.8em;line-height:1.7em;font-variant-numeric:tabular-nums}
-.age.picked .slot{border-style:solid;background:rgba(200,169,106,.14)}
-.age.right{border-color:var(--good)} .age.wrong{border-color:var(--bad)}
-.age strong{font-weight:600}
-.age small{display:block;color:var(--muted);font-size:.92rem}
-.yr{font-family:var(--cond);font-weight:600;letter-spacing:.1em;color:var(--gold);font-size:.85rem}
-.guess{display:flex;flex-wrap:wrap;gap:10px}
-.guess label{flex-basis:100%}
-.guess input{flex:1;min-width:200px;background:var(--void);border:1px solid var(--line2);padding:13px 16px;color:var(--text);font:inherit;font-size:1.05rem}
-.guess input:focus{border-color:var(--gold)}
-.guess input::placeholder{color:var(--muted)}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{font-family:var(--cond);font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:.78rem;border:1px solid var(--line2);padding:4px 12px}
-.chip.bad{border-color:var(--bad);color:var(--bad)} .chip.good{border-color:var(--good);color:var(--good)}
-.formmsg{font-size:.92rem;color:var(--bad);min-height:1.4em}
-.timer{height:4px;background:var(--line2)}
-.timer>i{display:block;height:100%;background:linear-gradient(90deg,var(--bad),var(--gold-hi));transition:width .2s linear}
-.kgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+
+/* reveal banner */
+.reveal{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);border:1px solid var(--line-strong);background:var(--surface)}
+.reveal .pic{min-height:220px}
+.reveal .body{padding:var(--s5);display:flex;flex-direction:column;gap:var(--s3);justify-content:center}
+@media (max-width:640px){.reveal{grid-template-columns:minmax(0,1fr)}.reveal .pic{aspect-ratio:16/9;min-height:0}}
+
+/* portrait (loading art) */
+.split{display:grid;grid-template-columns:180px minmax(0,1fr);gap:var(--s6);align-items:start}
+@media (max-width:600px){.split{grid-template-columns:minmax(0,1fr)}.split .portrait{width:140px}}
+.portrait{aspect-ratio:308/560;max-width:100%;border:1px solid var(--line-strong);background-position:center top}
+
+/* kinship */
+.kgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:var(--s3)}
 @media (max-width:900px){.kgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media (max-width:520px){.kgrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-.kcard{perspective:900px;background:none;border:0;padding:0;aspect-ratio:11/17;max-width:100%}
-.kcard .in{position:relative;display:block;width:100%;height:100%;transition:transform .5s cubic-bezier(.3,.7,.3,1);transform-style:preserve-3d}
+@media (max-width:480px){.kgrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.kcard{perspective:900px;background:none;border:0;padding:0;aspect-ratio:308/480;max-width:100%}
+.kcard .in{position:relative;display:block;width:100%;height:100%;transition:transform .5s var(--ease);transform-style:preserve-3d}
 .kcard.up .in{transform:rotateY(180deg)}
-.kcard .b,.kcard .f{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
-.kcard .b{display:flex;align-items:center;justify-content:center;border:1px solid var(--gold-dim);background:radial-gradient(circle at 50% 50%,rgba(200,169,106,.16),transparent 60%),repeating-linear-gradient(45deg,var(--panel2) 0 1px,transparent 1px 12px),var(--panel)}
-.kcard .b i{width:18px;height:18px;border:1px solid var(--gold);transform:rotate(45deg);box-shadow:0 0 0 6px rgba(200,169,106,.08)}
-.kcard:hover:not(.up) .b{border-color:var(--gold)}
-.kcard .f{transform:rotateY(180deg);border:1px solid var(--line2);display:flex;flex-direction:column;justify-content:flex-end;text-align:left;isolation:isolate}
-.kcard .f .art{z-index:-2;background-position:center top}
-.kcard .f::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,rgba(5,8,13,.95) 10%,transparent 55%)}
-.kcard .f span{padding:8px 10px;font-family:var(--display);font-weight:600;font-size:clamp(.9rem,1.8vw,1.1rem);line-height:1.05}
-.kcard.done .f{border-color:var(--good)}
-.klog{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;color:#c9c6bd}
-.klog b{color:var(--gold-hi);font-weight:600}
+.kcard .b,.kcard .f{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.kcard .b{display:grid;place-items:center;background:linear-gradient(180deg,var(--blue-6),var(--black));border:1px solid var(--gold-4);box-shadow:inset 0 0 0 3px var(--bg),inset 0 0 0 4px var(--gold-6)}
+.kcard:hover:not(.up) .b{border-color:var(--gold-2)}
+.kcard .f{transform:rotateY(180deg);border:1px solid var(--gold-4);display:flex;align-items:flex-end;background-position:center top}
+.kcard .f span{width:100%;padding:var(--s2);background:linear-gradient(0deg,rgba(1,10,19,.95),rgba(1,10,19,.6));font-family:var(--display);font-size:var(--fs-xs);letter-spacing:var(--track);text-transform:uppercase;text-align:center}
+.kcard.done .f{border-color:var(--green)}
+.klog{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--s1);font-size:var(--fs-sm);color:var(--text-2)}
+.klog b{color:var(--gold-1)}
 
-/* Atlas */
-.atlas{display:grid;grid-template-columns:260px minmax(0,1fr);gap:24px;align-items:start}
-@media (max-width:860px){.atlas{grid-template-columns:1fr}}
+/* timer + result */
+.timer{height:6px;background:var(--grey-4);border:1px solid var(--gold-5)}
+.timer i{display:block;height:100%;background:linear-gradient(90deg,var(--blue-3),var(--blue-2));transition:width .2s linear}
+.result{display:flex;flex-direction:column;gap:var(--s4)}
+.result .score{font-size:clamp(3rem,8vw,4.5rem);font-weight:700;line-height:1;color:var(--gold-1);font-variant-numeric:tabular-nums}
+.result .score small{font-size:.4em;color:var(--text-2);font-weight:600}
+
+/* ---------- Atlas ---------- */
+.atlas{display:grid;grid-template-columns:240px minmax(0,1fr);gap:var(--s5);align-items:start}
+@media (max-width:860px){.atlas{grid-template-columns:minmax(0,1fr)}}
 .rlist{display:flex;flex-direction:column;border-top:1px solid var(--line)}
-@media (max-width:860px){.rlist{flex-direction:row;overflow-x:auto;border:0;gap:6px;padding-bottom:8px;scrollbar-width:none}}
-.rlist button{display:flex;align-items:center;gap:12px;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 6px;text-align:left;font-family:var(--cond);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:.88rem;color:var(--muted);white-space:nowrap;transition:color .2s,background .2s}
-@media (max-width:860px){.rlist button{border:1px solid var(--line);padding:9px 14px}}
-.rlist button i{width:7px;height:7px;transform:rotate(45deg);flex:none}
-.rlist button:hover{color:var(--text)}
-.rlist button[aria-pressed="true"]{color:var(--gold-hi);background:linear-gradient(90deg,rgba(200,169,106,.12),transparent)}
-.rlist button .tick{margin-left:auto;color:var(--gold);font-size:.75rem}
-.rpanel{overflow:hidden}
-.rhero{position:relative;min-height:340px;display:flex;align-items:flex-end;isolation:isolate}
-.rhero .art{z-index:-2;background-position:center 20%}
-.rhero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,var(--panel) 2%,rgba(13,21,31,.4) 55%,transparent)}
-.rhero .c{padding:28px 30px 8px;display:flex;flex-direction:column;gap:8px}
-.rhero h2{font-size:clamp(2.6rem,6vw,4.2rem);text-transform:uppercase}
-.rbody{padding:12px 30px 30px;display:flex;flex-direction:column;gap:20px}
-.rbody>p{max-width:64ch;color:#d4d0c5;font-size:1.05rem}
-.fact{display:flex;gap:14px;padding:16px 18px;border:1px solid var(--line2);background:rgba(200,169,106,.05)}
-.fact .label{flex:none}
-.fact p{font-family:var(--display);font-style:italic;font-size:1.2rem;line-height:1.35}
-.champs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:860px){.rlist{flex-direction:row;overflow-x:auto;gap:var(--s2);border:0;scrollbar-width:none}}
+.rlist button{display:flex;align-items:center;gap:var(--s3);padding:var(--s3) var(--s2);background:none;border:0;border-bottom:1px solid var(--line);font-family:var(--display);font-size:var(--fs-sm);letter-spacing:var(--track);text-transform:uppercase;color:var(--text-2);text-align:left;white-space:nowrap}
+@media (max-width:860px){.rlist button{border:1px solid var(--line);padding:var(--s2) var(--s3)}}
+.rlist button:hover{color:var(--gold-1)}
+.rlist button[aria-pressed="true"]{color:var(--gold-1);background:linear-gradient(90deg,rgba(200,155,60,.16),transparent)}
+.rlist .seen{margin-left:auto;color:var(--gold-3);font-family:var(--ui);font-size:var(--fs-xs)}
+.rpanel .banner{aspect-ratio:21/9;max-width:100%;border-bottom:1px solid var(--line-strong);background-position:center 18%}
+.rpanel .body{padding:var(--s6);display:flex;flex-direction:column;gap:var(--s5)}
+@media (max-width:600px){.rpanel .body{padding:var(--s4)}}
+.fact{padding:var(--s4);background:var(--raised);border:1px solid var(--line);display:flex;flex-direction:column;gap:var(--s1)}
+.champs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s3)}
 @media (max-width:520px){.champs{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.champs .portrait{aspect-ratio:11/16}
-.mapnote{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between;margin-top:22px;padding:18px 22px}
+.champs figure{margin:0;display:flex;flex-direction:column;gap:var(--s2)}
+.champs figcaption{font-family:var(--display);font-size:var(--fs-sm);letter-spacing:var(--track);text-transform:uppercase}
 
-/* Support + about */
-.ways{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-@media (max-width:760px){.ways{grid-template-columns:1fr}}
-.way{padding:30px;display:flex;flex-direction:column;gap:14px;min-width:0}
-.way p{color:#c9c6bd}
-.way .actions{margin-top:auto;padding-top:8px}
-.spend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
-@media (max-width:760px){.spend{grid-template-columns:1fr}}
-.spend div{border-top:1px solid var(--gold-dim);padding-top:16px;display:flex;flex-direction:column;gap:6px}
-.spend strong{font-family:var(--display);font-size:1.4rem;font-weight:600}
-.spend p{color:var(--muted)}
-.prose{max-width:68ch;display:flex;flex-direction:column;gap:16px}
-.prose p{color:#c9c6bd}
-.prose h3{margin-top:14px}
-.confirm{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:16px;border:1px solid var(--bad)}
+/* ---------- Support ---------- */
+.ways{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s4)}
+@media (max-width:760px){.ways{grid-template-columns:minmax(0,1fr)}}
+.way{padding:var(--s6);display:flex;flex-direction:column;gap:var(--s3)}
+.way .row{margin-top:auto;padding-top:var(--s3)}
+.cols3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s5)}
+@media (max-width:760px){.cols3{grid-template-columns:minmax(0,1fr)}}
+.cols3>div{border-top:1px solid var(--gold-4);padding-top:var(--s4);display:flex;flex-direction:column;gap:var(--s2)}
+.confirm{display:flex;flex-wrap:wrap;gap:var(--s3);align-items:center;padding:var(--s4);border:1px solid var(--red)}
 
-footer.site{border-top:1px solid var(--line);padding-block:40px 48px}
-footer.site .inner{display:flex;flex-direction:column;gap:18px}
-footer.site .fl{display:flex;flex-wrap:wrap;gap:8px 26px}
-footer.site .fl a{font-family:var(--cond);font-weight:600;letter-spacing:.16em;text-transform:uppercase;font-size:.85rem;text-decoration:none;color:var(--muted)}
-footer.site .fl a:hover{color:var(--gold-hi)}
-footer.site small{font-size:.8rem;color:var(--muted);max-width:92ch;line-height:1.6}
-.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));translate:-50% 0;z-index:40;padding:14px 22px;font-family:var(--cond);font-weight:600;letter-spacing:.12em;text-transform:uppercase;max-width:calc(100% - 32px)}
+.site-foot{border-top:1px solid var(--line);padding-block:var(--s6) var(--s7)}
+.site-foot .wrap{display:flex;flex-direction:column;gap:var(--s4)}
+.site-foot nav{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s5)}
+.site-foot small{font-size:var(--fs-xs);color:var(--grey-2);max-width:96ch;line-height:1.6}
+.toast{position:fixed;left:50%;bottom:calc(var(--s5) + env(safe-area-inset-bottom,0px));translate:-50% 0;z-index:40;padding:var(--s3) var(--s5);font-family:var(--display);font-size:var(--fs-sm);letter-spacing:var(--track);text-transform:uppercase;max-width:calc(100% - 32px)}
+.banner-msg{padding:var(--s3) var(--s4);border:1px solid var(--red);color:var(--gold-1);font-size:var(--fs-sm)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
-<header class="site band">
-  <div class="inner nav">
-    <a class="brand" href="#home" aria-label="Runeterra Codex home">
-      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect x="5" y="5" width="18" height="18" transform="rotate(45 14 14)" fill="none" stroke="var(--gold)"/><rect x="9.5" y="9.5" width="9" height="9" transform="rotate(45 14 14)" fill="var(--gold)"/></svg>
-      <b>Runeterra <span>Codex</span></b>
-    </a>
-    <nav class="links" aria-label="Main">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mark" viewBox="0 0 32 32"><path d="M16 2.5 28 9.5v13L16 29.5 4 22.5v-13Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M16 9.5l6 3.5v6L16 22.5 10 19v-6Z" fill="currentColor"/></symbol>
+</svg>
+
+<header class="site-head band">
+  <div class="wrap nav">
+    <a class="logo" href="#home"><svg width="30" height="30" style="color:var(--gold-3)"><use href="#mark"/></svg>Runeterra Codex</a>
+    <nav class="tabs" aria-label="Main">
+      <a href="#home" data-nav="home">Home</a>
       <a href="#games" data-nav="games">Games</a>
-      <a href="#daily" data-nav="daily">Daily Riddle</a>
+      <a href="#daily" data-nav="daily">Daily</a>
       <a href="#atlas" data-nav="atlas">Regions</a>
       <a href="#support" data-nav="support">Support</a>
       <a href="#about" data-nav="about">About</a>
     </nav>
-    <a class="rankpill" href="#games" title="Your record"><span class="gem"></span><span class="rk" id="pillRank">Wandering Novice</span><span class="xp" id="pillXp">0 XP</span></a>
+    <a class="profile" href="#games" aria-label="Your profile">
+      <span class="lvl"><svg viewBox="0 0 36 36" aria-hidden="true"><path d="M18 1.5 32.5 9.75v16.5L18 34.5 3.5 26.25V9.75Z" fill="var(--blue-6)" stroke="var(--gold-3)" stroke-width="1.5"/></svg><span id="pLvl" class="num" style="position:relative">1</span></span>
+      <span class="who"><b id="pRank">Wandering Novice</b><span id="pXp" class="num">0 XP</span></span>
+    </a>
   </div>
 </header>
 
 <main>
-  <section data-view="home">
-    <div class="hero band" id="hero">
-      <div id="slides"></div>
-      <span class="credit" id="credit"></span>
-      <div class="inner">
-        <div class="copy">
-          <span class="label orn"><i></i>Lore games for League of Legends fans</span>
-          <h1>Runeterra<small>Codex</small></h1>
-          <p class="lede">Seven games across the thirteen regions of Runeterra. Every answer comes with the story behind it, so you learn the world while you play.</p>
-          <div class="row"><a class="btn" href="#daily">Play today's riddle</a><a class="btn ghost" href="#games">Browse the games</a></div>
-          <div class="stats"><div><b>7</b><span>Games</span></div><div><b>13</b><span>Regions</span></div><div><b>62</b><span>Champions</span></div></div>
-        </div>
-        <aside class="riddle frame" id="homeRiddle" aria-label="Today's riddle"></aside>
+<!-- HOME -->
+<section data-view="home">
+  <div class="hero band">
+    <div id="slides"></div>
+    <span class="tag credit" id="credit"></span>
+    <div class="wrap">
+      <div class="copy">
+        <h1 class="t-hero">Runeterra<span>Codex</span></h1>
+        <p class="t-body" style="font-size:1.125rem;color:var(--gold-1)">Eight games about League of Legends. Name champions from their splash art, abilities and titles, and learn the lore of Runeterra along the way.</p>
+        <div class="row"><a class="btn" href="#daily">Play today's riddle</a><a class="btn secondary" href="#games">All games</a></div>
+        <div class="row" id="champCount"></div>
       </div>
+      <aside class="daily panel" id="homeDaily" aria-label="Today's riddle"></aside>
     </div>
+  </div>
 
-    <div class="band section">
-      <div class="inner">
-        <div class="head"><div class="t"><span class="label orn"><i></i>The trials</span><h2>Choose your game</h2></div><a class="link" href="#games">All seven games</a></div>
-        <div class="tiles" id="homeGames"></div>
-      </div>
+  <div class="band section">
+    <div class="wrap">
+      <div class="title"><div class="stack"><span class="t-label">Play</span><h2 class="t-1">Games</h2></div><a class="link" href="#games">See all eight</a></div>
+      <div class="grid" id="homeGames"></div>
     </div>
+  </div>
 
-    <div class="band section" style="padding-top:0">
-      <div class="inner">
-        <div class="head"><div class="t"><span class="label orn"><i></i>The regions</span><h2>Thirteen lands, one world</h2></div><p>Open a region to read who lives there, what they fight over, and the fact most players miss.</p></div>
-        <div class="rail" id="homeRegions"></div>
-      </div>
+  <div class="band section" style="padding-top:0">
+    <div class="wrap">
+      <div class="title"><div class="stack"><span class="t-label">Explore</span><h2 class="t-1">Regions of Runeterra</h2></div><a class="link" href="#atlas">Open the atlas</a></div>
+      <div class="rail" id="homeRegions"></div>
     </div>
+  </div>
 
-    <div class="cta-band band">
-      <div class="art" id="ctaArt"></div>
-      <div class="inner">
-        <span class="label orn"><i></i>Made by one fan in Jordan</span>
-        <h2>Keep the Codex growing</h2>
-        <p>Every game stays open to everyone. If you enjoy it, a small gift pays for hosting and the time to build the next game.</p>
-        <div class="row"><a class="btn" href="#support">Support the developer</a></div>
-      </div>
+  <div class="band-cta band">
+    <div class="wrap">
+      <div class="stack" style="gap:var(--s2)"><h2 class="t-2">Made by one fan in Jordan</h2><p class="t-body">Every game stays open to everyone. Support keeps the site online and pays for new games.</p></div>
+      <a class="btn" href="#support">Support the developer</a>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section data-view="games" hidden>
-    <div class="band section">
-      <div class="inner">
-        <div class="head"><div class="t"><span class="label orn"><i></i>Your record</span><h2>The trials</h2></div><p>Your scores and progress are saved in this browser. You don't need an account.</p></div>
-        <div class="record frame" id="record"></div>
-        <div class="tiles three" id="allGames"></div>
-      </div>
-    </div>
-  </section>
+<!-- GAMES -->
+<section data-view="games" hidden>
+  <div class="band section"><div class="wrap">
+    <div class="title"><div class="stack"><span class="t-label">Your profile</span><h2 class="t-1">Games</h2></div><p class="t-sm">Progress is saved in this browser. No account needed.</p></div>
+    <div class="record panel" id="record"></div>
+    <div class="grid" id="allGames"></div>
+  </div></div>
+</section>
 
-  <section data-view="game" hidden>
-    <div class="stage band"><div class="art" id="stageArt"></div>
-      <div class="inner"><a class="back" href="#games">← All games</a><h1 id="stageTitle"></h1><p id="stageBlurb"></p></div>
-    </div>
-    <div class="band" style="padding-block:32px 72px"><div class="inner"><div class="game frame" id="game" aria-live="polite"></div></div></div>
-  </section>
+<!-- STAGE -->
+<section data-view="game" hidden>
+  <div class="stage band"><div class="art" id="stageArt"></div>
+    <div class="wrap"><a class="link" href="#games">← All games</a><h1 class="t-1" id="stageTitle"></h1><p class="t-body" id="stageBlurb"></p></div>
+  </div>
+  <div class="band" style="padding-block:var(--s6) var(--s8)"><div class="wrap"><div class="game panel" id="game" aria-live="polite"></div></div></div>
+</section>
 
-  <section data-view="atlas" hidden>
-    <div class="band section">
-      <div class="inner">
-        <div class="head"><div class="t"><span class="label orn"><i></i>The regions</span><h2>Atlas of Runeterra</h2></div><span class="small" id="visited">0 of 13 regions read</span></div>
-        <div class="atlas">
-          <div class="rlist" id="rlist" role="group" aria-label="Regions"></div>
-          <article class="rpanel frame" id="rpanel" aria-live="polite"></article>
-        </div>
-        <div class="mapnote frame"><div><span class="label">The official map</span><p class="muted">See every region on Riot's interactive map of Runeterra.</p></div><a class="btn ghost" href="https://map.leagueoflegends.com/" target="_blank" rel="noopener">Open the map</a></div>
-      </div>
-    </div>
-  </section>
+<!-- ATLAS -->
+<section data-view="atlas" hidden>
+  <div class="band section"><div class="wrap">
+    <div class="title"><div class="stack"><span class="t-label">Explore</span><h2 class="t-1">Regions of Runeterra</h2></div><span class="t-sm num" id="visited"></span></div>
+    <div class="atlas"><div class="rlist" id="rlist" role="group" aria-label="Regions"></div><article class="rpanel panel" id="rpanel" aria-live="polite"></article></div>
+    <div class="between panel" style="margin-top:var(--s5);padding:var(--s5)"><div class="stack" style="gap:var(--s1)"><h3 class="t-3">Official map</h3><p class="t-sm">See where every region sits on Riot's interactive map of Runeterra.</p></div><a class="btn secondary" href="https://map.leagueoflegends.com/" target="_blank" rel="noopener">Open the map</a></div>
+  </div></div>
+</section>
 
-  <section data-view="support" hidden>
-    <div class="band section">
-      <div class="inner" style="display:flex;flex-direction:column;gap:48px">
-        <div class="head" style="margin:0"><div class="t"><span class="label orn"><i></i>Support the developer</span><h2>Help the Codex grow</h2></div><p>Runeterra Codex is built by one fan in Jordan. Every game stays open to everyone, and giving unlocks nothing. Your support keeps the site online and pays for what comes next.</p></div>
-        <div class="ways">
-          <div class="way frame"><span class="label">Card or PayPal · worldwide</span><h3>Ko-fi</h3><p>Send a one-time gift or a small monthly one. It takes under a minute.</p><div class="actions" id="kofiActions"></div></div>
-          <div class="way frame"><span class="label">PayPal account · worldwide</span><h3>PayPal</h3><p>If you already use PayPal, send a gift straight from your account.</p><div class="actions" id="paypalActions"></div></div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:22px"><span class="label orn"><i></i>Where your support goes</span>
-          <div class="spend"><div><strong>Hosting</strong><p>Keeps the site fast and online for every visitor.</p></div><div><strong>New games</strong><p>Time to research, fact-check and build the next trial.</p></div><div><strong>New lore</strong><p>More regions, champions and stories added each month.</p></div></div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:14px"><h3>You can also help by sharing</h3><p class="muted" style="max-width:60ch">Send the Codex to your friends or your Discord server. Every new player helps.</p><div class="row"><button class="btn ghost" id="shareSite">Copy a message to share</button><span class="small" id="shareMsg"></span></div></div>
-      </div>
+<!-- SUPPORT -->
+<section data-view="support" hidden>
+  <div class="band section"><div class="wrap stack" style="gap:var(--s7)">
+    <div class="title" style="margin:0"><div class="stack"><span class="t-label">Support</span><h2 class="t-1">Support the developer</h2></div><p class="t-body">Runeterra Codex is built by one fan in Jordan. Every game stays open to everyone, and giving unlocks nothing.</p></div>
+    <div class="ways">
+      <div class="way panel"><span class="t-label">Card or PayPal · worldwide</span><h3 class="t-2">Ko-fi</h3><p class="t-body">Send a one-time gift or a small monthly one. It takes under a minute.</p><div class="row" id="kofi"></div></div>
+      <div class="way panel"><span class="t-label">PayPal account · worldwide</span><h3 class="t-2">PayPal</h3><p class="t-body">If you already use PayPal, send a gift straight from your account.</p><div class="row" id="paypal"></div></div>
     </div>
-  </section>
+    <div class="stack"><h3 class="t-3">Where your support goes</h3>
+      <div class="cols3"><div><h4 class="t-3" style="font-size:var(--fs-body)">Hosting</h4><p class="t-sm">Keeps the site fast and online.</p></div><div><h4 class="t-3" style="font-size:var(--fs-body)">New games</h4><p class="t-sm">Time to research, fact-check and build the next one.</p></div><div><h4 class="t-3" style="font-size:var(--fs-body)">New lore</h4><p class="t-sm">More regions, champions and stories.</p></div></div>
+    </div>
+    <div class="stack"><h3 class="t-3">Share the Codex</h3><p class="t-body">Send it to your friends or your Discord server. Every new player helps.</p><div class="row"><button class="btn secondary" id="shareSite">Copy a message to share</button><span class="t-sm" id="shareMsg"></span></div></div>
+  </div></div>
+</section>
 
-  <section data-view="about" hidden>
-    <div class="band section">
-      <div class="inner prose">
-        <span class="label orn"><i></i>About</span>
-        <h2>What the Codex is</h2>
-        <p>Runeterra Codex is a fan project for people who love the stories behind League of Legends. It turns the lore into short games, so a new player can learn the world in an evening and a veteran can test what they know.</p>
-        <h3>Where the lore comes from</h3>
-        <p>Every summary is written in our own words. Facts are checked against Riot Games' official Universe site. When sources disagree, we follow the newest official version. If you spot a mistake, tell us and we'll fix it.</p>
-        <h3>Your data</h3>
-        <p>There are no accounts and no tracking. Your scores, streak and progress are saved only in this browser on this device.</p>
-        <div id="resetBox"><button class="btn ghost" id="resetBtn">Reset my progress</button></div>
-        <h3>Legal</h3>
-        <p>Runeterra Codex was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project. Champion art belongs to Riot Games and loads from Riot's own servers.</p>
-      </div>
-    </div>
-  </section>
+<!-- ABOUT -->
+<section data-view="about" hidden>
+  <div class="band section"><div class="wrap stack" style="gap:var(--s5);max-width:760px">
+    <div class="title" style="margin:0"><div class="stack"><span class="t-label">About</span><h2 class="t-1">About the Codex</h2></div></div>
+    <p class="t-body">Runeterra Codex is a fan project for people who love League of Legends. It turns champions and lore into short games, so a new player can learn the world in an evening and a veteran can test what they know.</p>
+    <h3 class="t-3">Where the content comes from</h3>
+    <p class="t-body">Champion names, titles, abilities and art come live from Riot's Data Dragon service, so they stay up to date with each patch. Lore summaries are written in our own words and checked against Riot's official Universe site.</p>
+    <h3 class="t-3">Your data</h3>
+    <p class="t-body">There are no accounts and no tracking. Your scores, streak and progress are saved only in this browser.</p>
+    <div id="resetBox"><button class="btn secondary" id="resetBtn">Reset my progress</button></div>
+    <h3 class="t-3">Legal</h3>
+    <p class="t-body">Runeterra Codex was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project.</p>
+  </div></div>
+</section>
 </main>
 
-<footer class="site band">
-  <div class="inner">
-    <div class="fl"><a href="#games">Games</a><a href="#daily">Daily Riddle</a><a href="#atlas">Regions</a><a href="#support">Support</a><a href="#about">About</a></div>
-    <small>Runeterra Codex is a fan project made in Jordan. It was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project. Years follow the Noxian calendar: BN is before Noxus, AN is after.</small>
-  </div>
-</footer>
-<div class="toast frame" id="toast" role="status" hidden></div>
+<footer class="site-foot band"><div class="wrap">
+  <nav aria-label="Footer"><a class="link" href="#games">Games</a><a class="link" href="#daily">Daily</a><a class="link" href="#atlas">Regions</a><a class="link" href="#support">Support</a><a class="link" href="#about">About</a></nav>
+  <small>Runeterra Codex is a fan project made in Jordan. It was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project.</small>
+</div></footer>
+<div class="toast panel" id="toast" role="status" hidden></div>
 
 <script>
-/* ------- Settings the owner fills in ------- */
-const SUPPORT={
-  kofi:"",   // e.g. "https://ko-fi.com/yourname"
-  paypal:""  // e.g. "https://paypal.me/yourname"
-};
+/* ===== Settings the owner fills in ===== */
+const SUPPORT={kofi:"",paypal:""}; // e.g. "https://ko-fi.com/yourname", "https://paypal.me/yourname"
 
-/* ------- Official champion art from Riot's Data Dragon image server ------- */
-const DD="https://ddragon.leagueoflegends.com/cdn/img/champion/";
+/* ===== Riot Data Dragon ===== */
+const DD="https://ddragon.leagueoflegends.com/cdn/";
+let VER="16.22.1";              // replaced by the newest patch on load
+let CHAMPS=[];                  // [{id,name,title,tags}]
+let ddReady=false,ddFailed=false;
+const splash=id=>`${DD}img/champion/splash/${id}_0.jpg`;
+const loading=id=>`${DD}img/champion/loading/${id}_0.jpg`;
+const square=id=>`${DD}${VER}/img/champion/${id}.png`;
+const bg=u=>`background-image:url('${u}'),linear-gradient(160deg,#0a323c,#010a13)`;
+
+/* Lore names to Data Dragon ids (works before the live list loads) */
 const ID={"Ashe":"Ashe","Sejuani":"Sejuani","Braum":"Braum","Lissandra":"Lissandra","Garen":"Garen","Lux":"Lux","Jarvan IV":"JarvanIV","Sylas":"Sylas","Darius":"Darius","Swain":"Swain","Katarina":"Katarina","LeBlanc":"Leblanc","Teemo":"Teemo","Tristana":"Tristana","Lulu":"Lulu","Veigar":"Veigar","Caitlyn":"Caitlyn","Jayce":"Jayce","Vi":"Vi","Heimerdinger":"Heimerdinger","Jinx":"Jinx","Viktor":"Viktor","Ekko":"Ekko","Warwick":"Warwick","Leona":"Leona","Diana":"Diana","Pantheon":"Pantheon","Taric":"Taric","Azir":"Azir","Nasus":"Nasus","Renekton":"Renekton","Sivir":"Sivir","Qiyana":"Qiyana","Malphite":"Malphite","Nidalee":"Nidalee","Zyra":"Zyra","Kai'Sa":"Kaisa","Cho'Gath":"Chogath","Kha'Zix":"Khazix","Vel'Koz":"Velkoz","Irelia":"Irelia","Yasuo":"Yasuo","Ahri":"Ahri","Karma":"Karma","Miss Fortune":"MissFortune","Gangplank":"Gangplank","Twisted Fate":"TwistedFate","Graves":"Graves","Thresh":"Thresh","Kalista":"Kalista","Viego":"Viego","Hecarim":"Hecarim","Draven":"Draven","Yone":"Yone","Xayah":"Xayah","Rakan":"Rakan","Kayle":"Kayle","Morgana":"Morgana","Shen":"Shen","Zed":"Zed","Xerath":"Xerath","Ryze":"Ryze"};
-const splash=n=>ID[n]?`${DD}splash/${ID[n]}_0.jpg`:"";
-const loading=n=>ID[n]?`${DD}loading/${ID[n]}_0.jpg`:"";
+CHAMPS=Object.entries(ID).map(([name,id])=>({id,name,title:"",tags:[]}));
+const idOf=name=>ID[name]||(CHAMPS.find(c=>c.name===name)||{}).id;
 
-/* ------- Lore data ------- */
+async function loadDD(){
+  try{
+    const v=await (await fetch("https://ddragon.leagueoflegends.com/api/versions.json")).json();VER=v[0];
+    const d=await (await fetch(`${DD}${VER}/data/en_US/champion.json`)).json();
+    CHAMPS=Object.values(d.data).map(c=>({id:c.id,name:c.name,title:c.title,tags:c.tags})).sort((a,b)=>a.name.localeCompare(b.name));
+    ddReady=true;
+  }catch(e){ddFailed=true}
+  document.querySelectorAll("[data-count]").forEach(n=>n.textContent=CHAMPS.length);
+  renderCount();
+}
+
+/* ===== Lore ===== */
 const REGIONS=[
  {id:"freljord",name:"Freljord",hue:"#8fc7e8",key:"Ashe",tag:"Frozen north of Valoran",text:"A harsh land where everyone is raised a warrior. Ashe's Avarosans hope to unite the tribes, Sejuani's Winter's Claw raid the borders of Demacia and Noxus, and Lissandra's Frostguard keep old secrets buried.",champs:["Ashe","Sejuani","Braum","Lissandra"],fact:"The sisters Avarosa, Serylda and Lissandra once ruled together. Their war ended at Lissandra's citadel, where she sealed her enemies in True Ice."},
  {id:"demacia",name:"Demacia",hue:"#e9d9a6",key:"Garen",tag:"Kingdom in western Valoran",text:"A lawful kingdom that prizes justice, honor and duty. It was founded by refugees from the Rune Wars as a haven from sorcery, and its walls are built of petricite, a white stone that dulls magic.",champs:["Garen","Lux","Jarvan IV","Sylas"],fact:"Demacia crowned its first king in 292 AN. Some now whisper that its golden age has passed."},
  {id:"noxus",name:"Noxus",hue:"#d2564a",key:"Darius",tag:"Empire in eastern Valoran",text:"A brutal, expanding empire that is also surprisingly open: anyone can rise if they are strong enough, whatever their birth. Mages are prized, not feared. The old noble houses still hold real power.",champs:["Darius","Swain","Katarina","LeBlanc"],fact:"In 989 AN Jericho Swain overthrew Boram Darkwill, ended the war in Ionia and created the Trifarix council."},
- {id:"bandle",name:"Bandle City",hue:"#b9d46e",key:"Tristana",tag:"Home of the yordles, in the spirit realm",text:"No one agrees where it is. Travelers who find the hidden paths describe brighter colors, golden light and food they never forget. No two tellers describe it the same way.",champs:["Teemo","Tristana","Lulu","Veigar"],fact:"Time runs strangely there. Mortals who come back often look much older, and many never return."},
+ {id:"bandle",name:"Bandle City",hue:"#b9d46e",key:"Tristana",tag:"Home of the yordles",text:"No one agrees where it is. Travelers who find the hidden paths describe brighter colors, golden light and food they never forget. No two tellers describe it the same way.",champs:["Teemo","Tristana","Lulu","Veigar"],fact:"Time runs strangely there. Mortals who come back often look much older, and many never return."},
  {id:"piltover",name:"Piltover",hue:"#e2a94e",key:"Caitlyn",tag:"The City of Progress",text:"A rich city of inventors and merchant clans that controls the trade route between Valoran and Shurima through its Sun Gates. Hextech, magic fused with machinery, was born here.",champs:["Caitlyn","Jayce","Vi","Heimerdinger"],fact:"Piltover sits on the cliffs directly above its sister city, Zaun."},
  {id:"zaun",name:"Zaun",hue:"#5fcf9a",key:"Ekko",tag:"The undercity beneath Piltover",text:"A crowded city under a haze of chemical smog. Its people build with chemtech, a cheaper and more dangerous rival to hextech, and chem-barons run the streets.",champs:["Jinx","Viktor","Ekko","Warwick"],fact:"In 772 AN, digging for the Sun Gates collapsed parts of old Zaun into the caverns below."},
  {id:"targon",name:"Targon",hue:"#9eabff",key:"Leona",tag:"The great mountain in the far west",text:"The tallest peak in Runeterra, home to the Rakkor tribes. Pilgrims are drawn to climb it without knowing why. The few who reach the top may become hosts to Aspects, celestial beings of great power.",champs:["Leona","Diana","Pantheon","Taric"],fact:"Many of Runeterra's creation legends begin on Targon."},
  {id:"shurima",name:"Shurima",hue:"#e8b64f",key:"Azir",tag:"The desert empire in the south",text:"Once the greatest empire in the world. Guided by the Aspects, its people used the Sun Disc to create the first Ascended, god-warriors who ruled for thousands of years.",champs:["Azir","Nasus","Renekton","Sivir"],fact:"Around 2000 BN, Azir's Ascension was ruined by treachery and the empire lost both its emperor and the Sun Disc."},
  {id:"ixtal",name:"Ixtal",hue:"#53b27e",key:"Qiyana",tag:"Hidden jungle nation",text:"Masters of elemental magic and one of the first nations to join the Shuriman empire. They survived the Void and the Darkin by pulling the jungle around them like a shield, and they have stayed hidden ever since.",champs:["Qiyana","Malphite","Nidalee","Zyra"],fact:"From their city of Ixaocan, the Ixtali see every other nation as upstarts and pretenders."},
  {id:"void",name:"The Void",hue:"#a874e0",key:"Kai'Sa",tag:"The nothingness beyond reality",text:"A hunger as old as the universe, waiting for its masters, the Watchers, to bring the final undoing. Mortals who touch it glimpse something that can break any mind.",champs:["Kai'Sa","Cho'Gath","Kha'Zix","Vel'Koz"],fact:"Around 2500 BN, Icathia unleashed the Void in a revolt against Shurima, and its own capital was destroyed at once."},
- {id:"ionia",name:"Ionia",hue:"#e891b2",key:"Irelia",tag:"The First Lands, an island archipelago",text:"A land of balance where the spirit realm is close, especially in the wild forests. Noxus invaded and was driven out only after years of war. Now Ionia is split over what comes next.",champs:["Irelia","Yasuo","Ahri","Karma"],fact:"The Kinkou and Shojin monks want peace and tradition. The Navori Brotherhood and Order of Shadow want to arm Ionia for revenge."},
+ {id:"ionia",name:"Ionia",hue:"#e891b2",key:"Irelia",tag:"The First Lands",text:"A land of balance where the spirit realm is close, especially in the wild forests. Noxus invaded and was driven out only after years of war. Now Ionia is split over what comes next.",champs:["Irelia","Yasuo","Ahri","Karma"],fact:"The Kinkou and Shojin monks want peace and tradition. The Navori Brotherhood and Order of Shadow want to arm Ionia for revenge."},
  {id:"bilge",name:"Bilgewater",hue:"#4fb6bb",key:"Miss Fortune",tag:"Port city of the Serpent Isles",text:"A lawless harbor of pirates, smugglers and sea-monster hunters. It grew from a refuge the island's Buhru people gave to shipwrecked fortune seekers around 787 AN.",champs:["Miss Fortune","Gangplank","Twisted Fate","Graves"],fact:"Miss Fortune blew up Gangplank's ship to avenge her parents, whom he killed when she was a child."},
  {id:"shadow",name:"Shadow Isles",hue:"#6fd6bf",key:"Thresh",tag:"Once called the Blessed Isles",text:"A noble land of learning until a magical accident beneath the city of Helia tore the border between the living and spirit realms. The Black Mist now covers the isles, and it reaches farther each year.",champs:["Thresh","Kalista","Viego","Hecarim"],fact:"The Ruination began when a mad king, Viego, carried his dead queen to the hidden Waters of Life. The warden Thresh showed him the way."}
 ];
-
 const QUIZ=[
  {q:"What disaster turned the Blessed Isles into the Shadow Isles?",a:"The Ruination",o:["The Darkin War","The Ruination","The Void Rising","The Rune Wars"],e:"A magical accident in the vaults beneath Helia tore the border between the realms and released the Black Mist."},
  {q:"Which city lies directly beneath Piltover?",a:"Zaun",o:["Bilgewater","Zaun","Noxus Prime","Ixaocan"],e:"Zaun is Piltover's undercity, built in the canyon below the cliffs."},
@@ -480,28 +483,6 @@ const QUIZ=[
  {q:"Where do the yordles come from?",a:"Bandle City",o:["Bandle City","Ixtal","Targon","Ionia"],e:"Bandle City lies deep in the spirit realm."},
  {q:"Which hero rallied Ionians against Noxus at the Placidium?",a:"Irelia",o:["Karma","Yasuo","Irelia","Shen"],e:"After the Battle of the Placidium, Ionian resistance became far more organized."}
 ];
-
-const AGES=[
- {y:-9000,t:"War against the sky-giants",d:"In the First Lands, mortals win only with the help of the Vastayashai'rei."},
- {y:-8000,t:"War of the Three Sisters",d:"Avarosa, Serylda and Lissandra turn on each other in the north."},
- {y:-6000,t:"The westward migration",d:"Settlers from the far east reach Shurima and Valoran."},
- {y:-5000,t:"The first Ascended",d:"Shurima uses the Sun Disc at Nerimazeth to create god-warriors."},
- {y:-2500,t:"Icathia unleashes the Void",d:"A revolt against Shurima destroys the rebels' own capital."},
- {y:-2000,t:"Azir's failed Ascension",d:"The last emperor and the Sun Disc are lost."},
- {y:-550,t:"The Great Darkin War",d:"The Aspects seal the corrupted Ascended inside their weapons."},
- {y:-400,t:"Reign of the Iron Revenant",d:"Sahn-Uzal returns as Mordekaiser and rules for almost three centuries."},
- {y:-25,t:"The Ruination",d:"The Blessed Isles become the Shadow Isles."},
- {y:-13,t:"The Rune Wars begin",d:"Ryze and Tyrus see the first attack outside Khom."},
- {y:0,t:"Noxus endures",d:"The Noxii leave the Immortal Bastion as one people."},
- {y:292,t:"The Demacian crown",d:"The refuge from magic crowns its first king."},
- {y:349,t:"Noxus becomes an empire",d:"The noble houses elect a Grand General."},
- {y:772,t:"Tragedy on the River Pilt",d:"Digging the Sun Gates collapses parts of old Zaun."},
- {y:787,t:"Bilgewater takes root",d:"The Buhru give shelter to shipwrecked fortune seekers."},
- {y:984,t:"The invasion of Ionia",d:"Darkwill sends the warhosts into the First Lands."},
- {y:989,t:"Swain seizes Noxus",d:"Darkwill is overthrown and the Trifarix is formed."}
-];
-const yearLabel=y=>y<0?`${-y} BN`:`${y} AN`;
-
 const CLUES=[
  {a:"Garen",c:["I fight in my homeland's elite military order.","My family name is Crownguard.","My little sister hides a gift my kingdom forbids.","I spin into battle shouting for Demacia."]},
  {a:"Thresh",c:["I collect what others leave behind.","I once guarded secret vaults of dangerous relics beneath Helia.","The Black Mist is my home.","My lantern holds the souls I have taken."]},
@@ -516,344 +497,324 @@ const CLUES=[
  {a:"Ryze",c:["I have lived far longer than any mortal should.","My master was named Tyrus.","I saw the first strike of a war that nearly ended the world.","I hunt the World Runes so no one else can use them."]},
  {a:"Teemo",c:["I am a scout, and very proud of it.","I come from a city few humans find.","My weapon is a blowgun.","I am a yordle who loves the outdoors."]}
 ];
-
 const PAIRS=[
- ["Garen","Demacia","Lux","Demacia","Brother and sister of House Crownguard"],
- ["Darius","Noxus","Draven","Noxus","Brothers who rose together in Noxus"],
- ["Nasus","Shurima","Renekton","Shurima","Ascended brothers of ancient Shurima"],
- ["Yasuo","Ionia","Yone","Ionia","Brothers parted by Yasuo's blade"],
- ["Xayah","Ionia","Rakan","Ionia","Vastayan partners fighting for their people"],
- ["Kayle","Demacia","Morgana","Demacia","Twin sisters with opposite ideals"],
- ["Leona","Targon","Diana","Targon","Chosen of the Sun and the Moon"],
- ["Shen","Ionia","Zed","Ionia","Trained side by side, now sworn enemies"],
- ["Twisted Fate","Bilgewater","Graves","Bilgewater","Old partners in crime"],
- ["Azir","Shurima","Xerath","Shurima","The emperor and the slave who betrayed him"],
- ["Ashe","Freljord","Sejuani","Freljord","Rival leaders fighting for the Freljord"]
+ ["Garen","Lux","Brother and sister of House Crownguard"],["Darius","Draven","Brothers who rose together in Noxus"],
+ ["Nasus","Renekton","Ascended brothers of ancient Shurima"],["Yasuo","Yone","Brothers parted by Yasuo's blade"],
+ ["Xayah","Rakan","Vastayan partners fighting for their people"],["Kayle","Morgana","Twin sisters with opposite ideals"],
+ ["Leona","Diana","Chosen of the Sun and the Moon"],["Shen","Zed","Trained side by side, now sworn enemies"],
+ ["Twisted Fate","Graves","Old partners in crime"],["Azir","Xerath","The emperor and the slave who betrayed him"],
+ ["Ashe","Sejuani","Rival leaders fighting for the Freljord"]
 ];
 
+/* ===== Games ===== */
 const GAMES=[
- {id:"daily",name:"Daily Riddle",art:"Ryze",len:"2 min",diff:"All levels",blurb:"One champion a day, the same riddle for every player. Four clues, four guesses. Keep your streak alive."},
- {id:"trial",name:"Lore Trial",art:"Azir",len:"4 min",diff:"Medium",blurb:"Eight questions on the history of Runeterra. Every answer tells you the story behind it."},
- {id:"origins",name:"Homelands",art:"Ashe",len:"3 min",diff:"Easy",blurb:"Ten champions. Name the region each one calls home."},
- {id:"whispers",name:"Whispers",art:"Ahri",len:"5 min",diff:"Medium",blurb:"Guess the champion from what they say about themselves. Use fewer clues to score more."},
- {id:"kinship",name:"Kinship",art:"Xayah",len:"3 min",diff:"Easy",blurb:"Flip the cards and match siblings, rivals and old partners. Fewer moves, higher score."},
- {id:"ages",name:"The Ages",art:"Nasus",len:"4 min",diff:"Hard",blurb:"Put five events from Runeterra's history in order, oldest first. Three rounds."},
- {id:"blitz",name:"Blitz",art:"Ekko",len:"1 min",diff:"Hard",blurb:"Answer as many questions as you can before sixty seconds run out."}
+ {id:"daily",name:"Daily Riddle",art:"Ryze",kind:"Lore",len:"2 min",blurb:"Four clues, one champion, the same riddle for every player today."},
+ {id:"splash",name:"Splash Zoom",art:"Jinx",kind:"Art",len:"3 min",blurb:"Name the champion from a close-up of their splash art. Every miss zooms out."},
+ {id:"ability",name:"Ability Check",art:"Ezreal",kind:"Kit",len:"3 min",blurb:"See an ability icon, pick its champion, then name the key it sits on."},
+ {id:"titles",name:"Title Match",art:"Lux",kind:"Champions",len:"2 min",blurb:"Every champion has a title. Match ten titles to the right champion."},
+ {id:"origins",name:"Homelands",art:"Ashe",kind:"Regions",len:"2 min",blurb:"Ten champions. Name the region each one calls home."},
+ {id:"trial",name:"Lore Trial",art:"Azir",kind:"Lore",len:"4 min",blurb:"Eight questions on the history of Runeterra, each with the story behind it."},
+ {id:"kinship",name:"Kinship",art:"Xayah",kind:"Memory",len:"3 min",blurb:"Flip the cards and match siblings, rivals and old partners."},
+ {id:"blitz",name:"Blitz",art:"Ekko",kind:"Mixed",len:"1 min",blurb:"Titles, homelands and lore. Answer as many as you can in sixty seconds."}
 ];
-const HERO=["Azir","Ashe","Thresh","Irelia","Darius"];
+const HERO=["Azir","Ashe","Thresh","Irelia","Jinx"];
 
-/* ------- Storage (this browser only) ------- */
+/* ===== Storage ===== */
 let LS={};try{LS=JSON.parse(localStorage.getItem("codex")||"{}")||{}}catch(e){LS={}}
 const save=()=>{try{localStorage.setItem("codex",JSON.stringify(LS))}catch(e){}};
 function initLS(){LS.visited=LS.visited||[];LS.best=LS.best||{};LS.daily=LS.daily||{};LS.xp=LS.xp||0;LS.played=LS.played||0;LS.streak=LS.streak||0;LS.lastWin=LS.lastWin??-99}
 initLS();
 
-/* ------- Helpers ------- */
+/* ===== Helpers ===== */
 const $=s=>document.querySelector(s);
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const norm=s=>String(s).toLowerCase().replace(/[^a-z]/g,"");
-const regionByName=n=>REGIONS.find(r=>r.name===n);
-const HOME={};REGIONS.forEach(r=>r.champs.forEach(c=>HOME[c]=r));PAIRS.forEach(p=>{HOME[p[0]]=HOME[p[0]]||regionByName(p[1]);HOME[p[2]]=HOME[p[2]]||regionByName(p[3])});
-const hueOf=n=>(HOME[n]||{hue:"#c8a96a"}).hue;
-/* Background: Riot art on top, a region-coloured gradient underneath in case the image cannot load. */
-function artBg(name,kind="splash",hue){
-  const u=kind==="loading"?loading(name):splash(name),h=hue||hueOf(name);
-  return `background-image:${u?`url('${u}'),`:""}radial-gradient(ellipse at 60% 25%,${h}55,transparent 62%),linear-gradient(160deg,#132030,#05080d)`;
-}
-const RANKS=[[0,"Wandering Novice"],[60,"Archive Initiate"],[180,"Lorekeeper"],[400,"Keeper of the Great Library"],[800,"Voice of the Codex"]];
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const regionOf=name=>REGIONS.find(r=>r.champs.includes(name));
+const RANKS=[[0,"Wandering Novice"],[60,"Archive Initiate"],[180,"Lorekeeper"],[400,"Keeper of the Library"],[800,"Voice of the Codex"]];
 const rankIdx=xp=>RANKS.filter(r=>xp>=r[0]).length-1;
-function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,3200)}
-function addXP(n){const b=rankIdx(LS.xp);LS.xp+=n;save();updatePill();const a=rankIdx(LS.xp);if(a>b)toast(`New rank: ${RANKS[a][1]}`)}
-function updatePill(){$("#pillRank").textContent=RANKS[rankIdx(LS.xp)][1];$("#pillXp").textContent=`${LS.xp} XP`}
-async function copyText(text,el){try{await navigator.clipboard.writeText(text);el.textContent="Copied"}catch(e){el.textContent="Copy is blocked here. Select the text and copy it yourself."}}
-const portrait=n=>`<div class="portrait" style="${artBg(n,"loading")}"><span class="nm">${esc(n)}</span></div>`;
+function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,3000)}
+function addXP(n){const b=rankIdx(LS.xp);LS.xp+=n;save();updateProfile();const a=rankIdx(LS.xp);if(a>b)toast(`Rank up: ${RANKS[a][1]}`)}
+function updateProfile(){const i=rankIdx(LS.xp);$("#pLvl").textContent=i+1;$("#pRank").textContent=RANKS[i][1];$("#pXp").textContent=`${LS.xp} XP`}
+async function copyText(t,el){try{await navigator.clipboard.writeText(t);el.textContent="Copied"}catch(e){el.textContent="Copy is blocked. Select the text and copy it yourself."}}
+const icon=(id,cls="")=>`<span class="icon art ${cls}" style="${bg(square(id))}"></span>`;
+function renderCount(){const n=$("#champCount");if(n)n.innerHTML=`<span class="tag gold"><b class="num" style="color:var(--gold-1)">${CHAMPS.length}</b>&nbsp;champions</span><span class="tag gold">8 games</span><span class="tag gold">13 regions</span><span class="tag">Patch ${esc(VER)}</span>`}
 
-/* ------- Daily riddle ------- */
+/* ===== Champion picker (search with icons) ===== */
+function mountPicker(root,onPick,placeholder="Search a champion"){
+  root.innerHTML=`<div class="picker"><input class="field" id="pk" placeholder="${placeholder}" autocomplete="off" aria-label="${placeholder}"><ul class="pk-list" id="pkList" hidden></ul></div><p class="formmsg" id="pkMsg"></p>`;
+  const inp=$("#pk"),list=$("#pkList");let matches=[];
+  const draw=()=>{const q=norm(inp.value);if(!q){list.hidden=true;matches=[];return}
+    matches=CHAMPS.filter(c=>norm(c.name).startsWith(q)).concat(CHAMPS.filter(c=>!norm(c.name).startsWith(q)&&norm(c.name).includes(q))).slice(0,8);
+    list.innerHTML=matches.map((c,i)=>`<li><button type="button" data-i="${i}" class="${i===0?"hl":""}">${icon(c.id,"sm")}${esc(c.name)}</button></li>`).join("")||`<li class="t-sm" style="padding:8px 12px">No champion by that name</li>`;
+    list.hidden=false;
+    list.querySelectorAll("button").forEach(b=>b.onclick=()=>choose(matches[+b.dataset.i]));};
+  const choose=c=>{if(!c)return;inp.value="";list.hidden=true;$("#pkMsg").textContent="";onPick(c)};
+  inp.oninput=draw;
+  inp.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();if(matches[0])choose(matches[0]);else $("#pkMsg").textContent="Type a champion's name, then pick from the list."}if(e.key==="Escape")list.hidden=true};
+  inp.focus({preventScroll:true});
+}
+
+/* ===== Daily ===== */
 const EPOCH=Date.UTC(2026,10,1);
-function today(){const d=new Date();return Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())}
+const today=()=>{const d=new Date();return Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())};
 const dayNumber=()=>Math.floor((today()-EPOCH)/864e5)+1;
-const dailyPick=()=>CLUES[((dayNumber()*7)%CLUES.length+CLUES.length)%CLUES.length];
+const dailyPick=()=>CLUES[(dayNumber()*7)%CLUES.length];
 const dailyRec=()=>LS.daily[dayNumber()]||{guesses:[],done:false,won:false};
 const liveStreak=()=>LS.lastWin>=dayNumber()-1?LS.streak:0;
-const ALL_NAMES=Object.keys(ID).sort();
-
-function renderHomeRiddle(){
-  const it=dailyPick(),rec=dailyRec(),n=dayNumber();
-  const pips=[0,1,2,3].map(k=>{const g=rec.guesses[k];if(g===undefined)return"<i></i>";return norm(g)===norm(it.a)?'<i class="win"></i>':'<i class="miss"></i>'}).join("");
-  $("#homeRiddle").innerHTML=`<div class="top"><span class="label">Daily Riddle · No. ${n}</span><span class="small">Streak ${liveStreak()}</span></div>
-   <span class="small">Who is speaking?</span>
-   <blockquote>“${esc(it.c[0])}”</blockquote>
-   <div class="pips" aria-label="Guesses used">${pips}</div>
-   ${rec.done?`<p class="muted">${rec.won?`Solved with ${rec.guesses.length} of 4 clues. A new riddle starts at midnight.`:`Today's answer was ${esc(it.a)}. A new riddle starts at midnight.`}</p><a class="btn ghost" href="#daily">See today's result</a>`
-     :`<a class="btn" href="#daily">Answer the riddle</a>`}`;
+function renderHomeDaily(){
+  const it=dailyPick(),rec=dailyRec();
+  const pips=[0,1,2,3].map(k=>{const g=rec.guesses[k];return g===undefined?"<i></i>":norm(g)===norm(it.a)?'<i class="win"></i>':'<i class="miss"></i>'}).join("");
+  $("#homeDaily").innerHTML=`<div class="between"><span class="t-label">Daily Riddle · No. ${dayNumber()}</span><span class="tag">Streak <b class="num" style="color:var(--gold-1);margin-left:4px">${liveStreak()}</b></span></div>
+   <p class="t-sm">Who is speaking?</p><p class="quote">“${esc(it.c[0])}”</p><div class="pips">${pips}</div>
+   ${rec.done?`<p class="t-sm">${rec.won?`Solved with ${rec.guesses.length} of 4 clues.`:`Today's answer was ${esc(it.a)}.`} A new riddle starts at midnight.</p><a class="btn secondary" href="#daily">See today's result</a>`:`<a class="btn" href="#daily">Answer the riddle</a>`}`;
 }
 
-/* ------- Hero slideshow ------- */
-let slideIdx=0;
+/* ===== Routing ===== */
+const VIEWS=["home","games","atlas","support","about"],GAME_IDS=GAMES.map(g=>g.id);
+let current=null,st={},timers=[],pendingRegion=null,slideIdx=0;
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
-function buildSlides(){
-  if($("#slides").children.length)return;
-  $("#slides").innerHTML=HERO.map((n,i)=>`<div class="s${i===0?" on":""}" style="${artBg(n,"splash")}"></div>`).join("");
-  $("#credit").textContent=HERO[0];
-}
-function nextSlide(){
-  if($('[data-view="home"]').hidden)return;
-  const s=$("#slides").children;s[slideIdx].classList.remove("on");slideIdx=(slideIdx+1)%s.length;s[slideIdx].classList.add("on");$("#credit").textContent=HERO[slideIdx];
-}
-
-/* ------- Routing ------- */
-const VIEWS=["home","games","atlas","support","about"];
-const GAME_IDS=GAMES.map(g=>g.id);
-let current=null,st={},timers=[],pendingRegion=null;
 function cleanup(){timers.forEach(t=>{clearTimeout(t);clearInterval(t)});timers=[]}
 function route(){
   cleanup();
-  let h=location.hash.slice(1)||"home";
-  if(!VIEWS.includes(h)&&!GAME_IDS.includes(h))h="home";
+  let h=location.hash.slice(1)||"home";if(!VIEWS.includes(h)&&!GAME_IDS.includes(h))h="home";
   const isGame=GAME_IDS.includes(h);
   document.querySelectorAll("[data-view]").forEach(v=>v.hidden=v.dataset.view!==(isGame?"game":h));
-  const navKey=h==="daily"?"daily":isGame?"games":h;
-  document.querySelectorAll("[data-nav]").forEach(a=>{if(a.dataset.nav===navKey)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
-  if(!isGame)document.title="Runeterra Codex";
-  if(h==="home"){buildSlides();renderHomeRiddle();renderHomeGames();renderHomeRegions()}
+  const nk=h==="daily"?"daily":isGame?"games":h;
+  document.querySelectorAll("[data-nav]").forEach(a=>a.dataset.nav===nk?a.setAttribute("aria-current","page"):a.removeAttribute("aria-current"));
+  document.title=isGame?`${GAMES.find(g=>g.id===h).name} · Runeterra Codex`:"Runeterra Codex";
+  if(h==="home")renderHome();
   if(h==="games")renderHub();
   if(h==="atlas")renderAtlas(pendingRegion||"demacia");
   if(h==="support")renderSupport();
   if(isGame)openGame(h);
   window.scrollTo(0,0);
 }
-window.addEventListener("hashchange",route);
+addEventListener("hashchange",route);
 
-/* ------- Home + hub ------- */
-function bestLabel(id){const b=LS.best[id];if(id==="daily")return liveStreak()?`Streak <b>${liveStreak()}</b>`:"New riddle every day";if(b==null)return"Not played yet";return id==="blitz"?`Best <b>${b}</b>`:`Best <b>${b}%</b>`}
-function tile(g,wide){return `<a class="tile${wide?" wide":""}" href="#${g.id}"><div class="art" style="${artBg(g.art)}"></div><div class="c"><span class="meta"><span>${g.len}</span><span>${g.diff}</span><span>${bestLabel(g.id)}</span></span><h3>${esc(g.name)}</h3><p>${esc(g.blurb)}</p></div></a>`}
-function renderHomeGames(){$("#homeGames").innerHTML=["trial","whispers","kinship","blitz"].map(id=>tile(GAMES.find(g=>g.id===id))).join("")}
-function renderHomeRegions(){
-  $("#homeRegions").innerHTML=REGIONS.map(r=>`<button class="rtile" data-r="${r.id}"><div class="art" style="${artBg(r.key,"loading",r.hue)}"></div><div class="c"><span class="hue" style="background:${r.hue}"></span><strong>${esc(r.name)}</strong><small>${esc(r.tag)}</small></div></button>`).join("");
-  document.querySelectorAll(".rtile").forEach(b=>b.onclick=()=>{pendingRegion=b.dataset.r;location.hash="atlas"});
-  $("#ctaArt").setAttribute("style",artBg("Taric"));
+/* ===== Home + hub ===== */
+const bestLabel=id=>{if(id==="daily")return liveStreak()?`Streak <b>${liveStreak()}</b>`:"New every day";const b=LS.best[id];return b==null?"Not played":id==="blitz"?`Best <b>${b}</b>`:`Best <b>${b}%</b>`};
+const gameCard=g=>`<a class="card" href="#${g.id}"><div class="pic art" style="${bg(splash(g.art))}"><span class="tag gold">${g.kind}</span></div><div class="body"><h3 class="t-3">${esc(g.name)}</h3><p>${esc(g.blurb)}</p><div class="foot"><span>${g.len}</span><span>${bestLabel(g.id)}</span></div></div></a>`;
+function renderHome(){
+  const s=$("#slides");
+  if(!s.children.length){s.innerHTML=HERO.map((n,i)=>`<div class="slide art${i?"":" on"}" style="${bg(splash(idOf(n)))}"></div>`).join("");$("#credit").textContent=HERO[0]}
+  renderCount();renderHomeDaily();
+  $("#homeGames").innerHTML=["splash","ability","titles","trial"].map(id=>gameCard(GAMES.find(g=>g.id===id))).join("");
+  $("#homeRegions").innerHTML=REGIONS.map(r=>`<button class="card region" data-r="${r.id}"><div class="pic art" style="${bg(loading(idOf(r.key)))}"></div><div class="body"><h3 class="t-3" style="display:flex;align-items:center;gap:8px"><i class="swatch" style="background:${r.hue}"></i>${esc(r.name)}</h3><p>${esc(r.tag)}</p></div></button>`).join("");
+  document.querySelectorAll("#homeRegions .card").forEach(b=>b.onclick=()=>{pendingRegion=b.dataset.r;location.hash="atlas"});
 }
+function nextSlide(){if($('[data-view="home"]').hidden)return;const s=$("#slides").children;if(!s.length)return;s[slideIdx].classList.remove("on");slideIdx=(slideIdx+1)%s.length;s[slideIdx].classList.add("on");$("#credit").textContent=HERO[slideIdx]}
 function renderHub(){
-  const i=rankIdx(LS.xp),next=RANKS[i+1],lo=RANKS[i][0],pct=next?Math.round((LS.xp-lo)/(next[0]-lo)*100):100;
-  $("#record").innerHTML=`<div class="lead"><span class="label">Rank</span><span class="rankname">${RANKS[i][1]}</span><div class="bar"><i style="width:${pct}%"></i></div><span class="small">${next?`${next[0]-LS.xp} XP to ${next[1]}`:"Highest rank reached"}</span></div>
-   <div><span class="label">Experience</span><span class="v">${LS.xp}</span></div>
-   <div><span class="label">Daily streak</span><span class="v">${liveStreak()}</span></div>
-   <div><span class="label">Regions read</span><span class="v">${LS.visited.length}<span class="muted" style="font-size:1.1rem"> / 13</span></span></div>`;
-  $("#allGames").innerHTML=GAMES.map((g,k)=>tile(g,k===0)).join("");
+  const i=rankIdx(LS.xp),nx=RANKS[i+1],lo=RANKS[i][0],pct=nx?Math.round((LS.xp-lo)/(nx[0]-lo)*100):100;
+  $("#record").innerHTML=`<div><span class="t-label">Level ${i+1}</span><span class="t-2">${RANKS[i][1]}</span><div class="meter"><i style="width:${pct}%"></i></div><span class="t-sm">${nx?`${nx[0]-LS.xp} XP to ${nx[1]}`:"Highest rank reached"}</span></div>
+   <div><span class="t-label">XP</span><span class="v">${LS.xp}</span></div><div><span class="t-label">Streak</span><span class="v">${liveStreak()}</span></div><div><span class="t-label">Regions</span><span class="v">${LS.visited.length}<span class="t-sm"> / 13</span></span></div>`;
+  $("#allGames").innerHTML=GAMES.map(gameCard).join("");
 }
 
-/* ------- Games ------- */
+/* ===== Game engine ===== */
 const game=$("#game");
-function openGame(id){
-  const g=GAMES.find(x=>x.id===id);current=id;
-  $("#stageTitle").textContent=g.name;$("#stageBlurb").textContent=g.blurb;$("#stageArt").setAttribute("style",artBg(g.art));
-  document.title=`${g.name} · Runeterra Codex`;
-  start(id);
-}
+function openGame(id){const g=GAMES.find(x=>x.id===id);$("#stageTitle").textContent=g.name;$("#stageBlurb").textContent=g.blurb;$("#stageArt").setAttribute("style",bg(splash(g.art)));start(id)}
 function start(m){
   cleanup();current=m;
-  if(m==="trial")st={list:shuffle(QUIZ).slice(0,8),i:0,score:0,streak:0};
-  if(m==="ages")st={round:0,rounds:3,score:0};
-  if(m==="whispers")st={list:shuffle(CLUES).slice(0,6),i:0,score:0,shown:1};
-  if(m==="origins"){const pool=REGIONS.flatMap(r=>r.champs.map(c=>({c,r:r.name})));st={list:shuffle(pool).slice(0,10),i:0,score:0}}
-  if(m==="kinship"||m==="daily")st={};
-  if(m==="blitz")st={phase:"ready"};
+  const pool=REGIONS.flatMap(r=>r.champs.map(c=>({c,r:r.name})));
+  st={trial:{list:shuffle(QUIZ).slice(0,8),i:0,score:0},origins:{list:shuffle(pool).slice(0,10),i:0,score:0},splash:{round:0,rounds:5,score:0},ability:{round:0,rounds:8,score:0},titles:{round:0,rounds:10,score:0},kinship:{},blitz:{phase:"ready"},daily:{}}[m];
   render();
 }
-function render(){({trial:renderQuiz,ages:renderAges,whispers:renderClue,origins:renderOrigins,kinship:renderKinship,blitz:renderBlitz,daily:renderDaily})[current]()}
-const hud=parts=>`<div class="hud">${parts.map(([k,v])=>`<span>${k} <b>${v}</b></span>`).join("")}</div>`;
-const verdict=p=>p>=90?"Flawless":p>=70?"Well read":p>=40?"Getting there":"Back to the archives";
-function nextGame(){const list=GAMES.filter(g=>g.id!=="daily"),i=list.findIndex(g=>g.id===current);return list[(i+1)%list.length]}
+function render(){({daily:rDaily,splash:rSplash,ability:rAbility,titles:rTitles,origins:rOrigins,trial:rTrial,kinship:rKinship,blitz:rBlitz})[current]()}
+const hud=p=>`<div class="hud">${p.map(([k,v])=>`<span class="tag">${k}<b class="num">${v}</b></span>`).join("")}</div>`;
+const verdict=p=>p>=90?"Flawless":p>=70?"Well played":p>=40?"Getting there":"Keep practising";
+function nextGame(){const l=GAMES.filter(g=>g.id!=="daily"),i=l.findIndex(g=>g.id===current);return l[(i+1)%l.length]}
 function finish(score,max,note=""){
-  const pct=max?Math.round(score/max*100):0,metric=current==="blitz"?score:pct,prev=LS.best[current];
-  const record=prev==null||metric>prev;if(record)LS.best[current]=metric;LS.played++;save();
-  const xp=current==="blitz"?5+score*2:5+Math.round(pct/10)*2;addXP(xp);
-  const nx=nextGame();
-  game.innerHTML=`<div class="result"><span class="label">Trial complete · +${xp} XP</span>
-   <div class="row" style="gap:28px;align-items:baseline"><span class="big">${score}<span style="color:var(--muted);font-size:.5em"> / ${max}</span></span><span class="verdict">${verdict(pct)}</span></div>
-   ${note?`<p class="muted">${note}</p>`:""}
-   <p class="muted">${record&&prev!=null?"New personal best. ":""}Your best here: ${current==="blitz"?`${LS.best[current]} correct`:`${LS.best[current]}%`}.</p>
-   <div class="row"><button class="btn" id="again">Play again</button><a class="btn ghost" href="#${nx.id}">Next: ${esc(nx.name)}</a></div></div>`;
+  const pct=max?Math.round(score/max*100):0,metric=current==="blitz"?score:pct,prev=LS.best[current],rec=prev==null||metric>prev;
+  if(rec)LS.best[current]=metric;LS.played++;save();
+  const xp=current==="blitz"?5+score*2:5+Math.round(pct/10)*2;addXP(xp);const nx=nextGame();
+  game.innerHTML=`<div class="result"><span class="t-label">Game complete · +${xp} XP</span><div class="row" style="gap:var(--s5);align-items:baseline"><span class="score">${score}<small> / ${max}</small></span><h3 class="t-2">${verdict(pct)}</h3></div>
+   ${note?`<p class="t-body">${note}</p>`:""}<p class="t-sm">${rec&&prev!=null?"New personal best. ":""}Your best: ${current==="blitz"?`${LS.best[current]} correct`:`${LS.best[current]}%`}</p>
+   <div class="row"><button class="btn" id="again">Play again</button><a class="btn secondary" href="#${nx.id}">Next: ${esc(nx.name)}</a></div></div>`;
   $("#again").onclick=()=>start(current);$("#again").focus();
 }
-function lockOpts(answer,b){game.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(x.dataset.o===answer)x.classList.add("right")});if(b.dataset.o!==answer)b.classList.add("wrong");return b.dataset.o===answer}
-const optsHTML=list=>`<div class="opts">${list.map(o=>`<button class="opt" data-o="${esc(o)}">${esc(o)}</button>`).join("")}</div>`;
+function lock(answer,b,sel=".option,.choice"){game.querySelectorAll(sel).forEach(x=>{x.disabled=true;if(x.dataset.o===answer)x.classList.add("right")});if(b.dataset.o!==answer)b.classList.add("wrong");return b.dataset.o===answer}
+const textOptions=l=>`<div class="options">${l.map(o=>`<button class="option" data-o="${esc(o)}">${esc(o)}</button>`).join("")}</div>`;
+const champChoices=l=>`<div class="choices">${l.map(c=>`<button class="choice" data-o="${esc(c.id)}">${icon(c.id)}<span>${esc(c.name)}</span></button>`).join("")}</div>`;
+const nextBtn=(last,label)=>`<button class="btn" id="go">${last?"See your result":label}</button>`;
+function needDD(){if(ddReady)return false;game.innerHTML=ddFailed?`<p class="banner-msg">This game needs Riot's champion data, and we couldn't reach their servers. Check your connection, then reload the page.</p>`:`<p class="t-body">Loading champion data from Riot…</p>`;if(!ddFailed)timers.push(setTimeout(render,400));return true}
+const randomChamps=(n,exclude=[])=>shuffle(CHAMPS.filter(c=>!exclude.includes(c.id))).slice(0,n);
+function similar(c,n){const same=CHAMPS.filter(x=>x.id!==c.id&&x.tags[0]===c.tags[0]);return shuffle(same.length>=n?same:CHAMPS.filter(x=>x.id!==c.id)).slice(0,n)}
 
-function renderQuiz(){
+/* Splash Zoom */
+const ZOOM=[3.6,2.8,2.1,1.5,1];
+function rSplash(){
+  if(needDD())return;
+  if(st.round>=st.rounds)return finish(st.score,st.rounds*5,"You score 5 points for a first-look answer, down to 1 at full view.");
+  if(!st.c){st.c=pick(CHAMPS);st.z=0;st.px=30+Math.random()*40;st.py=15+Math.random()*40;st.misses=[];st.done=false}
+  const z=ZOOM[Math.min(st.z,4)];
+  game.innerHTML=hud([["Round",`${st.round+1}/${st.rounds}`],["Score",st.score],["Worth",`${5-st.z} pts`]])+
+   `<div class="zoom" style="background-image:url('${splash(st.c.id)}');background-size:${z*100}% auto;background-position:${st.done?"center 20%":`${st.px}% ${st.py}%`}" role="img" aria-label="Close-up of a champion's splash art"></div>
+   <div class="zoomsteps">${ZOOM.map((_,k)=>`<i class="${k<=st.z?"on":""}"></i>`).join("")}</div>
+   ${st.misses.length?`<div class="row">${st.misses.map(m=>`<span class="tag bad">${esc(m)}</span>`).join("")}</div>`:""}
+   <div id="area"></div>`;
+  if(st.done){
+    if(!st.won)$(".zoom").style.backgroundSize="100% auto";
+    $("#area").innerHTML=`<div class="between">${st.won?`<p class="note">Correct. It's <b style="color:var(--gold-1)">${esc(st.c.name)}</b>, ${esc(st.c.title)}. +${st.got} points.</p>`:`<p class="note">It was <b style="color:var(--gold-1)">${esc(st.c.name)}</b>, ${esc(st.c.title)}.</p>`}${nextBtn(st.round+1>=st.rounds,"Next splash")}</div>`;
+    $("#go").onclick=()=>{st.round++;st.c=null;render()};$("#go").focus();return;
+  }
+  $("#area").innerHTML=`<div class="row" style="align-items:flex-start"><div id="pkRoot" style="flex:1;min-width:240px"></div><button class="btn secondary" id="zo">Zoom out</button></div>`;
+  const miss=label=>{st.misses.push(label);st.z++;if(st.z>4){st.done=true;st.won=false;st.z=4}render()};
+  $("#zo").onclick=()=>miss("Skipped");
+  mountPicker($("#pkRoot"),c=>{if(c.id===st.c.id){st.got=5-st.z;st.score+=st.got;st.done=true;st.won=true;render()}else if(st.misses.includes(c.name)){$("#pkMsg").textContent="You already tried that one."}else miss(c.name)},"Who is this?");
+}
+
+/* Ability Check */
+const KEYS=["Q","W","E","R"];
+async function rAbility(){
+  if(needDD())return;
+  if(st.round>=st.rounds)return finish(st.score,st.rounds*2,"One point for the right champion, one more for the right key.");
+  if(!st.q){
+    game.innerHTML=hud([["Round",`${st.round+1}/${st.rounds}`],["Score",st.score]])+`<p class="t-body">Loading an ability…</p>`;
+    const c=pick(CHAMPS);
+    try{const d=await (await fetch(`${DD}${VER}/data/en_US/champion/${c.id}.json`)).json();const full=d.data[c.id];
+      const k=Math.floor(Math.random()*5);
+      st.q=k<4?{c,key:KEYS[k],name:full.spells[k].name,img:`${DD}${VER}/img/spell/${full.spells[k].image.full}`}:{c,key:"Passive",name:full.passive.name,img:`${DD}${VER}/img/passive/${full.passive.image.full}`};
+      st.opts=shuffle([c,...similar(c,3)]);st.phase="champ";
+    }catch(e){game.innerHTML=`<p class="banner-msg">We couldn't load this ability from Riot's servers.</p><div class="row"><button class="btn" id="go">Try another</button></div>`;$("#go").onclick=()=>render();return}
+    if(current!=="ability")return;
+  }
+  const q=st.q;
+  game.innerHTML=hud([["Round",`${st.round+1}/${st.rounds}`],["Score",st.score]])+
+   `<div class="ability"><span class="icon lg art" style="${bg(q.img)}" role="img" aria-label="Ability icon"></span><div class="stack" style="gap:var(--s1)"><span class="t-label">${st.phase==="champ"?"Whose ability is this?":st.phase==="key"?"Which key is it on?":esc(q.c.name)+" · "+q.key}</span><span class="t-2">${st.phase==="done"?esc(q.name):"???"}</span></div></div><div id="area"></div>`;
+  if(st.phase==="champ"){
+    $("#area").innerHTML=champChoices(st.opts);
+    game.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{const ok=lock(q.c.id,b);if(ok)st.score++;st.champOk=ok;timers.push(setTimeout(()=>{st.phase="key";render()},ok?500:1100))});
+  }else if(st.phase==="key"){
+    $("#area").innerHTML=`<p class="t-sm">${st.champOk?"Right champion. ":`It belongs to ${esc(q.c.name)}. `}Now the key for a bonus point.</p>`+textOptions(["Passive",...KEYS]);
+    game.querySelectorAll(".option").forEach(b=>b.onclick=()=>{const ok=lock(q.key,b);if(ok)st.score++;timers.push(setTimeout(()=>{st.phase="done";render()},ok?500:1000))});
+  }else{
+    $("#area").innerHTML=`<div class="between"><div class="row">${icon(q.c.id)}<p class="note">${esc(q.name)} is ${esc(q.c.name)}'s ${q.key==="Passive"?"passive":q.key+" ability"}.</p></div>${nextBtn(st.round+1>=st.rounds,"Next ability")}</div>`;
+    $("#go").onclick=()=>{st.round++;st.q=null;render()};$("#go").focus();
+  }
+}
+
+/* Title Match */
+function rTitles(){
+  if(needDD())return;
+  if(st.round>=st.rounds)return finish(st.score,st.rounds);
+  if(!st.c){st.c=pick(CHAMPS);st.opts=shuffle([st.c,...similar(st.c,3)])}
+  game.innerHTML=hud([["Title",`${st.round+1}/${st.rounds}`],["Score",st.score]])+`<p class="t-label">Who carries this title?</p><p class="prompt">“${esc(cap(st.c.title))}”</p>${champChoices(st.opts)}<div id="area"></div>`;
+  game.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{const ok=lock(st.c.id,b);if(ok)st.score++;
+    $("#area").innerHTML=`<div class="between"><p class="note">${ok?"Correct. ":""}${esc(st.c.name)} is ${esc(st.c.title)}.</p>${nextBtn(st.round+1>=st.rounds,"Next title")}</div>`;
+    $("#go").onclick=()=>{st.round++;st.c=null;render()};$("#go").focus()});
+}
+
+/* Homelands */
+function rOrigins(){
+  if(st.i>=st.list.length)return finish(st.score,st.list.length);
+  const it=st.list[st.i],opts=shuffle([it.r,...shuffle(REGIONS.filter(r=>r.name!==it.r)).slice(0,3).map(r=>r.name)]);
+  game.innerHTML=hud([["Champion",`${st.i+1}/${st.list.length}`],["Score",st.score]])+
+   `<div class="split"><div class="portrait art" style="${bg(loading(idOf(it.c)))}" role="img" aria-label="${esc(it.c)}"></div><div class="stack" style="gap:var(--s5);min-width:0"><p class="prompt">Where does ${esc(it.c)} come from?</p>${textOptions(opts)}<div id="area"></div></div></div>`;
+  game.querySelectorAll(".option").forEach(b=>b.onclick=()=>{const ok=lock(it.r,b);if(ok)st.score++;const r=REGIONS.find(x=>x.name===it.r);
+    $("#area").innerHTML=`<div class="between"><p class="note">${ok?"Correct. ":""}${esc(it.c)} comes from ${esc(it.r)}: ${esc(r.tag.toLowerCase())}.</p>${nextBtn(st.i+1>=st.list.length,"Next champion")}</div>`;
+    $("#go").onclick=()=>{st.i++;render()};$("#go").focus()});
+}
+
+/* Lore Trial */
+function rTrial(){
   if(st.i>=st.list.length)return finish(st.score,st.list.length);
   const it=st.list[st.i];
-  game.innerHTML=hud([["Question",`${st.i+1} / ${st.list.length}`],["Score",st.score],["Streak",st.streak]])+`<p class="q">${esc(it.q)}</p>${optsHTML(shuffle(it.o))}<div id="after"></div>`;
-  game.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
-    const ok=lockOpts(it.a,b);if(ok){st.score++;st.streak++}else st.streak=0;
-    $("#after").innerHTML=`<div class="row" style="justify-content:space-between;gap:16px"><p class="explain">${ok?"Correct. ":"Not quite. "}${esc(it.e)}</p><button class="btn" id="go">${st.i+1<st.list.length?"Next question":"See your result"}</button></div>`;
-    $("#go").onclick=()=>{st.i++;render()};$("#go").focus();
-  });
+  game.innerHTML=hud([["Question",`${st.i+1}/${st.list.length}`],["Score",st.score]])+`<p class="prompt">${esc(it.q)}</p>${textOptions(shuffle(it.o))}<div id="area"></div>`;
+  game.querySelectorAll(".option").forEach(b=>b.onclick=()=>{const ok=lock(it.a,b);if(ok)st.score++;
+    $("#area").innerHTML=`<div class="between"><p class="note">${ok?"Correct. ":"Not quite. "}${esc(it.e)}</p>${nextBtn(st.i+1>=st.list.length,"Next question")}</div>`;
+    $("#go").onclick=()=>{st.i++;render()};$("#go").focus()});
 }
 
-function renderAges(){
-  if(st.round>=st.rounds)return finish(st.score,st.rounds*5,"BN means before Noxus, AN means after.");
-  if(!st.events){st.events=shuffle(AGES).slice(0,5);st.picks=[];st.checked=false}
-  const ev=st.events,sorted=ev.map((e,i)=>({e,i})).sort((a,b)=>a.e.y-b.e.y);
-  const slotFor=i=>{const k=st.picks.indexOf(i);return k<0?"":String(k+1)};
-  game.innerHTML=hud([["Round",`${st.round+1} / ${st.rounds}`],["Score",st.score]])+
-   `<p class="q">${st.checked?"The true order of history":"Tap these events from oldest to newest"}</p>
-   <div class="ages">${(st.checked?sorted:ev.map((e,i)=>({e,i}))).map(({e,i},pos)=>{
-      const cls=st.checked?(st.picks[pos]===i?"right":"wrong"):(st.picks.includes(i)?"picked":"");
-      return `<button class="age ${cls}" data-i="${i}" ${st.checked?"disabled":""}><span class="slot">${st.checked?pos+1:slotFor(i)}</span><span><strong>${esc(e.t)}</strong>${st.checked?` <span class="yr">· ${yearLabel(e.y)}</span>`:""}<small>${esc(e.d)}</small></span></button>`}).join("")}</div>
-   <div class="row">${st.checked
-      ?`<p class="explain">${st.last} of 5 in the right place.</p><button class="btn" id="go">${st.round+1<st.rounds?"Next round":"See your result"}</button>`
-      :`<button class="btn" id="check" ${st.picks.length<5?"disabled":""}>Check my order</button><button class="btn ghost" id="undo" ${st.picks.length?"":"disabled"}>Undo</button>`}</div>`;
-  if(st.checked){$("#go").onclick=()=>{st.round++;st.events=null;render()};$("#go").focus();return}
-  game.querySelectorAll(".age").forEach(b=>b.onclick=()=>{const i=+b.dataset.i;if(!st.picks.includes(i)){st.picks.push(i);render()}});
-  $("#undo").onclick=()=>{st.picks.pop();render()};
-  $("#check").onclick=()=>{const truth=sorted.map(x=>x.i);st.last=truth.filter((v,k)=>st.picks[k]===v).length;st.score+=st.last;st.checked=true;render()};
-}
-
-function renderClue(){
-  if(st.i>=st.list.length)return finish(st.score,st.list.length*4);
-  const it=st.list[st.i];
-  if(st.optsFor!==st.i){st.opts=shuffle([it.a,...shuffle(CLUES.filter(c=>c.a!==it.a)).slice(0,5).map(c=>c.a)]);st.optsFor=st.i}
-  const worth=5-st.shown;
-  game.innerHTML=hud([["Champion",`${st.i+1} / ${st.list.length}`],["Score",st.score],["Worth",worth+" pts"]])+
-   `<p class="q">Who is speaking?</p><ol class="clues">${it.c.map((c,k)=>`<li class="${k<st.shown?"":"locked"}"><span class="n">Clue ${k+1}</span><span>${k<st.shown?esc(c):"Hidden"}</span></li>`).join("")}</ol>
-   ${optsHTML(st.opts)}<div class="row" id="after"><button class="btn ghost" id="more" ${st.shown>=4?"disabled":""}>Reveal next clue · −1 point</button></div>`;
-  $("#more").onclick=()=>{st.shown++;render()};
-  game.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
-    const ok=lockOpts(it.a,b),pts=ok?worth:0;st.score+=pts;
-    game.querySelectorAll(".clues li").forEach((li,k)=>{li.classList.remove("locked");li.lastChild.textContent=it.c[k]});
-    $("#after").outerHTML=`<div class="reveal"><div class="art" style="${artBg(it.a)}"></div><div class="c"><span class="label">${ok?`Correct · +${pts} points`:"The answer"}</span><h3 style="font-size:2.4rem">${esc(it.a)}</h3><div class="row"><button class="btn" id="go">${st.i+1<st.list.length?"Next champion":"See your result"}</button></div></div></div>`;
-    $("#go").onclick=()=>{st.i++;st.shown=1;render()};$("#go").focus();
-  });
-}
-
-function renderOrigins(){
-  if(st.i>=st.list.length)return finish(st.score,st.list.length);
-  const it=st.list[st.i];
-  const opts=shuffle([it.r,...shuffle(REGIONS.filter(r=>r.name!==it.r)).slice(0,3).map(r=>r.name)]);
-  game.innerHTML=hud([["Champion",`${st.i+1} / ${st.list.length}`],["Score",st.score]])+
-   `<div class="split">${portrait(it.c)}<div style="display:flex;flex-direction:column;gap:20px;min-width:0"><p class="q">Where does ${esc(it.c)} come from?</p>${optsHTML(opts)}<div id="after"></div></div></div>`;
-  game.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
-    const ok=lockOpts(it.r,b);if(ok)st.score++;
-    const reg=regionByName(it.r);
-    $("#after").innerHTML=`<div class="row" style="justify-content:space-between;gap:16px"><p class="explain">${ok?"Correct. ":""}${esc(it.c)} comes from ${esc(it.r)}, ${esc(reg.tag.charAt(0).toLowerCase()+reg.tag.slice(1))}.</p><button class="btn" id="go">${st.i+1<st.list.length?"Next champion":"See your result"}</button></div>`;
-    $("#go").onclick=()=>{st.i++;render()};$("#go").focus();
-  });
-}
-
-function renderKinship(){
-  if(!st.cards){const p=shuffle(PAIRS).slice(0,6);st.pairs=p;st.cards=shuffle(p.flatMap((x,pi)=>[{n:x[0],pi},{n:x[2],pi}]));st.open=[];st.matched=[];st.moves=0;st.lock=false}
-  game.innerHTML=hud([["Pairs found",`${st.matched.length} / 6`],["Moves",st.moves]])+
+/* Kinship */
+function rKinship(){
+  if(!st.cards){st.pairs=shuffle(PAIRS).slice(0,6);st.cards=shuffle(st.pairs.flatMap((p,pi)=>[{n:p[0],pi},{n:p[1],pi}]));st.open=[];st.matched=[];st.moves=0;st.lock=false}
+  game.innerHTML=hud([["Pairs",`${st.matched.length}/6`],["Moves",st.moves]])+
    `<div class="kgrid">${st.cards.map((c,i)=>{const up=st.open.includes(i)||st.matched.includes(c.pi);
-     return `<button class="kcard${up?" up":""}${st.matched.includes(c.pi)?" done":""}" data-i="${i}" aria-label="${up?esc(c.n):"Hidden card"}"><span class="in"><span class="b"><i></i></span><span class="f"><span class="art" style="${artBg(c.n,"loading")}"></span><span>${esc(c.n)}</span></span></span></button>`}).join("")}</div>
-   <ul class="klog">${st.matched.slice().reverse().map(pi=>{const p=st.pairs[pi];return `<li><b>${esc(p[0])} and ${esc(p[2])}</b>: ${esc(p[4])}</li>`}).join("")||'<li>Find the two champions who belong together.</li>'}</ul>`;
+     return `<button class="kcard${up?" up":""}${st.matched.includes(c.pi)?" done":""}" data-i="${i}" aria-label="${up?esc(c.n):"Hidden card"}"><span class="in"><span class="b"><svg width="34" height="34" style="color:var(--gold-4)"><use href="#mark"/></svg></span><span class="f art" style="${bg(loading(idOf(c.n)))}"><span>${esc(c.n)}</span></span></span></button>`}).join("")}</div>
+   <ul class="klog">${st.matched.slice().reverse().map(pi=>{const p=st.pairs[pi];return `<li><b>${esc(p[0])} & ${esc(p[1])}</b> · ${esc(p[2])}</li>`}).join("")||"<li>Find the two champions who belong together.</li>"}</ul>`;
   game.querySelectorAll(".kcard").forEach(b=>b.onclick=()=>{
-    const i=+b.dataset.i,c=st.cards[i];
-    if(st.lock||st.open.includes(i)||st.matched.includes(c.pi))return;
+    const i=+b.dataset.i,c=st.cards[i];if(st.lock||st.open.includes(i)||st.matched.includes(c.pi))return;
     st.open.push(i);
-    if(st.open.length===2){
-      st.moves++;const[a,b2]=st.open.map(k=>st.cards[k]);
-      if(a.pi===b2.pi){st.matched.push(a.pi);st.open=[];render();
-        if(st.matched.length===6)timers.push(setTimeout(()=>{const s=Math.max(0,Math.min(6,6-Math.floor((st.moves-6)/2)));finish(s,6,`You matched all six pairs in ${st.moves} moves. Six moves is a perfect game.`)},1000));
-        return}
-      st.lock=true;render();timers.push(setTimeout(()=>{st.open=[];st.lock=false;render()},1000));return;
-    }
+    if(st.open.length===2){st.moves++;const[a,b2]=st.open.map(k=>st.cards[k]);
+      if(a.pi===b2.pi){st.matched.push(a.pi);st.open=[];render();if(st.matched.length===6)timers.push(setTimeout(()=>finish(Math.max(0,Math.min(6,6-Math.floor((st.moves-6)/2))),6,`All six pairs in ${st.moves} moves. Six is perfect.`),1000));return}
+      st.lock=true;render();timers.push(setTimeout(()=>{st.open=[];st.lock=false;render()},1000));return}
     render();
   });
 }
 
+/* Blitz */
 function blitzPool(){
-  const a=QUIZ.map(q=>({q:q.q,a:q.a,o:q.o}));
-  const b=REGIONS.flatMap(r=>r.champs.map(c=>({q:`Where does ${c} come from?`,a:r.name,o:[r.name,...shuffle(REGIONS.filter(x=>x!==r)).slice(0,3).map(x=>x.name)]})));
-  return shuffle([...a,...b]);
+  const lore=QUIZ.map(q=>({q:q.q,a:q.a,o:q.o}));
+  const homes=REGIONS.flatMap(r=>r.champs.map(c=>({q:`Where does ${c} come from?`,a:r.name,o:[r.name,...shuffle(REGIONS.filter(x=>x!==r)).slice(0,3).map(x=>x.name)]})));
+  const titles=ddReady?shuffle(CHAMPS).slice(0,40).map(c=>({q:`Who is “${cap(c.title)}”?`,a:c.name,o:[c.name,...similar(c,3).map(x=>x.name)]})):[];
+  return shuffle([...lore,...homes,...titles]);
 }
-function renderBlitz(){
-  if(st.phase==="ready"){
-    game.innerHTML=`<div class="result"><span class="label">Sixty seconds</span><p class="q">Questions from every corner of Runeterra, one after another.</p><p class="muted">A right answer scores a point. A wrong one only costs you time.</p><div class="row"><button class="btn" id="go">Start the clock</button></div></div>`;
-    $("#go").onclick=()=>{st={phase:"run",score:0,answered:0,end:Date.now()+60000,pool:blitzPool(),i:0};render();timers.push(setInterval(tickBlitz,200))};
-    return;
-  }
+function rBlitz(){
+  if(st.phase==="ready"){game.innerHTML=`<div class="result"><p class="prompt">Sixty seconds. Titles, homelands and lore, one after another.</p><p class="t-body">A right answer scores a point. A wrong one only costs you time.</p><div class="row"><button class="btn" id="go">Start the clock</button></div></div>`;
+    $("#go").onclick=()=>{st={phase:"run",score:0,answered:0,end:Date.now()+60000,pool:blitzPool(),i:0};render();timers.push(setInterval(tick,200))};return}
   if(st.phase!=="run")return;
   const it=st.pool[st.i%st.pool.length];
-  game.innerHTML=hud([["Score",st.score],["Answered",st.answered],["Time",`<span id="secs">${Math.max(0,Math.ceil((st.end-Date.now())/1000))}</span>s`]])+
-   `<div class="timer"><i id="tbar" style="width:${Math.max(0,(st.end-Date.now())/600)}%"></i></div><p class="q">${esc(it.q)}</p>${optsHTML(shuffle(it.o))}`;
-  game.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
-    if(st.phase!=="run")return;
-    const ok=lockOpts(it.a,b);st.answered++;if(ok)st.score++;
-    timers.push(setTimeout(()=>{if(st.phase==="run"){st.i++;render()}},ok?320:700));
-  });
+  game.innerHTML=hud([["Score",st.score],["Answered",st.answered],["Time",`<span id="secs">${Math.max(0,Math.ceil((st.end-Date.now())/1000))}</span>s`]])+`<div class="timer"><i id="tbar" style="width:${Math.max(0,(st.end-Date.now())/600)}%"></i></div><p class="prompt">${esc(it.q)}</p>${textOptions(shuffle(it.o))}`;
+  game.querySelectorAll(".option").forEach(b=>b.onclick=()=>{if(st.phase!=="run")return;const ok=lock(it.a,b);st.answered++;if(ok)st.score++;timers.push(setTimeout(()=>{if(st.phase==="run"){st.i++;render()}},ok?300:700))});
 }
-function tickBlitz(){
-  if(st.phase!=="run")return;
-  const left=st.end-Date.now(),s=$("#secs"),bar=$("#tbar");
-  if(s)s.textContent=Math.max(0,Math.ceil(left/1000));if(bar)bar.style.width=Math.max(0,left/600)+"%";
-  if(left<=0){st.phase="over";cleanup();finish(st.score,Math.max(st.answered,1),`${st.score} right out of ${st.answered} answered in sixty seconds.`)}
-}
+function tick(){if(st.phase!=="run")return;const l=st.end-Date.now(),s=$("#secs"),b=$("#tbar");if(s)s.textContent=Math.max(0,Math.ceil(l/1000));if(b)b.style.width=Math.max(0,l/600)+"%";
+  if(l<=0){st.phase="over";cleanup();finish(st.score,Math.max(st.answered,1),`${st.score} right out of ${st.answered} in sixty seconds.`)}}
 
-function renderDaily(){
-  const it=dailyPick(),n=dayNumber(),rec=dailyRec();
-  const shown=rec.done?4:Math.min(4,rec.guesses.length+1);
-  const now=new Date(),msLeft=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1)-now,hh=Math.floor(msLeft/36e5),mm=Math.floor(msLeft%36e5/6e4);
-  game.innerHTML=hud([["Riddle",`No. ${n}`],["Guesses",`${rec.guesses.length} / 4`],["Streak",liveStreak()]])+
-   `<p class="q">Who is speaking?</p><ol class="clues">${it.c.map((c,k)=>`<li class="${k<shown?"":"locked"}"><span class="n">Clue ${k+1}</span><span>${k<shown?esc(c):"Unlocks after a wrong guess"}</span></li>`).join("")}</ol>
-   ${rec.guesses.length?`<div class="chips">${rec.guesses.map(g=>`<span class="chip ${norm(g)===norm(it.a)?"good":"bad"}">${esc(g)}</span>`).join("")}</div>`:""}
-   ${rec.done?`<div class="reveal"><div class="art" style="${artBg(it.a)}"></div><div class="c"><span class="label">${rec.won?`Solved with ${rec.guesses.length} of 4 clues`:"Today's answer"}</span><h3 style="font-size:clamp(2.2rem,5vw,3.2rem)">${esc(it.a)}</h3>
-       <p class="muted">A new riddle starts in ${hh} h ${mm} min. ${rec.won?`Your streak is ${liveStreak()}.`:"Your streak starts again tomorrow."}</p>
-       <div class="row"><button class="btn" id="share">Copy my result</button><a class="btn ghost" href="#games">Play another game</a></div><span class="small" id="shareOk"></span></div></div>`
-     :`<form class="guess" id="gf" autocomplete="off"><label for="dailyGuess" class="label">Your guess</label><input id="dailyGuess" list="champList" placeholder="Type a champion's name"><button class="btn" type="submit">Guess</button><button class="btn ghost" type="button" id="skip">Skip to next clue</button></form><p class="formmsg" id="gmsg"></p>
-       <datalist id="champList">${ALL_NAMES.map(x=>`<option value="${esc(x)}">`).join("")}</datalist>`}`;
+/* Daily */
+function rDaily(){
+  const it=dailyPick(),n=dayNumber(),rec=dailyRec(),shown=rec.done?4:Math.min(4,rec.guesses.length+1);
+  const now=new Date(),ms=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1)-now,hh=Math.floor(ms/36e5),mm=Math.floor(ms%36e5/6e4);
+  const aid=idOf(it.a);
+  game.innerHTML=hud([["Riddle",`No. ${n}`],["Guesses",`${rec.guesses.length}/4`],["Streak",liveStreak()]])+
+   `<p class="prompt">Who is speaking?</p><ol class="clues">${it.c.map((c,k)=>`<li class="${k<shown?"":"locked"}"><span class="t-label">Clue ${k+1}</span><span>${k<shown?esc(c):"Unlocks after a wrong guess"}</span></li>`).join("")}</ol>
+   ${rec.guesses.length?`<div class="row">${rec.guesses.map(g=>`<span class="tag ${norm(g)===norm(it.a)?"good":"bad"}">${esc(g)}</span>`).join("")}</div>`:""}
+   <div id="area"></div>`;
   if(rec.done){
-    $("#share").onclick=()=>{const sq=[0,1,2,3].map(k=>{const g=rec.guesses[k];return g===undefined?"⬜":norm(g)===norm(it.a)?"🟩":"🟥"}).join("");copyText(`Runeterra Codex · Daily Riddle No. ${n}\n${sq}\n${rec.won?`Solved with ${rec.guesses.length} of 4 clues`:"Stumped today"}`,$("#shareOk"))};
+    $("#area").innerHTML=`<div class="reveal"><div class="pic art" style="${bg(splash(aid))}"></div><div class="body"><span class="t-label">${rec.won?`Solved with ${rec.guesses.length} of 4 clues`:"Today's answer"}</span><h3 class="t-1">${esc(it.a)}</h3><p class="t-sm">A new riddle starts in ${hh} h ${mm} min. ${rec.won?`Your streak is ${liveStreak()}.`:"Your streak starts again tomorrow."}</p><div class="row"><button class="btn" id="share">Copy my result</button><a class="btn secondary" href="#games">More games</a></div><span class="t-sm" id="shareOk"></span></div></div>`;
+    $("#share").onclick=()=>{const sq=[0,1,2,3].map(k=>{const g=rec.guesses[k];return g===undefined?"⬜":norm(g)===norm(it.a)?"🟩":"🟥"}).join("");copyText(`Runeterra Codex · Daily Riddle No. ${n}\n${sq}`,$("#shareOk"))};
     return;
   }
-  const commit=g=>{
-    rec.guesses.push(g);
-    if(norm(g)===norm(it.a)){rec.done=true;rec.won=true;LS.streak=LS.lastWin===n-1?LS.streak+1:1;LS.lastWin=n;LS.daily[n]=rec;save();addXP(30-rec.guesses.length*5);toast("Solved. See you tomorrow.")}
-    else{if(rec.guesses.length>=4)rec.done=true;LS.daily[n]=rec;save()}
-    render();
-  };
-  $("#gf").onsubmit=e=>{e.preventDefault();const v=$("#dailyGuess").value.trim();
-    if(!v){$("#gmsg").textContent="Type a champion's name first.";return}
-    const match=ALL_NAMES.find(x=>norm(x)===norm(v));
-    if(!match){$("#gmsg").textContent="That name isn't in the Codex yet. Check the spelling, or pick one from the list.";return}
-    if(rec.guesses.some(g=>norm(g)===norm(match))){$("#gmsg").textContent="You already tried that one.";return}
-    commit(match)};
+  $("#area").innerHTML=`<div class="row" style="align-items:flex-start"><div id="pkRoot" style="flex:1;min-width:240px"></div><button class="btn secondary" id="skip">Skip to next clue</button></div>`;
+  const commit=g=>{rec.guesses.push(g);
+    if(norm(g)===norm(it.a)){rec.done=true;rec.won=true;LS.streak=LS.lastWin===n-1?LS.streak+1:1;LS.lastWin=n;LS.daily[n]=rec;save();addXP(30-rec.guesses.length*5);toast("Solved. See you tomorrow")}
+    else{if(rec.guesses.length>=4)rec.done=true;LS.daily[n]=rec;save()}render()};
   $("#skip").onclick=()=>commit("Skipped");
-  $("#dailyGuess").focus({preventScroll:true});
+  mountPicker($("#pkRoot"),c=>{if(rec.guesses.some(g=>norm(g)===norm(c.name))){$("#pkMsg").textContent="You already tried that one.";return}commit(c.name)},"Type a champion's name");
 }
 
-/* ------- Atlas ------- */
+/* ===== Atlas ===== */
 function renderAtlas(id){
   pendingRegion=null;
-  $("#rlist").innerHTML=REGIONS.map(r=>`<button data-r="${r.id}" aria-pressed="${r.id===id}"><i style="background:${r.hue}"></i>${esc(r.name)}${LS.visited.includes(r.id)?'<span class="tick">✓</span>':""}</button>`).join("");
+  $("#rlist").innerHTML=REGIONS.map(r=>`<button data-r="${r.id}" aria-pressed="${r.id===id}"><i class="swatch" style="background:${r.hue}"></i>${esc(r.name)}${LS.visited.includes(r.id)?'<span class="seen">Read</span>':""}</button>`).join("");
   document.querySelectorAll("#rlist button").forEach(b=>b.onclick=()=>renderAtlas(b.dataset.r));
   const r=REGIONS.find(x=>x.id===id);
-  $("#rpanel").innerHTML=`<div class="rhero"><div class="art" style="${artBg(r.key,"splash",r.hue)}"></div><div class="c"><span class="label" style="color:${r.hue}">${esc(r.tag)}</span><h2>${esc(r.name)}</h2></div></div>
-   <div class="rbody"><p>${esc(r.text)}</p><div class="fact"><span class="label">Lore</span><p>${esc(r.fact)}</p></div>
-   <span class="label orn"><i></i>Champions of ${esc(r.name)}</span><div class="champs">${r.champs.map(portrait).join("")}</div></div>`;
-  if(!LS.visited.includes(id)){LS.visited.push(id);save();if(LS.visited.length===13)toast("You have read all thirteen regions")}
+  $("#rpanel").innerHTML=`<div class="banner art" style="${bg(splash(idOf(r.key)))}"></div><div class="body">
+   <div class="stack" style="gap:var(--s2)"><span class="t-label" style="color:${r.hue}">${esc(r.tag)}</span><h2 class="t-1">${esc(r.name)}</h2></div>
+   <p class="t-body">${esc(r.text)}</p><div class="fact"><span class="t-label">Did you know</span><p>${esc(r.fact)}</p></div>
+   <h3 class="t-3">Champions</h3><div class="champs">${r.champs.map(c=>`<figure><div class="portrait art" style="${bg(loading(idOf(c)))}"></div><figcaption>${esc(c)}</figcaption></figure>`).join("")}</div></div>`;
+  if(!LS.visited.includes(id)){LS.visited.push(id);save();if(LS.visited.length===13)toast("All thirteen regions read")}
   $("#visited").textContent=`${LS.visited.length} of 13 regions read`;
 }
 
-/* ------- Support ------- */
+/* ===== Support + about ===== */
 function renderSupport(){
-  const soon=`<button class="btn ghost" disabled>Opening soon</button>`;
-  $("#kofiActions").innerHTML=SUPPORT.kofi?`<a class="btn" href="${esc(SUPPORT.kofi)}" target="_blank" rel="noopener">Support on Ko-fi</a>`:soon;
-  $("#paypalActions").innerHTML=SUPPORT.paypal?`<a class="btn" href="${esc(SUPPORT.paypal)}" target="_blank" rel="noopener">Send with PayPal</a>`:soon;
+  const soon=`<button class="btn secondary" disabled>Opening soon</button>`;
+  $("#kofi").innerHTML=SUPPORT.kofi?`<a class="btn" href="${esc(SUPPORT.kofi)}" target="_blank" rel="noopener">Support on Ko-fi</a>`:soon;
+  $("#paypal").innerHTML=SUPPORT.paypal?`<a class="btn" href="${esc(SUPPORT.paypal)}" target="_blank" rel="noopener">Send with PayPal</a>`:soon;
 }
-$("#shareSite").onclick=()=>copyText("I've been playing Runeterra Codex, lore games for League of Legends fans. There's a new champion riddle every day. Can you beat my streak?",$("#shareMsg"));
-
-/* ------- About: reset ------- */
+$("#shareSite").onclick=()=>copyText("Try Runeterra Codex: League of Legends games with splash art, abilities, titles and a new champion riddle every day.",$("#shareMsg"));
 function askReset(){
-  $("#resetBox").innerHTML=`<div class="confirm"><span>This clears your rank, scores, streak and regions read in this browser.</span><button class="btn" id="resetYes">Clear my progress</button><button class="btn ghost" id="resetNo">Keep it</button></div>`;
-  $("#resetYes").onclick=()=>{LS={};initLS();save();updatePill();$("#resetBox").innerHTML=`<p class="muted">Your progress has been cleared.</p>`};
-  $("#resetNo").onclick=()=>{$("#resetBox").innerHTML=`<button class="btn ghost" id="resetBtn">Reset my progress</button>`;$("#resetBtn").onclick=askReset};
+  $("#resetBox").innerHTML=`<div class="confirm"><span>This clears your level, scores, streak and regions read in this browser.</span><button class="btn" id="rY">Clear my progress</button><button class="btn secondary" id="rN">Keep it</button></div>`;
+  $("#rY").onclick=()=>{LS={};initLS();save();updateProfile();$("#resetBox").innerHTML=`<p class="t-sm">Your progress has been cleared.</p>`};
+  $("#rN").onclick=()=>{$("#resetBox").innerHTML=`<button class="btn secondary" id="resetBtn">Reset my progress</button>`;$("#resetBtn").onclick=askReset};
 }
 $("#resetBtn").onclick=askReset;
 
-/* ------- Boot ------- */
-updatePill();
-route();
+/* ===== Boot ===== */
+updateProfile();route();loadDD();
 if(!reduce)setInterval(nextSlide,7000);
 </script>
 </body>
