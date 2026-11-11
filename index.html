@@ -272,6 +272,57 @@ button{font:inherit;color:inherit;cursor:pointer}
 .champs figure{margin:0;display:flex;flex-direction:column;gap:var(--s2)}
 .champs figcaption{font-family:var(--display);font-size:var(--fs-sm);letter-spacing:var(--track);text-transform:uppercase}
 
+/* ---------- Champion roster ---------- */
+.filters{display:flex;flex-wrap:wrap;gap:var(--s2)}
+.chip{font-family:var(--display);font-size:var(--fs-xs);letter-spacing:var(--track);text-transform:uppercase;padding:var(--s2) var(--s3);background:var(--raised);border:1px solid var(--gold-5);color:var(--text-2);display:inline-flex;align-items:center;gap:var(--s2);text-decoration:none}
+.chip:hover{color:var(--gold-1);border-color:var(--gold-4)}
+.chip[aria-pressed="true"]{color:var(--gold-1);border-color:var(--gold-3);background:rgba(200,155,60,.12)}
+.roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:var(--s4) var(--s3)}
+.roster.tall{grid-template-columns:repeat(auto-fill,minmax(132px,1fr))}
+.champ{display:flex;flex-direction:column;gap:var(--s2);text-decoration:none;color:var(--text);min-width:0}
+.champ img{width:100%;aspect-ratio:1;object-fit:cover;border:1px solid var(--gold-5);background:var(--blue-6);transition:border-color var(--fast),box-shadow var(--fast)}
+.roster.tall .champ img{aspect-ratio:308/480;object-position:center top}
+.champ:hover img{border-color:var(--gold-2);box-shadow:0 0 14px rgba(200,155,60,.25)}
+.champ b{font-family:var(--display);font-weight:400;font-size:var(--fs-sm);letter-spacing:.04em;text-transform:uppercase;line-height:1.2}
+.champ small{font-size:var(--fs-xs);color:var(--text-2);line-height:1.3}
+.empty{padding:var(--s6);text-align:center;color:var(--text-2);border:1px dashed var(--gold-5)}
+
+/* ---------- Champion page ---------- */
+.ch-hero{position:relative;isolation:isolate;overflow:hidden;border-bottom:1px solid var(--line)}
+.ch-hero .art{position:absolute;inset:0;z-index:-2;background-position:center 18%}
+.ch-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,var(--bg) 0%,rgba(1,10,19,.75) 38%,rgba(1,10,19,.1) 75%),linear-gradient(0deg,var(--bg) 2%,transparent 45%)}
+.ch-hero .wrap{min-height:min(64vh,580px);display:flex;flex-direction:column;justify-content:flex-end;gap:var(--s3);padding-block:var(--s8) var(--s6)}
+.ch-hero .t-2{color:var(--gold-2);text-transform:none;font-size:1.35rem;letter-spacing:.02em}
+.ch-body{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:var(--s7);align-items:start}
+@media (max-width:920px){.ch-body{grid-template-columns:minmax(0,1fr);gap:var(--s6)}}
+.ch-main{display:flex;flex-direction:column;gap:var(--s7);min-width:0}
+.ch-side{display:flex;flex-direction:column;gap:var(--s4);min-width:0}
+.ch-side .panel{padding:var(--s5);display:flex;flex-direction:column;gap:var(--s4)}
+.blockquote{font-family:var(--display);font-size:clamp(1.3rem,2.4vw,1.65rem);line-height:1.35;color:var(--gold-1);border-left:2px solid var(--gold-3);padding-left:var(--s5);margin:0}
+.blockquote cite{display:block;margin-top:var(--s3);font-family:var(--ui);font-style:normal;font-size:var(--fs-sm);color:var(--text-2)}
+.bio{font-size:1.0625rem;line-height:1.8;color:#d4cdbd;max-width:68ch}
+.src{font-size:var(--fs-xs);color:var(--grey-2)}
+.abilities{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--s4)}
+@media (max-width:560px){.abilities{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.abilities figure{margin:0;display:flex;flex-direction:column;gap:var(--s2)}
+.abilities img{width:56px;height:56px;border:1px solid var(--gold-4);background:var(--blue-6)}
+.abilities figcaption{font-size:var(--fs-sm);font-weight:600;line-height:1.3}
+.abilities .k{font-family:var(--display);font-size:var(--fs-xs);letter-spacing:var(--track-wide);color:var(--gold-3)}
+.storylist{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.storylist a{display:flex;justify-content:space-between;align-items:center;gap:var(--s4);padding:var(--s4) 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--gold-1);font-weight:600}
+.storylist a:hover{color:#fff}
+.storylist a span:last-child{font-family:var(--display);font-size:var(--fs-xs);letter-spacing:var(--track);color:var(--gold-3);white-space:nowrap}
+.stat{display:grid;grid-template-columns:76px minmax(0,1fr) 22px;gap:var(--s3);align-items:center;font-size:var(--fs-sm);color:var(--text-2)}
+.stat .bar{height:6px;background:var(--grey-4);border:1px solid var(--gold-5)}
+.stat .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold-4),var(--gold-2))}
+.stat b{color:var(--gold-1);text-align:right;font-variant-numeric:tabular-nums}
+.facts{list-style:none;margin:0;padding:0}
+.facts li{display:flex;justify-content:space-between;gap:var(--s4);padding:var(--s2) 0;border-bottom:1px solid var(--grey-4);font-size:var(--fs-sm)}
+.facts li span:first-child{color:var(--text-2)}
+.facts li span:last-child{color:var(--gold-1);font-weight:600;text-align:right}
+.skel{color:var(--text-2)}
+.pager{display:flex;justify-content:space-between;gap:var(--s4);flex-wrap:wrap;padding-top:var(--s5);border-top:1px solid var(--line)}
+
 /* ---------- Support ---------- */
 .ways{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s4)}
 @media (max-width:760px){.ways{grid-template-columns:minmax(0,1fr)}}
@@ -303,6 +354,7 @@ button{font:inherit;color:inherit;cursor:pointer}
       <a href="#home" data-nav="home">Home</a>
       <a href="#games" data-nav="games">Games</a>
       <a href="#daily" data-nav="daily">Daily</a>
+      <a href="#champions" data-nav="champions">Champions</a>
       <a href="#atlas" data-nav="atlas">Regions</a>
       <a href="#support" data-nav="support">Support</a>
       <a href="#about" data-nav="about">About</a>
@@ -379,6 +431,23 @@ button{font:inherit;color:inherit;cursor:pointer}
   </div></div>
 </section>
 
+<!-- CHAMPIONS -->
+<section data-view="champions" hidden>
+  <div class="band section"><div class="wrap">
+    <div class="title"><div class="stack"><span class="t-label">Explore</span><h2 class="t-1">Champions</h2></div><span class="t-sm num" id="rosterCount"></span></div>
+    <div class="stack" style="gap:var(--s4);margin-bottom:var(--s6)">
+      <input class="field" id="rosterSearch" placeholder="Search champions" aria-label="Search champions" autocomplete="off" style="max-width:420px">
+      <div class="filters" id="rosterFilters" role="group" aria-label="Filter by region"></div>
+    </div>
+    <div class="roster" id="roster"></div>
+  </div></div>
+</section>
+
+<!-- CHAMPION -->
+<section data-view="champion" hidden>
+  <div id="champView"></div>
+</section>
+
 <!-- SUPPORT -->
 <section data-view="support" hidden>
   <div class="band section"><div class="wrap stack" style="gap:var(--s7)">
@@ -411,7 +480,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 </main>
 
 <footer class="site-foot band"><div class="wrap">
-  <nav aria-label="Footer"><a class="link" href="#games">Games</a><a class="link" href="#daily">Daily</a><a class="link" href="#atlas">Regions</a><a class="link" href="#support">Support</a><a class="link" href="#about">About</a></nav>
+  <nav aria-label="Footer"><a class="link" href="#games">Games</a><a class="link" href="#champions">Champions</a><a class="link" href="#daily">Daily</a><a class="link" href="#atlas">Regions</a><a class="link" href="#support">Support</a><a class="link" href="#about">About</a></nav>
   <small>Runeterra Codex is a fan project made in Jordan. It was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project.</small>
 </div></footer>
 <div class="toast panel" id="toast" role="status" hidden></div>
@@ -433,7 +502,7 @@ const bg=u=>`background-image:url('${u}'),linear-gradient(160deg,#0a323c,#010a13
 /* Lore names to Data Dragon ids (works before the live list loads) */
 const ID={"Ashe":"Ashe","Sejuani":"Sejuani","Braum":"Braum","Lissandra":"Lissandra","Garen":"Garen","Lux":"Lux","Jarvan IV":"JarvanIV","Sylas":"Sylas","Darius":"Darius","Swain":"Swain","Katarina":"Katarina","LeBlanc":"Leblanc","Teemo":"Teemo","Tristana":"Tristana","Lulu":"Lulu","Veigar":"Veigar","Caitlyn":"Caitlyn","Jayce":"Jayce","Vi":"Vi","Heimerdinger":"Heimerdinger","Jinx":"Jinx","Viktor":"Viktor","Ekko":"Ekko","Warwick":"Warwick","Leona":"Leona","Diana":"Diana","Pantheon":"Pantheon","Taric":"Taric","Azir":"Azir","Nasus":"Nasus","Renekton":"Renekton","Sivir":"Sivir","Qiyana":"Qiyana","Malphite":"Malphite","Nidalee":"Nidalee","Zyra":"Zyra","Kai'Sa":"Kaisa","Cho'Gath":"Chogath","Kha'Zix":"Khazix","Vel'Koz":"Velkoz","Irelia":"Irelia","Yasuo":"Yasuo","Ahri":"Ahri","Karma":"Karma","Miss Fortune":"MissFortune","Gangplank":"Gangplank","Twisted Fate":"TwistedFate","Graves":"Graves","Thresh":"Thresh","Kalista":"Kalista","Viego":"Viego","Hecarim":"Hecarim","Draven":"Draven","Yone":"Yone","Xayah":"Xayah","Rakan":"Rakan","Kayle":"Kayle","Morgana":"Morgana","Shen":"Shen","Zed":"Zed","Xerath":"Xerath","Ryze":"Ryze"};
 CHAMPS=Object.entries(ID).map(([name,id])=>({id,name,title:"",tags:[]}));
-const idOf=name=>ID[name]||(CHAMPS.find(c=>c.name===name)||{}).id;
+const idOf=name=>ID[name]||(CHAMPS.find(c=>c.name===name)||{}).id||name;
 
 async function loadDD(){
   try{
@@ -462,6 +531,34 @@ const REGIONS=[
  {id:"bilge",name:"Bilgewater",hue:"#4fb6bb",key:"Miss Fortune",tag:"Port city of the Serpent Isles",text:"A lawless harbor of pirates, smugglers and sea-monster hunters. It grew from a refuge the island's Buhru people gave to shipwrecked fortune seekers around 787 AN.",champs:["Miss Fortune","Gangplank","Twisted Fate","Graves"],fact:"Miss Fortune blew up Gangplank's ship to avenge her parents, whom he killed when she was a child."},
  {id:"shadow",name:"Shadow Isles",hue:"#6fd6bf",key:"Thresh",tag:"Once called the Blessed Isles",text:"A noble land of learning until a magical accident beneath the city of Helia tore the border between the living and spirit realms. The Black Mist now covers the isles, and it reaches farther each year.",champs:["Thresh","Kalista","Viego","Hecarim"],fact:"The Ruination began when a mad king, Viego, carried his dead queen to the hidden Waters of Life. The warden Thresh showed him the way."}
 ];
+/* Each region's slug on Riot's Universe site */
+const U_SLUG={freljord:"freljord",demacia:"demacia",noxus:"noxus",bandle:"bandle-city",piltover:"piltover",zaun:"zaun",targon:"mount-targon",shurima:"shurima",ixtal:"ixtal",void:"void",ionia:"ionia",bilge:"bilgewater",shadow:"shadow-isles"};
+REGIONS.forEach(r=>r.u=U_SLUG[r.id]);
+const WANDERERS={id:"wanderers",u:"unaffiliated",name:"Wanderers",hue:"#c8aa6e",key:"AurelionSol",tag:"Bound to no nation",text:"Some champions answer to no crown or empire. They are travelers, exiles, lone hunters and beings far older than any border, and their stories cross the whole world.",champs:["Ryze"],fact:"Cosmic beings such as Aurelion Sol and Bard are counted here, because no single nation can claim them."};
+const GROUPS=[...REGIONS,WANDERERS];
+
+/* ===== Riot Universe: official regions, short biographies, stories ===== */
+const U_API="https://universe-meeps.leagueoflegends.com/v1/en_us/";
+const U_SITE="https://universe.leagueoflegends.com/en_us/";
+let UNIV=null,uFailed=false;const uCache={},ddCache={};
+async function loadUniverse(){
+  try{const d=await (await fetch(U_API+"search/index.json")).json();
+    UNIV=d.champions.map(c=>({slug:c.slug,name:c.name,title:c.title,faction:c["associated-faction-slug"],release:c["release-date"],img:c.image&&c.image.uri})).sort((a,b)=>a.name.localeCompare(b.name));
+  }catch(e){uFailed=true}
+  rerender();
+}
+const groupOf=u=>GROUPS.find(g=>g.u===u.faction)||WANDERERS;
+const members=g=>UNIV?UNIV.filter(c=>c.faction===g.u):g.champs.map(n=>({slug:norm(n),name:n,title:"",faction:g.u}));
+const ddIdFor=u=>{const c=CHAMPS.find(c=>c.id.toLowerCase()===u.slug)||CHAMPS.find(c=>norm(c.name)===norm(u.name));return c?c.id:(ID[u.name]||null)};
+const slugOf=name=>{const u=UNIV&&UNIV.find(c=>norm(c.name)===norm(name));return u?u.slug:norm(name)};
+const champSquare=u=>{const id=ddIdFor(u);return id?square(id):(u.img||"")};
+const champTall=u=>{const id=ddIdFor(u);return id?loading(id):(u.img||"")};
+const champWide=u=>{const id=ddIdFor(u);return id?splash(id):(u.img||"")};
+/* Riot's text arrives as HTML. DOMParser reads it without running scripts or loading images. */
+const plain=s=>s?new DOMParser().parseFromString(String(s),"text/html").body.textContent.trim():"";
+async function getJSON(url,cache){if(cache[url])return cache[url];const r=await fetch(url);if(!r.ok)throw new Error(r.status);return cache[url]=await r.json()}
+const champTile=(u,tall)=>`<a class="champ" href="#champ-${esc(u.slug)}"><img loading="lazy" alt="" src="${esc(tall?champTall(u):champSquare(u))}"><b>${esc(u.name)}</b>${tall?"":`<small>${esc(groupOf(u).name)}</small>`}</a>`;
+
 const QUIZ=[
  {q:"What disaster turned the Blessed Isles into the Shadow Isles?",a:"The Ruination",o:["The Darkin War","The Ruination","The Void Rising","The Rune Wars"],e:"A magical accident in the vaults beneath Helia tore the border between the realms and released the Black Mist."},
  {q:"Which city lies directly beneath Piltover?",a:"Zaun",o:["Bilgewater","Zaun","Noxus Prime","Ixaocan"],e:"Zaun is Piltover's undercity, built in the canyon below the cliffs."},
@@ -577,20 +674,35 @@ const VIEWS=["home","games","atlas","support","about"],GAME_IDS=GAMES.map(g=>g.i
 let current=null,st={},timers=[],pendingRegion=null,slideIdx=0;
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 function cleanup(){timers.forEach(t=>{clearTimeout(t);clearInterval(t)});timers=[]}
+VIEWS.push("champions");
+let rosterFilter="all";
 function route(){
   cleanup();
-  let h=location.hash.slice(1)||"home";if(!VIEWS.includes(h)&&!GAME_IDS.includes(h))h="home";
+  let h=location.hash.slice(1)||"home";
+  const isChamp=/^champ-[a-z0-9-]+$/.test(h);
+  if(!isChamp&&!VIEWS.includes(h)&&!GAME_IDS.includes(h))h="home";
   const isGame=GAME_IDS.includes(h);
-  document.querySelectorAll("[data-view]").forEach(v=>v.hidden=v.dataset.view!==(isGame?"game":h));
-  const nk=h==="daily"?"daily":isGame?"games":h;
+  const view=isChamp?"champion":isGame?"game":h;
+  document.querySelectorAll("[data-view]").forEach(v=>v.hidden=v.dataset.view!==view);
+  const nk=h==="daily"?"daily":isGame?"games":isChamp?"champions":h;
   document.querySelectorAll("[data-nav]").forEach(a=>a.dataset.nav===nk?a.setAttribute("aria-current","page"):a.removeAttribute("aria-current"));
-  document.title=isGame?`${GAMES.find(g=>g.id===h).name} · Runeterra Codex`:"Runeterra Codex";
+  document.title=isGame?`${GAMES.find(g=>g.id===h).name} · Runeterra Codex`:h==="champions"?"Champions · Runeterra Codex":"Runeterra Codex";
   if(h==="home")renderHome();
   if(h==="games")renderHub();
   if(h==="atlas")renderAtlas(pendingRegion||"demacia");
+  if(h==="champions")renderRoster();
+  if(isChamp)renderChamp(h.slice(6));
   if(h==="support")renderSupport();
   if(isGame)openGame(h);
   window.scrollTo(0,0);
+}
+/* Re-draw data views when Riot's data arrives, without moving the page */
+function rerender(){
+  const h=location.hash.slice(1)||"home";
+  if(h==="champions")renderRoster();
+  else if(h==="atlas")renderAtlas(currentRegion);
+  else if(/^champ-/.test(h))renderChamp(h.slice(6));
+  else if(h==="home")renderCount();
 }
 addEventListener("hashchange",route);
 
@@ -618,7 +730,7 @@ const game=$("#game");
 function openGame(id){const g=GAMES.find(x=>x.id===id);$("#stageTitle").textContent=g.name;$("#stageBlurb").textContent=g.blurb;$("#stageArt").setAttribute("style",bg(splash(g.art)));start(id)}
 function start(m){
   cleanup();current=m;
-  const pool=REGIONS.flatMap(r=>r.champs.map(c=>({c,r:r.name})));
+  const pool=UNIV?UNIV.filter(u=>u.faction!=="unaffiliated").map(u=>({c:u.name,r:groupOf(u).name,u})):REGIONS.flatMap(r=>r.champs.map(c=>({c,r:r.name})));
   st={trial:{list:shuffle(QUIZ).slice(0,8),i:0,score:0},origins:{list:shuffle(pool).slice(0,10),i:0,score:0},splash:{round:0,rounds:5,score:0},ability:{round:0,rounds:8,score:0},titles:{round:0,rounds:10,score:0},kinship:{},blitz:{phase:"ready"},daily:{}}[m];
   render();
 }
@@ -712,7 +824,7 @@ function rOrigins(){
   if(st.i>=st.list.length)return finish(st.score,st.list.length);
   const it=st.list[st.i],opts=shuffle([it.r,...shuffle(REGIONS.filter(r=>r.name!==it.r)).slice(0,3).map(r=>r.name)]);
   game.innerHTML=hud([["Champion",`${st.i+1}/${st.list.length}`],["Score",st.score]])+
-   `<div class="split"><div class="portrait art" style="${bg(loading(idOf(it.c)))}" role="img" aria-label="${esc(it.c)}"></div><div class="stack" style="gap:var(--s5);min-width:0"><p class="prompt">Where does ${esc(it.c)} come from?</p>${textOptions(opts)}<div id="area"></div></div></div>`;
+   `<div class="split"><div class="portrait art" style="${bg(it.u?champTall(it.u):loading(idOf(it.c)))}" role="img" aria-label="${esc(it.c)}"></div><div class="stack" style="gap:var(--s5);min-width:0"><p class="prompt">Where does ${esc(it.c)} come from?</p>${textOptions(opts)}<div id="area"></div></div></div>`;
   game.querySelectorAll(".option").forEach(b=>b.onclick=()=>{const ok=lock(it.r,b);if(ok)st.score++;const r=REGIONS.find(x=>x.name===it.r);
     $("#area").innerHTML=`<div class="between"><p class="note">${ok?"Correct. ":""}${esc(it.c)} comes from ${esc(it.r)}: ${esc(r.tag.toLowerCase())}.</p>${nextBtn(st.i+1>=st.list.length,"Next champion")}</div>`;
     $("#go").onclick=()=>{st.i++;render()};$("#go").focus()});
@@ -773,7 +885,7 @@ function rDaily(){
    ${rec.guesses.length?`<div class="row">${rec.guesses.map(g=>`<span class="tag ${norm(g)===norm(it.a)?"good":"bad"}">${esc(g)}</span>`).join("")}</div>`:""}
    <div id="area"></div>`;
   if(rec.done){
-    $("#area").innerHTML=`<div class="reveal"><div class="pic art" style="${bg(splash(aid))}"></div><div class="body"><span class="t-label">${rec.won?`Solved with ${rec.guesses.length} of 4 clues`:"Today's answer"}</span><h3 class="t-1">${esc(it.a)}</h3><p class="t-sm">A new riddle starts in ${hh} h ${mm} min. ${rec.won?`Your streak is ${liveStreak()}.`:"Your streak starts again tomorrow."}</p><div class="row"><button class="btn" id="share">Copy my result</button><a class="btn secondary" href="#games">More games</a></div><span class="t-sm" id="shareOk"></span></div></div>`;
+    $("#area").innerHTML=`<div class="reveal"><div class="pic art" style="${bg(splash(aid))}"></div><div class="body"><span class="t-label">${rec.won?`Solved with ${rec.guesses.length} of 4 clues`:"Today's answer"}</span><h3 class="t-1">${esc(it.a)}</h3><p class="t-sm">A new riddle starts in ${hh} h ${mm} min. ${rec.won?`Your streak is ${liveStreak()}.`:"Your streak starts again tomorrow."}</p><div class="row"><button class="btn" id="share">Copy my result</button><a class="btn secondary" href="#champ-${esc(slugOf(it.a))}">Read ${esc(it.a)}'s story</a></div><span class="t-sm" id="shareOk"></span></div></div>`;
     $("#share").onclick=()=>{const sq=[0,1,2,3].map(k=>{const g=rec.guesses[k];return g===undefined?"⬜":norm(g)===norm(it.a)?"🟩":"🟥"}).join("");copyText(`Runeterra Codex · Daily Riddle No. ${n}\n${sq}`,$("#shareOk"))};
     return;
   }
@@ -786,17 +898,92 @@ function rDaily(){
 }
 
 /* ===== Atlas ===== */
+let currentRegion="demacia";
 function renderAtlas(id){
-  pendingRegion=null;
-  $("#rlist").innerHTML=REGIONS.map(r=>`<button data-r="${r.id}" aria-pressed="${r.id===id}"><i class="swatch" style="background:${r.hue}"></i>${esc(r.name)}${LS.visited.includes(r.id)?'<span class="seen">Read</span>':""}</button>`).join("");
+  pendingRegion=null;currentRegion=id;
+  $("#rlist").innerHTML=GROUPS.map(r=>`<button data-r="${r.id}" aria-pressed="${r.id===id}"><i class="swatch" style="background:${r.hue}"></i>${esc(r.name)}${LS.visited.includes(r.id)?'<span class="seen">Read</span>':""}</button>`).join("");
   document.querySelectorAll("#rlist button").forEach(b=>b.onclick=()=>renderAtlas(b.dataset.r));
-  const r=REGIONS.find(x=>x.id===id);
+  const r=GROUPS.find(x=>x.id===id)||REGIONS[1],list=members(r);
   $("#rpanel").innerHTML=`<div class="banner art" style="${bg(splash(idOf(r.key)))}"></div><div class="body">
    <div class="stack" style="gap:var(--s2)"><span class="t-label" style="color:${r.hue}">${esc(r.tag)}</span><h2 class="t-1">${esc(r.name)}</h2></div>
    <p class="t-body">${esc(r.text)}</p><div class="fact"><span class="t-label">Did you know</span><p>${esc(r.fact)}</p></div>
-   <h3 class="t-3">Champions</h3><div class="champs">${r.champs.map(c=>`<figure><div class="portrait art" style="${bg(loading(idOf(c)))}"></div><figcaption>${esc(c)}</figcaption></figure>`).join("")}</div></div>`;
-  if(!LS.visited.includes(id)){LS.visited.push(id);save();if(LS.visited.length===13)toast("All thirteen regions read")}
-  $("#visited").textContent=`${LS.visited.length} of 13 regions read`;
+   <div class="between"><h3 class="t-3">Champions of ${esc(r.name)}</h3><span class="t-sm num">${UNIV?`${list.length} champions`:uFailed?"Showing a few. Riot's full list could not load.":"Loading the full list…"}</span></div>
+   <div class="roster tall">${list.map(u=>champTile(u,true)).join("")}</div>
+   ${r.u!=="unaffiliated"?`<a class="link" href="${U_SITE}region/${r.u}/" target="_blank" rel="noopener">Read about ${esc(r.name)} on Riot's Universe site ↗</a>`:""}</div>`;
+  if(r.id!=="wanderers"&&!LS.visited.includes(id)){LS.visited.push(id);save();if(LS.visited.length===13)toast("All thirteen regions read")}
+  $("#visited").textContent=`${LS.visited.filter(v=>v!=="wanderers").length} of 13 regions read`;
+}
+
+/* ===== Champions roster ===== */
+function renderRoster(){
+  $("#rosterFilters").innerHTML=[{id:"all",name:"All",hue:"var(--gold-2)"},...GROUPS].map(g=>`<button class="chip" data-f="${g.id}" aria-pressed="${rosterFilter===g.id}"><i class="swatch" style="background:${g.hue}"></i>${esc(g.name)}</button>`).join("");
+  document.querySelectorAll("#rosterFilters .chip").forEach(b=>b.onclick=()=>{rosterFilter=b.dataset.f;renderRoster()});
+  const inp=$("#rosterSearch");inp.oninput=drawRoster;drawRoster();
+}
+function drawRoster(){
+  if(!UNIV){$("#roster").innerHTML=`<p class="empty" style="grid-column:1/-1">${uFailed?"We couldn't reach Riot's champion list. Check your connection, then reload the page.":"Loading every champion from Riot…"}</p>`;$("#rosterCount").textContent="";return}
+  const q=norm($("#rosterSearch").value),g=GROUPS.find(x=>x.id===rosterFilter);
+  const list=UNIV.filter(u=>(!g||u.faction===g.u)&&(!q||norm(u.name).includes(q)));
+  $("#rosterCount").textContent=`${list.length} of ${UNIV.length} champions`;
+  $("#roster").innerHTML=list.map(u=>champTile(u,false)).join("")||`<p class="empty" style="grid-column:1/-1">No champion matches “${esc($("#rosterSearch").value)}”.</p>`;
+}
+
+/* ===== Champion page ===== */
+async function renderChamp(slug){
+  const v=$("#champView");
+  if(!UNIV){v.innerHTML=`<div class="band section"><div class="wrap"><p class="${uFailed?"banner-msg":"skel"}">${uFailed?"We couldn't reach Riot's servers. Check your connection, then reload the page.":"Loading champion…"}</p></div></div>`;return}
+  const u=UNIV.find(c=>c.slug===slug);
+  if(!u){v.innerHTML=`<div class="band section"><div class="wrap stack"><h2 class="t-1">Champion not found</h2><p class="t-body">We couldn't find that champion. Pick one from the full list.</p><a class="btn" href="#champions">All champions</a></div></div>`;return}
+  const g=groupOf(u),id=ddIdFor(u),sameRegion=members(g),idx=sameRegion.findIndex(x=>x.slug===slug);
+  const prev=sameRegion[(idx-1+sameRegion.length)%sameRegion.length],next=sameRegion[(idx+1)%sameRegion.length];
+  document.title=`${u.name} · Runeterra Codex`;
+  v.innerHTML=`<div class="ch-hero band"><div class="art" style="${bg(champWide(u))}"></div><div class="wrap">
+     <a class="link" href="#champions">← All champions</a>
+     <h1 class="t-hero">${esc(u.name)}</h1><p class="t-2">${esc(cap((CHAMPS.find(x=>x.id===id)||{}).title||(u.title!==u.name?u.title:"")||""))}</p>
+     <div class="row"><button class="chip" id="toRegion"><i class="swatch" style="background:${g.hue}"></i>${esc(g.name)}</button><span id="heroTags" class="row"></span></div></div></div>
+   <div class="band section"><div class="wrap ch-body">
+     <div class="ch-main" id="chMain"><p class="skel">Loading ${esc(u.name)}'s story from Riot…</p></div>
+     <aside class="ch-side" id="chSide"></aside></div>
+     <div class="wrap pager" style="margin-top:var(--s7)"><a class="link" href="#champ-${esc(prev.slug)}">← ${esc(prev.name)}</a><span class="t-sm">${idx+1} of ${sameRegion.length} in ${esc(g.name)}</span><a class="link" href="#champ-${esc(next.slug)}">${esc(next.name)} →</a></div></div>`;
+  $("#toRegion").onclick=()=>{pendingRegion=g.id;location.hash="atlas"};
+  let uni=null,dd=null;
+  await Promise.all([
+    getJSON(`${U_API}champions/${slug}/index.json`,uCache).then(d=>uni=d).catch(()=>{}),
+    id?getJSON(`${DD}${VER}/data/en_US/champion/${id}.json`,ddCache).then(d=>dd=d.data[id]).catch(()=>{}):null
+  ]);
+  if(location.hash!=="#champ-"+slug)return;
+  const c=uni&&uni.champion,bio=c&&c.biography||{};
+  const races=(c&&c.races||[]).map(r=>r.name),roles=(c&&c.roles||[]).map(r=>r.name);
+  $("#heroTags").innerHTML=[...races,...roles].map(t=>`<span class="tag">${esc(t)}</span>`).join("");
+  const stories=(uni&&uni.modules||[]).filter(m=>m.type==="story-preview"&&m["story-slug"]);
+  const related=(uni&&uni["related-champions"]||[]).map(r=>UNIV.find(x=>x.slug===r.slug)).filter(Boolean);
+  const keys=["Q","W","E","R"];
+  const abil=dd?[{k:"Passive",n:dd.passive.name,img:`${DD}${VER}/img/passive/${dd.passive.image.full}`},...dd.spells.map((s,i)=>({k:keys[i],n:s.name,img:`${DD}${VER}/img/spell/${s.image.full}`}))]:[];
+  const full=`${U_SITE}champion/${slug}/`;
+  $("#chMain").innerHTML=`
+    ${bio.quote?`<blockquote class="blockquote">“${esc(plain(bio.quote).replace(/^["“”']+|["“”']+$/g,""))}”<cite>${esc(plain(bio["quote-author"])||u.name)}</cite></blockquote>`:""}
+    <section class="stack"><h2 class="t-2">Biography</h2>
+      ${bio.short?`<p class="bio">${esc(plain(bio.short))}</p><p class="src">Short biography by Riot Games, from the official Universe site.</p>`:`<p class="t-body">${uni?"Riot hasn't published a short biography for this champion yet.":"We couldn't load the biography from Riot's servers."}</p>`}
+      <div class="row"><a class="btn" href="${full}" target="_blank" rel="noopener">Read the full story on Universe ↗</a></div></section>
+    ${stories.length?`<section class="stack"><h2 class="t-2">Stories</h2><ul class="storylist">${stories.map(s=>`<li><a href="${U_SITE}story/${esc(s["story-slug"])}/" target="_blank" rel="noopener"><span>${esc(plain(s.title))}</span><span>Read ↗</span></a></li>`).join("")}</ul></section>`:""}
+    ${abil.length?`<section class="stack"><h2 class="t-2">Abilities</h2><div class="abilities">${abil.map(a=>`<figure><img loading="lazy" alt="" src="${esc(a.img)}"><span class="k">${a.k}</span><figcaption>${esc(a.n)}</figcaption></figure>`).join("")}</div></section>`:""}
+    ${related.length?`<section class="stack"><h2 class="t-2">Related champions</h2><div class="roster">${related.map(r=>champTile(r,false)).join("")}</div></section>`:""}`;
+  const facts=[];
+  facts.push(["Region",g.name]);
+  if(u.release)facts.push(["Released",new Date(u.release).toLocaleDateString("en-GB",{month:"long",year:"numeric"})]);
+  if(races.length)facts.push(["Race",races.join(", ")]);
+  if(dd){
+    facts.push(["Attack range",dd.stats.attackrange<=350?`Melee (${dd.stats.attackrange})`:`Ranged (${dd.stats.attackrange})`]);
+    facts.push(["Resource",dd.partype||"None"]);
+    facts.push(["Skins",String(dd.skins.length-1)]);
+    if(dd.skins.length>1)facts.push(["Newest skin",dd.skins[dd.skins.length-1].name]);
+    facts.push(["Ultimate",dd.spells[3].name]);
+  }
+  facts.push([`Champions from ${g.name}`,String(sameRegion.length)]);
+  const stat=(l,n)=>`<div class="stat"><span>${l}</span><span class="bar"><i style="width:${n*10}%"></i></span><b>${n}</b></div>`;
+  $("#chSide").innerHTML=`${dd?`<div class="panel"><h3 class="t-3">Playstyle</h3>${stat("Attack",dd.info.attack)}${stat("Defense",dd.info.defense)}${stat("Magic",dd.info.magic)}${stat("Difficulty",dd.info.difficulty)}</div>`:""}
+    <div class="panel"><h3 class="t-3">Quick facts</h3><ul class="facts">${facts.map(([a,b])=>`<li><span>${esc(a)}</span><span>${esc(b)}</span></li>`).join("")}</ul></div>
+    <div class="panel"><h3 class="t-3">Test yourself</h3><p class="t-sm">Think you know ${esc(u.name)}? Try spotting them in Splash Zoom or Ability Check.</p><div class="row"><a class="btn secondary" href="#splash">Splash Zoom</a><a class="btn secondary" href="#ability">Ability Check</a></div></div>`;
 }
 
 /* ===== Support + about ===== */
@@ -814,7 +1001,7 @@ function askReset(){
 $("#resetBtn").onclick=askReset;
 
 /* ===== Boot ===== */
-updateProfile();route();loadDD();
+updateProfile();route();loadDD().then(loadUniverse);
 if(!reduce)setInterval(nextSlide,7000);
 </script>
 </body>
