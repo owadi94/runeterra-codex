@@ -16,6 +16,8 @@ export const to = {
   region: id => `#/regions/${id}`,
   web: '#/web',
   webFocus: slug => `#/web/${slug}`,
+  explore: '#/explore',
+  city: id => `#/explore/${id}`,
   support: '#/support',
   about: '#/about',
 };

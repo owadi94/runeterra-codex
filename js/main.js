@@ -22,6 +22,7 @@ import { enterChampion } from './views/champion.js';
 import { enterRegions, refreshRegions, regionName } from './views/regions.js';
 import { enterWeb, refreshWeb } from './views/web.js';
 import { enterSupport, enterAbout } from './views/info.js';
+import { enterExplore, enterCity, cityName, leaveCity } from './views/explore.js';
 
 /*            address                page view     nav tab        */
 route('/',                   { view: 'home',      nav: 'home',      enter: enterHome, refresh: refreshHome });
@@ -33,6 +34,8 @@ route('/regions',            { view: 'atlas',     nav: 'atlas',     title: () =>
 route('/regions/:id',        { view: 'atlas',     nav: 'atlas',     title: p => regionName(p.id), enter: enterRegions, refresh: refreshRegions });
 route('/web',                { view: 'web',       nav: 'web',       title: () => 'The Web of Runeterra', enter: enterWeb });
 route('/web/:slug',          { view: 'web',       nav: 'web',       title: () => 'The Web of Runeterra', enter: enterWeb });
+route('/explore',            { view: 'explore',   nav: 'explore',   title: () => 'Explore', enter: enterExplore });
+route('/explore/:id',        { view: 'city',      nav: 'explore',   title: p => cityName(p.id), enter: enterCity });
 route('/support',            { view: 'support',   nav: 'support',   title: () => 'Support', enter: enterSupport });
 route('/about',              { view: 'about',     nav: 'about',     title: () => 'About', enter: enterAbout });
 
@@ -42,7 +45,7 @@ if (new URLSearchParams(location.search).has('debug')) {
     .then(([engine, graph, daily, riot]) => { window.codex = { engine, graph, daily, riot }; });
 }
 
-onBeforeEach(stopTimers);   // leaving a page stops any running game clock
+onBeforeEach(() => { stopTimers(); leaveCity(); });   // leaving a page stops game clocks and closes any open city
 updateProfile();
 start();
 

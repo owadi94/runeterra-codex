@@ -32,6 +32,7 @@
       <a href="#/games/daily" data-nav="daily">Daily</a>
       <a href="#/champions" data-nav="champions">Champions</a>
       <a href="#/web" data-nav="web">Web</a>
+      <a href="#/explore" data-nav="explore">Explore</a>
       <a href="#/regions" data-nav="atlas">Regions</a>
       <a href="#/support" data-nav="support">Support</a>
       <a href="#/about" data-nav="about">About</a>
@@ -152,6 +153,15 @@
   <div id="champView"></div>
 </section>
 
+<!-- EXPLORE -->
+<section data-view="explore" hidden>
+  <div class="band section"><div class="wrap">
+    <div class="title"><div class="stack"><span class="t-label">Explore</span><h2 class="t-1">Walk the cities of Runeterra</h2></div><p class="t-sm" style="max-width:54ch">Step inside a city and explore it as if you lived there. Talk to the people in the streets and find every landmark to learn its story. New cities arrive region by region.</p></div>
+    <div class="grid" id="exploreList"></div>
+  </div></div>
+</section>
+<section data-view="city" hidden><div class="city-host" id="cityHost"></div></section>
+
 <!-- SUPPORT -->
 <section data-view="support" hidden>
   <div class="band section"><div class="wrap stack" style="gap:var(--s7)">
@@ -184,7 +194,7 @@
 </main>
 
 <footer class="site-foot band"><div class="wrap">
-  <nav aria-label="Footer"><a class="link" href="#/games">Games</a><a class="link" href="#/champions">Champions</a><a class="link" href="#/web">Web</a><a class="link" href="#/games/daily">Daily</a><a class="link" href="#/regions">Regions</a><a class="link" href="#/support">Support</a><a class="link" href="#/about">About</a></nav>
+  <nav aria-label="Footer"><a class="link" href="#/games">Games</a><a class="link" href="#/champions">Champions</a><a class="link" href="#/web">Web</a><a class="link" href="#/explore">Explore</a><a class="link" href="#/games/daily">Daily</a><a class="link" href="#/regions">Regions</a><a class="link" href="#/support">Support</a><a class="link" href="#/about">About</a></nav>
   <small>Runeterra Codex is a fan project made in Jordan. It was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project.</small>
 </div></footer>
 <div class="toast panel" id="toast" role="status" hidden></div>

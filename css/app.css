@@ -381,3 +381,29 @@ button{font:inherit;color:inherit;cursor:pointer}
 .toast{position:fixed;left:50%;bottom:calc(var(--s5) + env(safe-area-inset-bottom,0px));translate:-50% 0;z-index:40;padding:var(--s3) var(--s5);font-family:var(--display);font-size:var(--fs-sm);letter-spacing:var(--track);text-transform:uppercase;max-width:calc(100% - 32px)}
 .banner-msg{padding:var(--s3) var(--s4);border:1px solid var(--red);color:var(--gold-1);font-size:var(--fs-sm)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ---------- Explore: walk-through cities ---------- */
+.card.soon{opacity:.55;cursor:default}
+.card.soon:hover{transform:none;border-color:var(--line)}
+.city-host{position:relative;height:calc(100vh - 64px);height:calc(100dvh - 64px);min-height:480px;background:var(--black);overflow:hidden}
+.x-canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.x-loading{display:grid;place-items:center;gap:var(--s4);height:100%;padding:var(--s5);text-align:center}
+.x-ui{position:absolute;inset:0;pointer-events:none}
+.x-ui>*{pointer-events:auto}
+.x-top{position:absolute;left:var(--s4);right:var(--s4);top:var(--s4);display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--s3);pointer-events:none}
+.x-top>*{pointer-events:auto}
+.x-title{display:flex;flex-direction:column;gap:2px;padding:var(--s3) var(--s4)}
+.x-title b{font-family:var(--display);font-weight:400;font-size:var(--fs-3);letter-spacing:var(--track);text-transform:uppercase}
+.x-btns{display:flex;flex-wrap:wrap;gap:var(--s2);align-items:flex-start}
+.x-btns .btn{min-height:38px;padding:0 var(--s4);background:rgba(1,10,19,.78)}
+.x-mini{position:absolute;right:var(--s4);bottom:var(--s4);width:180px;height:180px;padding:0}
+.x-card{position:absolute;left:var(--s4);bottom:var(--s4);width:min(420px,calc(100% - 32px));padding:var(--s5);display:flex;flex-direction:column;gap:var(--s2)}
+.x-say{position:absolute;left:50%;top:120px;translate:-50% 0;max-width:min(520px,calc(100% - 32px));padding:var(--s4) var(--s5);display:flex;flex-direction:column;gap:var(--s1);text-align:center}
+.x-say p{font-family:var(--display);font-size:1.15rem;line-height:1.35}
+.x-hint{position:absolute;left:50%;bottom:var(--s3);translate:-50% 0;background:rgba(1,10,19,.6);padding:var(--s1) var(--s3);white-space:nowrap;pointer-events:none}
+.x-joy{position:absolute;left:var(--s5);bottom:var(--s5);width:120px;height:120px;border-radius:50%;border:1px solid var(--gold-4);background:rgba(1,10,19,.45);display:none;place-items:center;touch-action:none}
+.x-joy i{width:48px;height:48px;border-radius:50%;background:radial-gradient(circle,var(--gold-2),var(--gold-4));transition:transform .05s}
+.x-start{position:absolute;inset:0;display:grid;place-items:center;padding:var(--s4);background:rgba(1,10,19,.55);backdrop-filter:blur(3px)}
+.x-start .panel{max-width:560px;padding:var(--s6);display:flex;flex-direction:column;gap:var(--s4)}
+@media (pointer:coarse){.x-joy{display:grid}.x-hint{display:none}.x-card{bottom:160px}}
+@media (max-width:700px){.x-mini{width:110px;height:110px;top:150px;bottom:auto}.x-btns .btn{min-height:34px;font-size:.7rem;padding:0 var(--s3)}.x-say{top:auto;bottom:170px}}

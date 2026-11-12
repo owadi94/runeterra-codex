@@ -69,7 +69,7 @@ const STEP = `(() => {
   // Routes
   for (const [hash, check] of [['#/champions', `document.querySelectorAll('#roster .champ').length>150`], ['#/champions/ahri', `document.querySelector('#champView h1').textContent==='Ahri'`],
     ['#/regions/ionia', `document.querySelector('#rpanel h2').textContent==='Ionia' && document.querySelector('#mapSvg .land.on').dataset.r==='ionia'`],
-    ['#/web/lucian', `document.querySelector('#webSide h3').textContent==='Lucian'`], ['#/support', `!document.querySelector('[data-view=support]').hidden`], ['#/about', `!!document.querySelector('#resetBtn')`],
+    ['#/web/lucian', `document.querySelector('#webSide h3').textContent==='Lucian'`], ['#/explore', `document.querySelectorAll('#exploreList .card').length===7 && document.querySelectorAll('#exploreList a.card').length===1`], ['#/support', `!document.querySelector('[data-view=support]').hidden`], ['#/about', `!!document.querySelector('#resetBtn')`],
     ['#/nowhere', `!document.querySelector('[data-view=home]').hidden`]]) {
     await hashTo(hash, 2500);
     ok('route ' + hash, await js(check));

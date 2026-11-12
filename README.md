@@ -20,6 +20,7 @@ There is no install step and there are no dependencies.
 | Champions, one champion | `#/champions`, `#/champions/<slug>` |
 | Regions map, one region | `#/regions`, `#/regions/<id>` |
 | The Web, focused on a champion | `#/web`, `#/web/<slug>` |
+| Explore cities, walk one city | `#/explore`, `#/explore/<city>` (demacia-capital) |
 | Support, About | `#/support`, `#/about` |
 
 Old addresses such as `#champ-ahri` or `#splash` redirect automatically.
@@ -37,6 +38,8 @@ js/graph.js           connections between champions, shortest paths
 js/data/              our lore (lore.js), game list, map shapes, Riot's champion links
 js/views/             one file per page
 js/games/engine.js    shared game engine;  js/games/<id>.js  one file per game
+js/explore/           3D city engine (three.js, loaded only on city pages) and one builder per city
+js/data/cities.js     explorable cities: landmarks (lore cards) and townsfolk lines
 tools/                local server, site test, rebuild of Riot's champion links (npm run relations)
 LORE-NOTES.md         verified lore facts and data sources, for adding content
 ```
@@ -46,6 +49,7 @@ LORE-NOTES.md         verified lore facts and data sources, for adding content
   and add its card to `js/data/games.js`.
 - **A bond story:** add a line to `STORIES` in `js/data/lore.js` after checking it against the official biographies.
 - **Fan art:** save the image in `art/` and add a line to `FANART` in `js/data/lore.js`.
+- **A city:** add it to `js/data/cities.js`, write `js/explore/<city>.js` (see demacia.js), and register the builder in `js/views/explore.js`.
 - **Support links:** fill in `js/config.js`.
 
 ## Legal
