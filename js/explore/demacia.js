@@ -173,9 +173,14 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
   const bRoof = add(new THREE.BoxGeometry(29, 0.5, 14), M.roof, 44, 10.4, -20); void bRoof;
   for (let i = 0; i < 6; i++) add(new THREE.BoxGeometry(1.4, 2, 0.3), M.glass, 33 + i * 4.4, 6, -13.9);
   flat(new THREE.PlaneGeometry(26, 11), K.std({ color: 0xcbb48a, roughness: 1 }), 44, -6.5, 0.11);
-  for (let i = 0; i < 4; i++) { const d = add(new THREE.CylinderGeometry(0.25, 0.3, 1.9, 8), M.wood, 36 + i * 5.5, 0.95, -6); const arm = add(new THREE.BoxGeometry(1.2, 0.15, 0.15), M.wood, 36 + i * 5.5, 1.6, -6); void d; void arm; }
   K.bannerCloth(scene, 44, 6.5, -13.6, 0, 7);
-  for (let i = 0; i < 3; i++) K.barrel(scene, 58, -9 - i * 1.3);
+  // The Vanguard's training yard: racks, armour stands, shields and an equipment chest
+  K.weaponRack(scene, 36, -12.4, 0); K.weaponRack(scene, 52, -12.4, 0);
+  K.armorStand(scene, 41, -12.2, 0); K.armorStand(scene, 47, -12.2, 0);
+  [33, 55, 58].forEach((x, i) => K.shieldPost(scene, x, -5 + i * 0.4, -Math.PI / 2 * (i ? 1 : -1)));
+  K.chest(scene, 44, -9.5, 0.1);
+  for (let i = 0; i < 3; i++) K.barrel(scene, 59, -10 - i * 1.3);
+  [[36, -12.4, 3.4], [52, -12.4, 3.4], [41, -12.2, 1], [47, -12.2, 1], [44, -9.5, 1.2]].forEach(([x, z, r]) => circle(x, z, r));
 
   /* ---- Mageseeker watchtower (west) and House of the Illuminators (far west) ---- */
   K.tower(scene, -44, 16, 5.4, 34); circle(-44, 16, 6);
@@ -203,6 +208,13 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
   }
   K.trees(scene, tspots);
   K.hedge(scene, -14, WALL_R + 20, 10); K.hedge(scene, 14, WALL_R + 20, 10);
+
+  /* ---- Painted props around the city ---- */
+  [-7.5, 7.5].forEach(x => { K.bannerStand(scene, x, WALL_R + 14, 0); circle(x, WALL_R + 14, 0.8); });          // the road into the gate
+  [-7.5, 7.5].forEach(x => { K.bannerStand(scene, x, P.z + 22, 0); circle(x, P.z + 22, 0.8); });                // palace steps
+  [-12, 12].forEach(x => { K.chest(scene, x, P.z + 18, 0); circle(x, P.z + 18, 1.2); });
+  [[-20, 6, 0.3], [20, -6, -2.8], [6, -20, 1.4]].forEach(([x, z, r]) => { K.table(scene, x, z, r); circle(x, z, 1.5); });   // market tables
+  K.weaponRack(scene, -52, 26, Math.PI / 2); circle(-52, 26, 2);                                                   // by the Mageseeker post
 
   /* ---- Townsfolk ---- */
   const say = i => lines[i % Math.max(1, lines.length)] || { role: 'Townsperson', line: 'Good day to you.' };

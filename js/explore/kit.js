@@ -1,29 +1,31 @@
 // Reusable models for explorable cities, built from shapes and our procedural textures.
 // Everything here is an original design: generic medieval-fantasy buildings, props and townsfolk.
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import * as T from './textures.js';
 
 export function makeKit(THREE, rnd) {
   const std = (o) => new THREE.MeshStandardMaterial({ roughness: 0.85, metalness: 0, ...o });
 
   /* ---- Shared materials ---- */
-  const stoneT = T.stoneBlocks(THREE, [236, 230, 218], [2, 2]);
-  const stone2T = T.stoneBlocks(THREE, [214, 206, 192], [2, 2]);
-  const roofT = T.roofTiles(THREE, [58, 92, 140], [3, 2]);
-  const roof2T = T.roofTiles(THREE, [46, 74, 116], [3, 2]);
-  const woodT = T.planks(THREE);
+  /* Hand-painted look: colour, light and edge wear are painted into the textures (our own, made in code). */
+  const stoneT = T.paintedBlocks(THREE, [252, 248, 238], [200, 192, 180], [2, 2]);
+  const stone2T = T.paintedBlocks(THREE, [236, 230, 218], [178, 170, 158], [2, 2]);
+  const roofT = T.paintedRoof(THREE, [70, 112, 178], [3, 2]);
+  const roof2T = T.paintedRoof(THREE, [56, 92, 156], [3, 2]);
+  const woodT = T.paintedWood(THREE);
   const M = {
-    stone: std({ map: stoneT.map, bumpMap: stoneT.bump, bumpScale: 1.4 }),
-    stone2: std({ map: stone2T.map, bumpMap: stone2T.bump, bumpScale: 1.4 }),
-    plaster: std({ color: 0xf2ece0, roughness: 0.95 }),
-    roof: std({ map: roofT.map, bumpMap: roofT.bump, bumpScale: 2, roughness: 0.7 }),
-    roof2: std({ map: roof2T.map, bumpMap: roof2T.bump, bumpScale: 2, roughness: 0.7 }),
-    trim: std({ color: 0x8a6a45, map: woodT.map }),
+    stone: std({ map: stoneT.map, bumpMap: stoneT.bump, bumpScale: 1.2, roughness: 1 }),
+    stone2: std({ map: stone2T.map, bumpMap: stone2T.bump, bumpScale: 1.2, roughness: 1 }),
+    plaster: std({ map: T.paintedPlaster(THREE, [1, 1]).map, roughness: 1 }),
+    roof: std({ map: roofT.map, bumpMap: roofT.bump, bumpScale: 1.6, roughness: 0.8 }),
+    roof2: std({ map: roof2T.map, bumpMap: roof2T.bump, bumpScale: 1.6, roughness: 0.8 }),
+    trim: std({ map: woodT.map, roughness: 1 }),
     dark: std({ color: 0x2a2622, roughness: 0.7 }),
-    glass: std({ color: 0x1d2a3a, emissive: 0xffb85c, emissiveIntensity: 0, roughness: 0.3, metalness: 0.2 }),
-    gold: std({ color: 0xc89b3c, metalness: 0.85, roughness: 0.3 }),
-    iron: std({ color: 0x24262b, metalness: 0.6, roughness: 0.5 }),
-    wood: std({ map: woodT.map }),
+    glass: std({ color: 0x24344a, emissive: 0xffb85c, emissiveIntensity: 0, roughness: 0.35, metalness: 0.1 }),
+    gold: std({ map: T.paintedGold(THREE).map, metalness: 0.4, roughness: 0.45 }),
+    iron: std({ color: 0x2e3138, metalness: 0.5, roughness: 0.55 }),
+    wood: std({ map: woodT.map, roughness: 1 }),
     leaf: std({ color: 0x4f7f3a, flatShading: true, roughness: 0.9 }),
     leaf2: std({ color: 0x3f6b30, flatShading: true, roughness: 0.9 }),
     flowers: std({ color: 0xd65a7a, flatShading: true }),
@@ -235,5 +237,97 @@ export function makeKit(THREE, rnd) {
     return walker;
   }
 
-  return { M, lamps, std, tower, houseInstances, trees, hedge, barrel, crate, stall, cart, bench, lampPost, bannerCloth, waveFlags, villager };
+  /* ---- Hand-painted props: our own designs (winged crossguards, our winged emblem) ---- */
+  const P = {
+    wood: std({ map: T.paintedWood(THREE).map, roughness: 1 }),
+    gold: std({ map: T.paintedGold(THREE).map, metalness: 0.35, roughness: 0.45 }),
+    stone: std({ map: T.paintedStone(THREE).map, roughness: 1 }),
+    steel: std({ map: T.paintedSteel(THREE).map, metalness: 0.45, roughness: 0.4 }),
+    cloth: new THREE.MeshStandardMaterial({ map: T.paintedCloth(THREE), side: THREE.DoubleSide, roughness: 0.95 }),
+    grip: std({ color: 0x2a4f8f, roughness: 0.8 }),
+    leather: std({ color: 0x6b4426, roughness: 0.9 }),
+  };
+  const rounded = (w, h, d, r = 0.08) => new RoundedBoxGeometry(w, h, d, 3, Math.min(r, w / 2, h / 2, d / 2));
+  const part = (g, geo, m, x, y, z, rx = 0, ry = 0, rz = 0) => { const o = new THREE.Mesh(geo, m); o.position.set(x, y, z); o.rotation.set(rx, ry, rz); o.castShadow = o.receiveShadow = true; g.add(o); return o; };
+  const place = (scene, g, x, z, ry = 0) => { g.position.set(x, 0, z); g.rotation.y = ry; scene.add(g); return g; };
+
+  /** A blade with a leaf-shaped point, a winged crossguard and a wrapped grip. */
+  function sword(len = 2.2) {
+    const g = new THREE.Group(), s = new THREE.Shape();
+    s.moveTo(-0.11, 0); s.lineTo(-0.13, len * 0.72); s.quadraticCurveTo(-0.16, len * 0.86, 0, len); s.quadraticCurveTo(0.16, len * 0.86, 0.13, len * 0.72); s.lineTo(0.11, 0); s.closePath();
+    const blade = new THREE.ExtrudeGeometry(s, { depth: 0.05, bevelEnabled: true, bevelSize: 0.025, bevelThickness: 0.03, bevelSegments: 2 }); blade.translate(0, 0, -0.025);
+    part(g, blade, P.steel, 0, 0.62, 0);
+    const wing = new THREE.Shape(); wing.moveTo(0, 0); wing.quadraticCurveTo(0.25, 0.05, 0.42, 0.22); wing.quadraticCurveTo(0.3, 0.02, 0.22, -0.06); wing.lineTo(0, -0.06); wing.closePath();
+    [-1, 1].forEach(side => { const wg = new THREE.ExtrudeGeometry(wing, { depth: 0.08, bevelEnabled: true, bevelSize: 0.015, bevelThickness: 0.015, bevelSegments: 1 }); const m = part(g, wg, P.gold, 0, 0.6, -0.04); m.scale.x = side; });
+    part(g, new THREE.CylinderGeometry(0.05, 0.055, 0.5, 8), P.grip, 0, 0.32, 0);
+    part(g, new THREE.SphereGeometry(0.08, 10, 8), P.gold, 0, 0.05, 0);
+    return g;
+  }
+  function helmet() {
+    const g = new THREE.Group();
+    part(g, new THREE.SphereGeometry(0.34, 18, 12, 0, Math.PI * 2, 0, Math.PI / 1.7), P.steel, 0, 0, 0);
+    part(g, rounded(0.08, 0.5, 0.5, 0.03), P.gold, 0, 0.18, 0);                                  // crest ridge
+    part(g, rounded(0.5, 0.08, 0.1, 0.03), P.gold, 0, -0.02, 0.3);                               // brow band
+    [-1, 1].forEach(side => part(g, rounded(0.06, 0.36, 0.22, 0.03), P.steel, side * 0.3, -0.18, 0.1, 0, 0, side * 0.12));   // cheek guards
+    return g;
+  }
+  function weaponRack(scene, x, z, ry) {
+    const g = new THREE.Group();
+    [-1.3, 1.3].forEach(px => { part(g, rounded(0.22, 2.1, 0.22, 0.06), P.wood, px, 1.05, 0); part(g, rounded(0.5, 0.25, 0.5, 0.06), P.stone, px, 0.12, 0); });
+    part(g, rounded(3, 0.18, 0.24, 0.06), P.wood, 0, 1.95, 0);
+    part(g, rounded(3, 0.14, 0.4, 0.05), P.wood, 0, 0.45, 0.05);
+    [-0.8, 0, 0.8].forEach((px, i) => { const s = sword(1.3 + (i === 1 ? 0.2 : 0)); s.position.set(px, 0.42, 0.1); s.rotation.z = Math.PI; s.position.y = 2.06; g.add(s); });
+    const h = helmet(); h.position.set(-1.3, 2.3, 0); g.add(h);
+    return place(scene, g, x, z, ry);
+  }
+  function armorStand(scene, x, z, ry) {
+    const g = new THREE.Group();
+    part(g, rounded(0.7, 0.3, 0.7, 0.08), P.stone, 0, 0.15, 0);
+    part(g, rounded(0.16, 1.9, 0.16, 0.05), P.wood, 0, 1.2, 0);
+    part(g, rounded(1.4, 0.16, 0.18, 0.05), P.wood, 0, 1.95, 0);
+    const tabard = part(g, new THREE.PlaneGeometry(0.85, 1.4, 4, 6), P.cloth, 0, 1.3, 0.12);
+    tabard.castShadow = true;
+    [-1, 1].forEach(side => part(g, new THREE.SphereGeometry(0.22, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2), P.gold, side * 0.6, 1.98, 0));   // pauldrons
+    const h = helmet(); h.position.set(0, 2.35, 0); g.add(h);
+    return place(scene, g, x, z, ry);
+  }
+  function chest(scene, x, z, ry) {
+    const g = new THREE.Group();
+    part(g, rounded(1.6, 0.8, 0.9, 0.1), P.stone, 0, 0.45, 0);
+    part(g, rounded(1.66, 0.36, 0.96, 0.14), P.stone, 0, 0.95, 0);
+    [-0.6, 0.6].forEach(px => part(g, rounded(0.14, 1.25, 0.98, 0.04), P.gold, px, 0.68, 0));
+    part(g, rounded(0.36, 0.3, 0.06, 0.03), P.gold, 0, 0.75, 0.47);
+    part(g, rounded(1.7, 0.08, 1.0, 0.03), P.gold, 0, 0.12, 0);
+    return place(scene, g, x, z, ry);
+  }
+  function shieldPost(scene, x, z, ry) {
+    const g = new THREE.Group();
+    part(g, rounded(0.2, 1.6, 0.2, 0.05), P.wood, 0, 0.8, 0);
+    const sh = part(g, new THREE.CylinderGeometry(0.62, 0.62, 0.1, 24), P.wood, 0, 1.3, 0.14, Math.PI / 2);
+    void sh;
+    part(g, new THREE.TorusGeometry(0.62, 0.06, 8, 28), P.steel, 0, 1.3, 0.2);
+    part(g, new THREE.SphereGeometry(0.14, 12, 8), P.gold, 0, 1.3, 0.22);
+    return place(scene, g, x, z, ry);
+  }
+  function bannerStand(scene, x, z, ry) {
+    const g = new THREE.Group();
+    part(g, rounded(0.9, 0.35, 0.9, 0.08), P.stone, 0, 0.18, 0);
+    part(g, new THREE.CylinderGeometry(0.07, 0.08, 3.6, 10), P.wood, 0, 1.9, 0);
+    part(g, rounded(1.3, 0.1, 0.1, 0.03), P.gold, 0, 3.55, 0);
+    part(g, new THREE.ConeGeometry(0.12, 0.35, 10), P.gold, 0, 3.85, 0);
+    part(g, new THREE.PlaneGeometry(1.15, 2.3), P.cloth, 0, 2.35, 0.06);
+    return place(scene, g, x, z, ry);
+  }
+  function table(scene, x, z, ry) {
+    const g = new THREE.Group();
+    part(g, rounded(2.4, 0.16, 1.1, 0.05), P.wood, 0, 0.95, 0);
+    [[-1, -0.4], [1, -0.4], [-1, 0.4], [1, 0.4]].forEach(([px, pz]) => part(g, rounded(0.14, 0.9, 0.14, 0.04), P.wood, px, 0.45, pz));
+    part(g, new THREE.PlaneGeometry(0.7, 1.15), P.cloth, 0.2, 1.04, 0, -Math.PI / 2, 0, 0.1);
+    const s = sword(1.1); s.position.set(-0.5, 1.06, 0.1); s.rotation.set(-Math.PI / 2, 0, 1.2); g.add(s);
+    part(g, new THREE.SphereGeometry(0.18, 10, 8), P.leather, 0.85, 1.15, -0.2);                 // coin pouch
+    return place(scene, g, x, z, ry);
+  }
+
+  return { M, P, lamps, std, tower, houseInstances, trees, hedge, barrel, crate, stall, cart, bench, lampPost, bannerCloth, waveFlags, villager,
+    weaponRack, armorStand, chest, shieldPost, bannerStand, table };
 }

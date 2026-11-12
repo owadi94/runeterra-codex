@@ -15,6 +15,142 @@ function tex(THREE, c, repeat = [1, 1], color = true) {
   return t;
 }
 
+/* ---------- Hand-painted style ----------
+   Light from above baked into the colour, darker edges, a bright top edge and visible brush strokes.
+   Used for props and trims so they read as painted game art rather than photos. */
+function strokes(g, w, h, colors, count, len, width) {
+  g.lineCap = 'round';
+  for (let i = 0; i < count; i++) {
+    const x = Math.random() * w, y = Math.random() * h, a = (Math.random() - 0.5) * 0.6;
+    g.strokeStyle = colors[Math.floor(Math.random() * colors.length)]; g.lineWidth = width * (0.5 + Math.random());
+    g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * len * (0.5 + Math.random()), y + Math.sin(a) * len * 0.3); g.stroke();
+  }
+}
+function paintedBase(g, w, h, top, bottom) {
+  const grad = g.createLinearGradient(0, 0, 0, h); grad.addColorStop(0, top); grad.addColorStop(1, bottom);
+  g.fillStyle = grad; g.fillRect(0, 0, w, h);
+}
+function edges(g, w, h, dark = 'rgba(40,25,10,.45)', light = 'rgba(255,250,230,.55)') {
+  const e = g.createLinearGradient(0, 0, w * 0.12, 0); e.addColorStop(0, dark); e.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = e; g.fillRect(0, 0, w * 0.12, h);
+  const e2 = g.createLinearGradient(w, 0, w * 0.88, 0); e2.addColorStop(0, dark); e2.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = e2; g.fillRect(w * 0.88, 0, w * 0.12, h);
+  const b = g.createLinearGradient(0, h, 0, h * 0.8); b.addColorStop(0, dark); b.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = b; g.fillRect(0, h * 0.8, w, h * 0.2);
+  g.fillStyle = light; g.fillRect(0, 0, w, Math.max(3, h * 0.03));
+}
+
+/** Painted wood: warm planks with grain strokes and darker seams. */
+export function paintedWood(THREE, repeat = [1, 1]) {
+  const W = 256, H = 256, [c, g] = canvas(W, H), n = 4, pw = W / n;
+  for (let i = 0; i < n; i++) {
+    const base = [[156, 104, 60], [140, 92, 52], [166, 114, 66], [132, 86, 48]][i % 4];
+    const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, `rgb(${base.map(v => v + 26)})`); gr.addColorStop(1, `rgb(${base.map(v => v - 30)})`);
+    g.fillStyle = gr; g.fillRect(i * pw, 0, pw, H);
+    g.save(); g.beginPath(); g.rect(i * pw, 0, pw, H); g.clip();
+    strokes(g, W, H, ['rgba(90,55,28,.35)', 'rgba(205,160,110,.25)'], 40, 120, 2.5);
+    g.restore();
+    g.fillStyle = 'rgba(50,28,12,.6)'; g.fillRect(i * pw, 0, 3, H);
+    g.fillStyle = 'rgba(230,190,140,.35)'; g.fillRect(i * pw + 3, 0, 2, H);
+  }
+  edges(g, W, H);
+  return { map: tex(THREE, c, repeat), bump: null };
+}
+
+/** Painted gold trim: bright highlights, warm mid tones, dark worn edges. */
+export function paintedGold(THREE, repeat = [1, 1]) {
+  const W = 128, H = 128, [c, g] = canvas(W, H);
+  paintedBase(g, W, H, '#ffe9a3', '#9a6a1c');
+  strokes(g, W, H, ['rgba(255,245,200,.55)', 'rgba(150,100,30,.4)', 'rgba(255,215,120,.5)'], 70, 50, 3);
+  edges(g, W, H, 'rgba(80,45,5,.55)', 'rgba(255,252,220,.9)');
+  return { map: tex(THREE, c, repeat), bump: null };
+}
+
+/** Painted white stone (Demacian marble): soft cool shadows, warm light, chips at the edges. */
+export function paintedStone(THREE, repeat = [1, 1]) {
+  const W = 256, H = 256, [c, g] = canvas(W, H);
+  paintedBase(g, W, H, '#fbf7ee', '#c9c2b5');
+  strokes(g, W, H, ['rgba(255,255,255,.4)', 'rgba(160,165,180,.22)', 'rgba(230,220,200,.35)'], 90, 70, 6);
+  for (let i = 0; i < 18; i++) { g.strokeStyle = 'rgba(120,110,100,.25)'; g.lineWidth = 1.2; g.beginPath(); const x = Math.random() * W, y = Math.random() * H; g.moveTo(x, y); g.lineTo(x + (Math.random() - 0.5) * 22, y + Math.random() * 18); g.stroke(); }
+  edges(g, W, H, 'rgba(90,85,95,.35)', 'rgba(255,255,255,.8)');
+  return { map: tex(THREE, c, repeat), bump: null };
+}
+
+/** Painted stone blocks for walls and towers: each block lit from above with a soft outline and a bright top edge. */
+export function paintedBlocks(THREE, light = [250, 246, 236], dark = [196, 188, 176], repeat = [1, 1]) {
+  const W = 512, H = 512, [c, g] = canvas(W, H), [b, bg] = canvas(W, H);
+  g.fillStyle = `rgb(${dark.map(v => v - 40)})`; g.fillRect(0, 0, W, H);
+  bg.fillStyle = '#111'; bg.fillRect(0, 0, W, H);
+  const rows = 6, rh = H / rows;
+  for (let r = 0; r < rows; r++) {
+    let x = r % 2 ? -50 : 0;
+    while (x < W) {
+      const bw = 90 + Math.random() * 70, v = (Math.random() - 0.5) * 14, y = r * rh;
+      const gr = g.createLinearGradient(0, y, 0, y + rh);
+      gr.addColorStop(0, `rgb(${light.map(ch => ch + v)})`); gr.addColorStop(1, `rgb(${dark.map(ch => ch + v)})`);
+      g.fillStyle = gr; g.beginPath(); g.roundRect(x + 3, y + 3, bw - 6, rh - 6, 7); g.fill();
+      g.save(); g.beginPath(); g.roundRect(x + 3, y + 3, bw - 6, rh - 6, 7); g.clip();
+      strokes(g, W, H, ['rgba(255,255,255,.35)', 'rgba(150,145,160,.18)'], 30, 60, 5);
+      g.fillStyle = 'rgba(255,255,250,.7)'; g.fillRect(x + 6, y + 4, bw - 12, 3);
+      g.fillStyle = 'rgba(90,80,75,.25)'; g.fillRect(x + 3, y + rh - 10, bw - 6, 7);
+      g.restore();
+      bg.fillStyle = '#eee'; bg.beginPath(); bg.roundRect(x + 4, y + 4, bw - 8, rh - 8, 7); bg.fill();
+      x += bw;
+    }
+  }
+  return { map: tex(THREE, c, repeat), bump: tex(THREE, b, repeat, false) };
+}
+
+/** Painted roof tiles: saturated colour, a light top edge on each tile and a dark lip underneath. */
+export function paintedRoof(THREE, base = [70, 112, 178], repeat = [1, 1]) {
+  const W = 256, H = 256, [c, g] = canvas(W, H), [b, bg] = canvas(W, H);
+  g.fillStyle = `rgb(${base.map(v => v - 45)})`; g.fillRect(0, 0, W, H);
+  bg.fillStyle = '#000'; bg.fillRect(0, 0, W, H);
+  const rows = 7, rh = H / rows, tw = 36;
+  for (let r = 0; r < rows; r++) for (let i = -1; i < W / tw + 1; i++) {
+    const x = i * tw + (r % 2) * (tw / 2), y = r * rh, v = (Math.random() - 0.5) * 16;
+    const shape = ctx => { ctx.beginPath(); ctx.moveTo(x + 1, y); ctx.lineTo(x + tw - 1, y); ctx.lineTo(x + tw - 1, y + rh * 0.75); ctx.quadraticCurveTo(x + tw / 2, y + rh * 1.2, x + 1, y + rh * 0.75); ctx.closePath(); };
+    const gr = g.createLinearGradient(0, y, 0, y + rh); gr.addColorStop(0, `rgb(${base.map(ch => ch + v + 40)})`); gr.addColorStop(0.6, `rgb(${base.map(ch => ch + v)})`); gr.addColorStop(1, `rgb(${base.map(ch => ch + v - 35)})`);
+    g.fillStyle = gr; shape(g); g.fill();
+    g.strokeStyle = 'rgba(15,25,50,.55)'; g.lineWidth = 2; shape(g); g.stroke();
+    g.fillStyle = 'rgba(255,255,255,.35)'; g.fillRect(x + 4, y + 2, tw - 8, 2);
+    const bgr = bg.createLinearGradient(0, y, 0, y + rh); bgr.addColorStop(0, '#444'); bgr.addColorStop(1, '#fff'); bg.fillStyle = bgr; shape(bg); bg.fill();
+  }
+  strokes(g, W, H, ['rgba(255,255,255,.12)', 'rgba(0,0,30,.15)'], 60, 40, 3);
+  return { map: tex(THREE, c, repeat), bump: tex(THREE, b, repeat, false) };
+}
+
+/** Painted plaster for house walls: warm cream, soft shading and a few weathering strokes. */
+export function paintedPlaster(THREE, repeat = [1, 1]) {
+  const W = 256, H = 256, [c, g] = canvas(W, H);
+  paintedBase(g, W, H, '#fdf6e6', '#e2d6bd');
+  strokes(g, W, H, ['rgba(255,255,255,.35)', 'rgba(190,170,140,.18)'], 80, 70, 8);
+  const grime = g.createLinearGradient(0, H, 0, H * 0.75); grime.addColorStop(0, 'rgba(120,95,70,.35)'); grime.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = grime; g.fillRect(0, H * 0.75, W, H * 0.25);
+  return { map: tex(THREE, c, repeat), bump: null };
+}
+
+/** Painted steel for blades and helmets. */
+export function paintedSteel(THREE) {
+  const W = 128, H = 128, [c, g] = canvas(W, H);
+  paintedBase(g, W, H, '#f2f5f8', '#7d8794');
+  strokes(g, W, H, ['rgba(255,255,255,.6)', 'rgba(90,100,115,.35)'], 50, 60, 2.5);
+  edges(g, W, H, 'rgba(40,45,55,.5)', 'rgba(255,255,255,.95)');
+  return { map: tex(THREE, c), bump: null };
+}
+
+/** Painted royal-blue cloth with a gold border. */
+export function paintedCloth(THREE) {
+  const W = 128, H = 256, [c, g] = canvas(W, H);
+  paintedBase(g, W, H, '#3d6fc4', '#173a78');
+  strokes(g, W, H, ['rgba(120,160,230,.3)', 'rgba(10,30,70,.35)'], 60, 80, 4);
+  g.strokeStyle = '#e2b95e'; g.lineWidth = 9; g.strokeRect(5, 5, W - 10, H - 10);
+  g.strokeStyle = 'rgba(120,80,20,.6)'; g.lineWidth = 2; g.strokeRect(10, 10, W - 20, H - 20);
+  g.fillStyle = '#e2b95e'; g.beginPath(); g.moveTo(64, 96); g.quadraticCurveTo(24, 70, 18, 112); g.quadraticCurveTo(42, 104, 64, 120); g.quadraticCurveTo(86, 104, 110, 112); g.quadraticCurveTo(104, 70, 64, 96); g.fill();
+  g.beginPath(); g.moveTo(64, 120); g.lineTo(56, 150); g.lineTo(64, 166); g.lineTo(72, 150); g.closePath(); g.fill();
+  const t = tex(THREE, c); t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping; return t;
+}
+
 /** Cut stone blocks with mortar lines (walls, towers). */
 export function stoneBlocks(THREE, base = [236, 230, 218], repeat = [1, 1]) {
   const W = 512, H = 512, [c, g] = canvas(W, H), [b, bg] = canvas(W, H);
