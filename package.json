@@ -1,0 +1,11 @@
+{
+  "name": "runeterra-codex",
+  "private": true,
+  "type": "module",
+  "description": "Fan-made League of Legends lore games, champion profiles, a region map and the Web of Runeterra.",
+  "scripts": {
+    "start": "node tools/serve.mjs",
+    "relations": "node tools/build-relations.mjs",
+    "test": "node tools/test.cjs"
+  }
+}
