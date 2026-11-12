@@ -151,6 +151,35 @@ export function paintedCloth(THREE) {
   const t = tex(THREE, c); t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping; return t;
 }
 
+/** A tall, sharp gate banner (512 x 1536): deep blue cloth, gold border, our winged emblem. Its bottom is pointed. */
+export function grandBanner(THREE) {
+  const W = 512, H = 1536, [c, g] = canvas(W, H);
+  paintedBase(g, W, H, '#2f62c0', '#0f2c66');
+  strokes(g, W, H, ['rgba(130,170,240,.22)', 'rgba(5,20,60,.3)'], 260, 260, 10);
+  const path = inset => { g.beginPath(); g.moveTo(inset, inset); g.lineTo(W - inset, inset); g.lineTo(W - inset, H * 0.86 - inset * 0.4); g.lineTo(W / 2, H - inset * 1.6); g.lineTo(inset, H * 0.86 - inset * 0.4); g.closePath(); };
+  g.lineJoin = 'round';
+  g.strokeStyle = '#e8c06a'; g.lineWidth = 26; path(24); g.stroke();
+  g.strokeStyle = 'rgba(110,70,20,.7)'; g.lineWidth = 4; path(46); g.stroke();
+  g.fillStyle = '#e8c06a'; g.fillRect(0, 0, W, 70);                                     // the top bar
+  g.fillStyle = 'rgba(120,80,25,.55)'; g.fillRect(0, 62, W, 8);
+  // Winged emblem: a sword point down between two spread wings
+  const gold = g.createLinearGradient(0, 380, 0, 980); gold.addColorStop(0, '#ffe39a'); gold.addColorStop(1, '#c08a32');
+  g.fillStyle = gold; g.strokeStyle = 'rgba(90,55,15,.8)'; g.lineWidth = 5;
+  [-1, 1].forEach(s => {
+    g.beginPath(); g.moveTo(W / 2, 560);
+    g.bezierCurveTo(W / 2 + s * 60, 440, W / 2 + s * 170, 380, W / 2 + s * 230, 400);
+    for (let f = 0; f < 5; f++) { g.lineTo(W / 2 + s * (215 - f * 34), 470 + f * 46); g.lineTo(W / 2 + s * (200 - f * 34), 440 + f * 46); }
+    g.quadraticCurveTo(W / 2 + s * 60, 640, W / 2, 640); g.closePath(); g.fill(); g.stroke();
+  });
+  g.beginPath(); g.moveTo(W / 2 - 22, 420); g.lineTo(W / 2 + 22, 420); g.lineTo(W / 2 + 22, 860); g.lineTo(W / 2, 960); g.lineTo(W / 2 - 22, 860); g.closePath(); g.fill(); g.stroke();
+  g.fillRect(W / 2 - 80, 400, 160, 26); g.strokeRect(W / 2 - 80, 400, 160, 26);
+  g.beginPath(); g.arc(W / 2, 370, 26, 0, Math.PI * 2); g.fill(); g.stroke();
+  // A gold ring and diamond near the point
+  g.strokeStyle = '#e8c06a'; g.lineWidth = 10; g.beginPath(); g.arc(W / 2, 1140, 70, 0, Math.PI * 2); g.stroke();
+  g.fillStyle = '#e8c06a'; g.beginPath(); g.moveTo(W / 2, 1090); g.lineTo(W / 2 + 34, 1140); g.lineTo(W / 2, 1190); g.lineTo(W / 2 - 34, 1140); g.closePath(); g.fill();
+  const t = tex(THREE, c); t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping; return t;
+}
+
 /** Cut stone blocks with mortar lines (walls, towers). */
 export function stoneBlocks(THREE, base = [236, 230, 218], repeat = [1, 1]) {
   const W = 512, H = 512, [c, g] = canvas(W, H), [b, bg] = canvas(W, H);

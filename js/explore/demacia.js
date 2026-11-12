@@ -93,17 +93,38 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
   }
 
   /* ---- The gate of the winged guardians: a sculpted model (models/demacia-gate.glb, made from our own concept art,
-     cleaned up and cut open at the door). It spans x -28..18, its door sits at x = 0. ---- */
+     cleaned up and cut open at the door). It spans x -22..18, its door sits at x = 0.
+     The file also holds one statue on its own, which crowns the pillars around the rest of the wall. ---- */
   const GATE = { scale: 46, x: -5, y: 16.05 };
+  const pillarAt = [];                                         // [x, z, angle] of each wall pillar, filled below
   new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).load(new URL('../../models/demacia-gate.glb', import.meta.url).href, g => {
     g.scene.traverse(o => {
       if (!o.isMesh) return;
       o.castShadow = true; o.receiveShadow = true;
       o.material.envMapIntensity = scene.userData.env ?? 1;
     });
+    const statue = g.scene.getObjectByName('statue');
+    g.scene.remove(statue);
     g.scene.scale.setScalar(GATE.scale); g.scene.position.set(GATE.x, GATE.y, WALL_R);
     scene.add(g.scene);
+    // One statue per wall pillar, drawn as a single instanced mesh
+    statue.updateMatrix();
+    const local = new THREE.Matrix4().makeTranslation(-2, 0, 0).multiply(statue.matrix);   // it was stored 2 units to the side
+    const crowns = new THREE.InstancedMesh(statue.geometry, statue.material, pillarAt.length);
+    const m = new THREE.Matrix4(), q = new THREE.Quaternion(), up = new THREE.Vector3(0, 1, 0);
+    pillarAt.forEach(([x, z, a], i) => {
+      m.compose(new THREE.Vector3(x, 22.4, z), q.setFromAxisAngle(up, a), new THREE.Vector3(36, 36, 36));
+      crowns.setMatrixAt(i, m.multiply(local));
+    });
+    crowns.castShadow = true; crowns.receiveShadow = true; scene.add(crowns);
   }, undefined, err => console.warn('Gate model did not load', err));
+  // Sharp painted banners over the model's own (its texture is too soft at this size)
+  const bannerMat = new THREE.MeshStandardMaterial({ map: T.grandBanner(THREE), roughness: 0.85 });
+  const bannerShape = new THREE.Shape([[0, 0.14], [0.5, 0], [1, 0.14], [1, 1], [0, 1]].map(([x, y]) => new THREE.Vector2(x, y)));
+  const bannerGeo = new THREE.ShapeGeometry(bannerShape).translate(-0.5, -0.5, 0);    // its UVs are the 0..1 shape coordinates
+  [[-15.6, 11.9, 94.55, 3.1, 11.9], [-8.36, 11.2, 94.15, 3.7, 12.2], [8.5, 11.5, 94.15, 3.7, 12.2]].forEach(([x, y, z, w, h]) => {
+    const b = add(bannerGeo, bannerMat, x, y, z, { shadow: false }); b.scale.set(w, h, 1);
+  });
   box(-15, WALL_R + 0.5, 26, 5.6); box(10, WALL_R + 0.5, 16, 5.6);   // solid either side of the door
   // The model's two ends are rough on the city side: our own wall pieces close them and join the ring wall.
   [[-21, 20], [15, 11]].forEach(([x, w]) => {
@@ -112,6 +133,30 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
     for (let k = -w / 2 + 1; k < w / 2; k += 4) add(merlon, M.stone2, x + k, 20.2, WALL_R - 3.2);
   });
   [-30, -52, 30, 52].forEach(x => { const a = Math.asin(x / WALL_R); K.bannerCloth(scene, x, 7.5, Math.cos(a) * WALL_R + 1.9, a, 7); });
+
+  /* ---- Pillars of the gate's design around the whole wall: white stone, a blue inlay, a gold diamond and a winged statue ---- */
+  const inlay = K.std({ color: 0x24489c, roughness: 0.5 });
+  const pillarGeo = new THREE.BoxGeometry(3.8, 22.4, 5), capGeo = new THREE.BoxGeometry(4.4, 0.8, 5.6);
+  const stripGeo = new THREE.BoxGeometry(1, 14, 0.12), gemGeo = new THREE.OctahedronGeometry(0.75);
+  for (let i = 0; i < SEG; i += 4) {
+    const a = ((i + 0.5) / SEG) * Math.PI * 2;
+    if (Math.abs(Math.atan2(Math.sin(a), Math.cos(a))) < 0.3) continue;              // the gate has its own
+    const x = Math.sin(a) * WALL_R, z = Math.cos(a) * WALL_R, out = [Math.sin(a), Math.cos(a)];
+    add(pillarGeo, wallMat, x, 11.2, z, { ry: a });
+    add(capGeo, M.stone2, x, 22, z, { ry: a });
+    [1, -1].forEach(side => {                                                         // both faces: outside and city side
+      const d = 2.56 * side;
+      add(stripGeo, inlay, x + out[0] * d, 12, z + out[1] * d, { ry: a, shadow: false });
+      add(gemGeo, M.gold, x + out[0] * (d + 0.2 * side), 4.4, z + out[1] * (d + 0.2 * side), { ry: a });
+    });
+    pillarAt.push([x, z, a]);
+    circle(x, z, 3.2);
+  }
+  // The gate model's left end is rough: a broad pillar of the same design closes it, under the model's own end statue.
+  add(new THREE.BoxGeometry(5, 21.4, 5.2), wallMat, -19.6, 10.7, WALL_R + 1);
+  add(new THREE.BoxGeometry(5.6, 0.8, 5.8), M.stone2, -19.6, 21.3, WALL_R + 1);
+  add(new THREE.BoxGeometry(1.2, 14, 0.12), inlay, -19.6, 12, WALL_R + 3.66, { shadow: false });
+  add(gemGeo, M.gold, -19.6, 4.4, WALL_R + 3.9);
 
   /* ---- Houses ---- */
   const spots = [];
