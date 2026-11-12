@@ -8,7 +8,7 @@ import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 const HEIGHT = 1.95;                                          // metres, helmet crest to boot
 
 /** Dark steel -> polished silver, bronze trim -> gold, leather -> Demacian blue. Works on the colour texture's pixels. */
-function demacian(THREE, tex) {
+export function demacian(THREE, tex) {
   const img = tex.image, W = img.width, H = img.height, c = document.createElement('canvas'); c.width = W; c.height = H;
   const g = c.getContext('2d'); g.drawImage(img, 0, 0);
   const id = g.getImageData(0, 0, W, H), p = id.data;

@@ -3,6 +3,7 @@
 import { makeKit } from './kit.js';
 import { makePeople } from './people.js';
 import { makeKnights } from './knights.js';
+import { makeValkyries } from './valkyries.js';
 import { demacianProps } from './props.js';
 import * as T from './textures.js';
 import { buildGate } from './demacia-gate.js';
@@ -244,6 +245,11 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
     { role: 'Noble', line: 'Order, duty, and a good tailor. That is all a city needs.' },
     { role: 'Townsperson', line: 'My cousin joined the Vanguard last spring. He writes that the drills never end.' },
   ];
+  const wardens = [
+    { role: 'Vanguard warden', line: 'The Dauntless Vanguard takes anyone with the nerve to hold a shield wall. I held mine.' },
+    { role: 'Vanguard warden', line: 'Keep your blade sheathed inside these walls, traveller. Steel is for the frontier.' },
+    { role: 'Vanguard warden', line: 'Demacia stands on duty. Mine is this post, from dawn until the bells.' },
+  ];
   const travellers = [
     { role: 'Traveller', line: 'They searched my bags for anything magical at the gate. Twice. Demacia takes no chances.' },
     { role: 'Sword for hire', line: 'Caravans pay well for a blade on the road north. Demacia pays fair, if your papers are in order.' },
@@ -257,6 +263,9 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
     // Knights at the gate, the palace steps and the main street (knights.js: a sculpted, credited model in our colours)
     ...makeKnights(THREE, scene, [[-5, WALL_R + 7, 0], [5, WALL_R + 7, 0], [-4, P.z + 20, 0], [4, P.z + 20, 0], [-9, 34, Math.PI / 2]]
       .map(([x, z, face]) => ({ x, z, face, info: byRole('Gate guard') })), { spearWood: K.P.wood, spearSteel: K.P.steel }),
+    // Warrior women of the Vanguard (valkyries.js: a sculpted, credited model; each has her own looks)
+    ...makeValkyries(THREE, scene, [[-7, WALL_R - 9, Math.PI], [7, WALL_R - 9, Math.PI], [-10, P.z + 18, 0], [10, P.z + 18, 0], [52, 12, -Math.PI / 2], [-14, -12, 0.6]]
+      .map(([x, z, face], i) => ({ x, z, face, info: wardens[i % wardens.length] })), rnd),
     // Vanguard recruits drilling in the yard
     stand('recruit', byRole('Young squire'), [38, -7], 0), stand('recruit', byRole('Young squire'), [41, -7], 0),
     stand('recruit', byRole('Young squire'), [44, -7], 0), stroll('recruit', byRole('Young squire'), [30, 3], [72, 3]),
