@@ -3,13 +3,13 @@
 import { esc, reduceMotion, toast } from '../ui.js';
 import { progress, save, addXP } from '../state.js';
 
-const THREE_URL = 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 const EYE = 1.7, WALK = 9, RUN = 17, NEAR = 9;
 
+/* Sun height and direction (degrees), light, fog and glow for each time of day. */
 const TIMES = {
-  day:    { label: 'Day',    top: 0x4f93d8, bottom: 0xd6ebf7, sun: 0xfff3dd, sunI: 3.2, hemi: 1.1, pos: [120, 220, 80], lamps: 0 },
-  sunset: { label: 'Sunset', top: 0x33467e, bottom: 0xf3a35b, sun: 0xffb36b, sunI: 2.4, hemi: 0.7, pos: [-220, 60, -60], lamps: 0.6 },
-  night:  { label: 'Night',  top: 0x030916, bottom: 0x15233f, sun: 0x9fb4ff, sunI: 0.45, hemi: 0.22, pos: [80, 160, -120], lamps: 1 },
+  day:    { label: 'Day',    elev: 42, azim: 150, sun: 0xfff1d6, sunI: 3.4, hemi: 0.9,  env: 0.9,  fog: 0xc6dbe8, exposure: 0.68, lamps: 0,   bloom: 0.15, stars: 0, sky: [1.2, 1.2, 0.004, 0.8] },
+  sunset: { label: 'Sunset', elev: 4,  azim: 250, sun: 0xffa45c, sunI: 2.6, hemi: 0.5,  env: 0.45, fog: 0xd9a27a, exposure: 0.6,  lamps: 0.7, bloom: 0.3,  stars: 0, sky: [6, 2.4, 0.006, 0.86] },
+  night:  { label: 'Night',  elev: -8, azim: 300, sun: 0x8ea6ff, sunI: 0.4, hemi: 0.14, env: 0.06, fog: 0x0b1424, exposure: 0.62, lamps: 1,   bloom: 0.5,  stars: 1, sky: [1, 0.2, 0.002, 0.7] },
 };
 const ORDER = ['day', 'sunset', 'night'];
 
@@ -21,8 +21,15 @@ const ORDER = ['day', 'sunset', 'night'];
  */
 export async function openCity(host, city, build) {
   host.innerHTML = `<div class="x-loading"><p class="t-body">Building ${esc(city.name)}…</p></div>`;
-  const THREE = await import(THREE_URL);
+  const THREE = await import('three');
+  const [{ EffectComposer }, { RenderPass }, { UnrealBloomPass }, { OutputPass }, { GTAOPass }, { Sky }, { RoomEnvironment }] = await Promise.all([
+    import('three/addons/postprocessing/EffectComposer.js'), import('three/addons/postprocessing/RenderPass.js'),
+    import('three/addons/postprocessing/UnrealBloomPass.js'), import('three/addons/postprocessing/OutputPass.js'),
+    import('three/addons/postprocessing/GTAOPass.js'), import('three/addons/objects/Sky.js'), import('three/addons/environments/RoomEnvironment.js'),
+  ]);
   let alive = true;
+  const lowEnd = matchMedia('(pointer: coarse)').matches || (navigator.hardwareConcurrency || 8) <= 4;
+  let quality = lowEnd ? 'low' : 'high';
 
   /* ---- Renderer, scene, camera ---- */
   host.innerHTML = '';
@@ -36,25 +43,46 @@ export async function openCity(host, city, build) {
   renderer.domElement.className = 'x-canvas';
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(68, 1, 0.1, 1600);
+  const camera = new THREE.PerspectiveCamera(66, 1, 0.1, 4000);
   camera.rotation.order = 'YXZ';
 
-  const sky = new THREE.Mesh(new THREE.SphereGeometry(1400, 32, 16), new THREE.ShaderMaterial({
-    side: THREE.BackSide, depthWrite: false,
-    uniforms: { top: { value: new THREE.Color() }, bottom: { value: new THREE.Color() } },
-    vertexShader: 'varying vec3 vP; void main(){ vP = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
-    fragmentShader: 'uniform vec3 top; uniform vec3 bottom; varying vec3 vP; void main(){ float h = clamp(vP.y*1.6+0.15,0.0,1.0); gl_FragColor = vec4(mix(bottom, top, h),1.0); }',
-  }));
-  scene.add(sky);
-  scene.fog = new THREE.Fog(0xd6ebf7, 140, 620);
+  /* Physically based sky with a sun; stars for the night. */
+  const sky = new Sky(); sky.scale.setScalar(3000); scene.add(sky);
+  const starGeo = new THREE.BufferGeometry(), starPos = [];
+  for (let i = 0; i < 1500; i++) { const a = Math.random() * Math.PI * 2, b = Math.random() * 0.48 * Math.PI, r = 1500; starPos.push(Math.cos(a) * Math.cos(b) * r, Math.sin(b) * r, Math.sin(a) * Math.cos(b) * r); }
+  starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3));
+  const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 2.2, sizeAttenuation: false, transparent: true, opacity: 0, fog: false }));
+  scene.add(stars);
+  scene.fog = new THREE.FogExp2(0xcfdfe8, 0.0011);
 
-  const hemi = new THREE.HemisphereLight(0xffffff, 0x5d6b3c, 1);
+  /* Soft studio reflections for gold, water and metal. */
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+  const hemi = new THREE.HemisphereLight(0xdfeaff, 0x5d6b3c, 1);
   const sun = new THREE.DirectionalLight(0xffffff, 3);
   sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048);
-  Object.assign(sun.shadow.camera, { left: -170, right: 170, top: 170, bottom: -170, near: 10, far: 700 });
-  sun.shadow.bias = -0.0004;
+  sun.shadow.mapSize.set(lowEnd ? 1024 : 2048, lowEnd ? 1024 : 2048);
+  Object.assign(sun.shadow.camera, { left: -120, right: 120, top: 120, bottom: -120, near: 10, far: 900 });
+  sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.04;
   scene.add(hemi, sun, sun.target);
+  const sunDir = new THREE.Vector3();
+
+  /* Post-processing: ambient occlusion (soft contact shadows), glow, then tone mapping. */
+  const composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+  const ao = new GTAOPass(scene, camera, 2, 2);
+  ao.updateGtaoMaterial({ radius: 1.2, distanceExponent: 1.5, thickness: 2, scale: 1.2 });
+  ao.blendIntensity = 0.85;
+  composer.addPass(ao);
+  const bloom = new UnrealBloomPass(new THREE.Vector2(2, 2), 0.2, 0.5, 0.92);
+  composer.addPass(bloom);
+  composer.addPass(new OutputPass());
+  const applyQuality = () => {
+    ao.enabled = quality === 'high';
+    renderer.setPixelRatio(quality === 'high' ? Math.min(devicePixelRatio || 1, 1.5) : 1);
+    resize();
+  };
 
   /* ---- The city ---- */
   const world = build(THREE, scene, { seeded, people: city.people });
@@ -86,6 +114,7 @@ export async function openCity(host, city, build) {
         <button class="btn secondary" id="xTour">Guided tour</button>
         <button class="btn secondary" id="xTime">Day</button>
         <button class="btn secondary" id="xSound" aria-pressed="false">Sound off</button>
+        <button class="btn secondary" id="xQuality" title="Lower quality runs faster on older devices">Quality: High</button>
         <a class="btn secondary" href="#/explore">Leave</a>
       </div>
     </div>
@@ -119,17 +148,27 @@ export async function openCity(host, city, build) {
     clearTimeout(sayTimer); sayTimer = setTimeout(() => { box.hidden = true; }, 6000);
   }
 
+  /* Every lit material in the city, so reflections can follow the time of day. */
+  const litMaterials = new Set();
+  scene.traverse(o => { const m = o.material; if (m) (Array.isArray(m) ? m : [m]).forEach(x => { if (x.isMeshStandardMaterial) litMaterials.add(x); }); });
+
   /* ---- Time of day ---- */
   let timeIdx = 0;
   function setTime(key) {
-    const t = TIMES[key];
-    sky.material.uniforms.top.value.setHex(t.top);
-    sky.material.uniforms.bottom.value.setHex(t.bottom);
-    scene.fog.color.setHex(t.bottom);
+    const t = TIMES[key], u = sky.material.uniforms;
+    [u.turbidity.value, u.rayleigh.value, u.mieCoefficient.value, u.mieDirectionalG.value] = t.sky;
+    const phi = THREE.MathUtils.degToRad(90 - t.elev), theta = THREE.MathUtils.degToRad(t.azim);
+    sunDir.setFromSphericalCoords(1, phi, theta);
+    u.sunPosition.value.copy(sunDir);
+    const light = sunDir.clone(); if (light.y < 0.15) light.y = 0.35;          // at night the "sun" light is moonlight from above
+    sunDir.copy(light.normalize());
+    scene.fog.color.setHex(t.fog);
     sun.color.setHex(t.sun); sun.intensity = t.sunI; hemi.intensity = t.hemi;
-    sun.position.set(...t.pos);
-    (world.lamps || []).forEach(m => { m.emissiveIntensity = t.lamps * 2.2; });
-    renderer.toneMappingExposure = key === 'night' ? 1.25 : 1;
+    litMaterials.forEach(m => { m.envMapIntensity = t.env; });               // reflections dim with the light
+    (world.lamps || []).forEach(m => { m.emissiveIntensity = t.lamps * 2.4; });
+    renderer.toneMappingExposure = t.exposure;
+    bloom.strength = t.bloom;
+    stars.material.opacity = t.stars;
     $('#xTime').textContent = t.label;
   }
   setTime('day');
@@ -229,9 +268,17 @@ export async function openCity(host, city, build) {
     mctx.fillStyle = '#0ac8b9'; mctx.beginPath(); mctx.moveTo(0, -7); mctx.lineTo(5, 5); mctx.lineTo(0, 2); mctx.lineTo(-5, 5); mctx.closePath(); mctx.fill(); mctx.restore();
   }
 
-  /* ---- Resize ---- */
-  const resize = () => { const w = host.clientWidth, h = host.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); };
-  const ro = new ResizeObserver(resize); ro.observe(host); resize();
+  /* ---- Resize and quality ---- */
+  function resize() {
+    const w = host.clientWidth, h = host.clientHeight;
+    renderer.setSize(w, h, false); composer.setPixelRatio(renderer.getPixelRatio()); composer.setSize(w, h);
+    camera.aspect = w / h; camera.updateProjectionMatrix();
+  }
+  const ro = new ResizeObserver(resize); ro.observe(host);
+  const showQuality = () => { $('#xQuality').textContent = `Quality: ${quality === 'high' ? 'High' : 'Low'}`; };
+  $('#xQuality').onclick = () => { quality = quality === 'high' ? 'low' : 'high'; applyQuality(); showQuality(); };
+  applyQuality(); showQuality();
+  let fpsFrames = 0, fpsStart = performance.now(), autoChecked = false;   // drop to Low once if the first seconds are slow
 
   /* ---- Main loop ---- */
   let last = performance.now(), raf = 0, nearId = null;
@@ -246,10 +293,15 @@ export async function openCity(host, city, build) {
     camera.position.set(player.x, EYE + Math.sin(now / 260) * (moving ? 0.05 : 0), player.z);
     camera.rotation.set(player.pitch, player.yaw, 0);
     sun.target.position.set(player.x, 0, player.z);
-    sun.position.set(player.x + TIMES[ORDER[timeIdx]].pos[0], TIMES[ORDER[timeIdx]].pos[1], player.z + TIMES[ORDER[timeIdx]].pos[2]);
-    sky.position.copy(camera.position);
+    sun.position.set(player.x + sunDir.x * 400, sunDir.y * 400, player.z + sunDir.z * 400);
+    sky.position.copy(camera.position); stars.position.copy(camera.position);
 
     world.people.forEach(p => p.update(dt, now));
+    if (world.update) world.update(dt, now);
+    if (!autoChecked && quality === 'high') {
+      fpsFrames++;
+      if (now - fpsStart > 4000) { autoChecked = true; if (fpsFrames / 4 < 24) { quality = 'low'; applyQuality(); showQuality(); toast('Switched to Low quality for smoother walking'); } }
+    }
     beams.forEach(b => { b.gem.rotation.y += dt * 1.4; b.gem.position.y = 3.2 + Math.sin(now / 500 + b.l.x) * 0.3; });
     checkLandmarks();
     if (audio) {
@@ -258,7 +310,7 @@ export async function openCity(host, city, build) {
       audio.wind.gain.setTargetAtTime(0.06 + (Math.hypot(player.x, player.z) > world.mapRadius * 0.25 ? 0.06 : 0), audio.ctx.currentTime, 0.5);
     }
     drawMini();
-    renderer.render(scene, camera);
+    composer.render();
   }
   let moving = false;
   function walk(dt) {
@@ -315,6 +367,7 @@ export async function openCity(host, city, build) {
     clearTimeout(cardTimer); clearTimeout(sayTimer);
     if (audio) audio.ctx.close();
     scene.traverse(o => { if (o.geometry) o.geometry.dispose(); const m = o.material; if (m) (Array.isArray(m) ? m : [m]).forEach(x => { if (x.map) x.map.dispose(); x.dispose(); }); });
+    composer.dispose(); pmrem.dispose(); scene.environment?.dispose();
     renderer.dispose();
     host.innerHTML = '';
   };
