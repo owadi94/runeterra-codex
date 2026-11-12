@@ -3,6 +3,8 @@
 import { makeKit } from './kit.js';
 import { makePeople } from './people.js';
 import * as T from './textures.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
 const WALL_R = 92, RIVER_Z = 130, RIVER_HALF = 10, ROAD = 8;
 
@@ -76,7 +78,7 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
   for (let i = 0; i < 5; i++) { K.barrel(scene, 26 + i * 7, RIVER_Z - RIVER_HALF - 4); K.crate(scene, 29 + i * 7, RIVER_Z - RIVER_HALF - 4.5, 0.9); }
 
   /* ---- City walls with crenellations, wall towers ---- */
-  const SEG = 48, segLen = (2 * Math.PI * WALL_R) / SEG, gateGap = 0.13;
+  const SEG = 48, segLen = (2 * Math.PI * WALL_R) / SEG, gateGap = 0.2;    // the gate model fills the gap
   const wallMat = M.stone.clone(); wallMat.map = M.stone.map.clone(); wallMat.map.repeat.set(3, 2.5); wallMat.map.needsUpdate = true;
   wallMat.bumpMap = M.stone.bumpMap.clone(); wallMat.bumpMap.repeat.set(3, 2.5); wallMat.bumpMap.needsUpdate = true;
   const wallGeo = new THREE.BoxGeometry(segLen + 0.5, 13, 3.4), merlon = new THREE.BoxGeometry(1.5, 1.6, 3.6), walk = new THREE.BoxGeometry(segLen + 0.5, 0.6, 4.6);
@@ -90,34 +92,25 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
     if (i % 4 === 2) { K.tower(scene, x, z, 4.8, 20); circle(x, z, 5.4); }
   }
 
-  /* ---- The gate: twin domed towers, arch, portcullis and winged guardians ---- */
-  [-10, 10].forEach(x => { K.tower(scene, x, WALL_R, 6.2, 26, 'dome'); circle(x, WALL_R, 6.8); });
-  add(new THREE.BoxGeometry(14, 7, 4.4), wallMat, 0, 17.5, WALL_R);
-  add(new THREE.BoxGeometry(14.6, 0.7, 4.8), M.gold, 0, 14.1, WALL_R);
-  const gateArch = add(new THREE.TorusGeometry(4.6, 0.7, 10, 28, Math.PI), M.stone2, 0, 9.4, WALL_R + 2.3);
-  for (let i = -3; i <= 3; i++) add(new THREE.BoxGeometry(0.18, 4, 0.18), M.iron, i * 1.3, 12, WALL_R - 1.4);
-  void gateArch;
-  [-17, 17].forEach(x => guardian(x, WALL_R + 9));
-  function guardian(x, z) {                                   // an original winged guardian statue
-    const g = new THREE.Group(), stoneM = M.stone2;
-    const plinth = new THREE.Mesh(new THREE.BoxGeometry(5.2, 3.6, 5.2), M.stone); plinth.position.y = 1.8; g.add(plinth);
-    const robe = new THREE.Mesh(new THREE.LatheGeometry([new THREE.Vector2(1.9, 0), new THREE.Vector2(1.6, 1.5), new THREE.Vector2(1.2, 4.2), new THREE.Vector2(1.35, 6.2), new THREE.Vector2(0.6, 6.9), new THREE.Vector2(0, 7)], 20), stoneM);
-    robe.position.y = 3.6; g.add(robe);
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.85, 18, 14), stoneM); head.position.y = 11.4; g.add(head);
-    const helm = new THREE.Mesh(new THREE.SphereGeometry(0.92, 18, 10, 0, Math.PI * 2, 0, Math.PI / 2), M.gold); helm.position.y = 11.5; g.add(helm);
-    const sword = new THREE.Mesh(new THREE.BoxGeometry(0.3, 6, 0.12), M.gold); sword.position.set(0, 8, 1.5); g.add(sword);
-    const hilt = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.25, 0.25), M.gold); hilt.position.set(0, 10.3, 1.5); g.add(hilt);
-    [-1, 1].forEach(side => {
-      const wing = new THREE.Shape(); wing.moveTo(0, 0); wing.bezierCurveTo(1.5, 2.5, 4, 4, 6.5, 4.5); wing.bezierCurveTo(5, 2.4, 4.6, 0.6, 4.4, -1.2);
-      wing.bezierCurveTo(3.6, -0.6, 2.8, -1.8, 2.2, -2.6); wing.bezierCurveTo(1.6, -1.6, 0.8, -1.4, 0, -0.6); wing.closePath();
-      const w = new THREE.Mesh(new THREE.ExtrudeGeometry(wing, { depth: 0.35, bevelEnabled: true, bevelSize: 0.08, bevelThickness: 0.08, bevelSegments: 2 }), stoneM);
-      w.scale.set(side, 1, 1); w.position.set(side * 0.9, 9.4, -0.8); w.rotation.y = side * 0.35; g.add(w);
+  /* ---- The gate of the winged guardians: a sculpted model (models/demacia-gate.glb, made from our own concept art,
+     cleaned up and cut open at the door). It spans x -28..18, its door sits at x = 0. ---- */
+  const GATE = { scale: 46, x: -5, y: 16.05 };
+  new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).load(new URL('../../models/demacia-gate.glb', import.meta.url).href, g => {
+    g.scene.traverse(o => {
+      if (!o.isMesh) return;
+      o.castShadow = true; o.receiveShadow = true;
+      o.material.envMapIntensity = scene.userData.env ?? 1;
     });
-    g.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
-    g.position.set(x, 0, z); g.rotation.y = Math.PI; scene.add(g);
-    circle(x, z, 3.8);
-  }
-  K.bannerCloth(scene, -6, 8.5, WALL_R + 2.4, 0); K.bannerCloth(scene, 6, 8.5, WALL_R + 2.4, 0);
+    g.scene.scale.setScalar(GATE.scale); g.scene.position.set(GATE.x, GATE.y, WALL_R);
+    scene.add(g.scene);
+  }, undefined, err => console.warn('Gate model did not load', err));
+  box(-15, WALL_R + 0.5, 26, 5.6); box(10, WALL_R + 0.5, 16, 5.6);   // solid either side of the door
+  // The model's two ends are rough on the city side: our own wall pieces close them and join the ring wall.
+  [[-21, 20], [15, 11]].forEach(([x, w]) => {
+    add(new THREE.BoxGeometry(w, 19, 2.4), wallMat, x, 9.5, WALL_R - 2.4);
+    add(new THREE.BoxGeometry(w, 0.6, 3), M.stone2, x, 19.1, WALL_R - 2.4);
+    for (let k = -w / 2 + 1; k < w / 2; k += 4) add(merlon, M.stone2, x + k, 20.2, WALL_R - 3.2);
+  });
   [-30, -52, 30, 52].forEach(x => { const a = Math.asin(x / WALL_R); K.bannerCloth(scene, x, 7.5, Math.cos(a) * WALL_R + 1.9, a, 7); });
 
   /* ---- Houses ---- */
@@ -283,7 +276,7 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
       if (Math.hypot(x, z) > 400) return true;
       if (Math.abs(z - RIVER_Z) < RIVER_HALF + 0.8 && Math.abs(x) > 4.4) return true;   // only the bridge crosses the river
       const d = Math.hypot(x, z);
-      if (Math.abs(d - WALL_R) < 2.8 && Math.abs(Math.atan2(x, z)) > gateGap * 0.6) return true;
+      if (Math.abs(d - WALL_R) < 2.8 && !(z > 0 && Math.abs(x) < 1.6)) return true;   // only the gate's door lets you through
       for (const c of colliders) {
         if (c.r !== undefined) { if (Math.hypot(x - c.x, z - c.z) < c.r + 0.5) return true; }
         else if (x > c.x0 - 0.5 && x < c.x1 + 0.5 && z > c.z0 - 0.5 && z < c.z1 + 0.5) return true;

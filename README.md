@@ -40,6 +40,7 @@ js/views/             one file per page
 js/games/engine.js    shared game engine;  js/games/<id>.js  one file per game
 js/explore/           3D city engine (three.js, loaded only on city pages) and one builder per city
 js/data/cities.js     explorable cities: landmarks (lore cards) and townsfolk lines
+models/               3D models (.glb) used by the cities
 tools/                local server, site test, rebuild of Riot's champion links (npm run relations)
 LORE-NOTES.md         verified lore facts and data sources, for adding content
 ```
@@ -50,6 +51,10 @@ LORE-NOTES.md         verified lore facts and data sources, for adding content
 - **A bond story:** add a line to `STORIES` in `js/data/lore.js` after checking it against the official biographies.
 - **Fan art:** save the image in `art/` and add a line to `FANART` in `js/data/lore.js`.
 - **A city:** add it to `js/data/cities.js`, write `js/explore/<city>.js` (see demacia.js), and register the builder in `js/views/explore.js`.
+- **A 3D model:** make one picture of one object on a plain background (our own design), turn it into a model with
+  TRELLIS on Hugging Face (MIT licence), then shrink it before adding it to `models/`:
+  `npx @gltf-transform/cli optimize in.glb out.glb --compress meshopt --simplify-ratio 0.3 --texture-compress webp --texture-size 2048`.
+  Load it with GLTFLoader plus MeshoptDecoder (see the gate in `js/explore/demacia.js`).
 - **Support links:** fill in `js/config.js`.
 
 ## Legal

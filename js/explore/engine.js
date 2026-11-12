@@ -167,8 +167,12 @@ export async function openCity(host, city, build) {
   }
 
   /* Every lit material in the city, so reflections can follow the time of day. */
-  const litMaterials = new Set();
-  scene.traverse(o => { const m = o.material; if (m) (Array.isArray(m) ? m : [m]).forEach(x => { if (x.isMeshStandardMaterial) litMaterials.add(x); }); });
+  /* Collected on every change, so models that finish loading later are included. */
+  const litMaterials = () => {
+    const set = new Set();
+    scene.traverse(o => { const m = o.material; if (m) (Array.isArray(m) ? m : [m]).forEach(x => { if (x.isMeshStandardMaterial) set.add(x); }); });
+    return set;
+  };
 
   /* ---- Time of day ---- */
   let timeIdx = 0;
@@ -182,7 +186,8 @@ export async function openCity(host, city, build) {
     sunDir.copy(light.normalize());
     scene.fog.color.setHex(t.fog);
     sun.color.setHex(t.sun); sun.intensity = t.sunI; hemi.intensity = t.hemi;
-    litMaterials.forEach(m => { m.envMapIntensity = t.env; });               // reflections dim with the light
+    scene.userData.env = t.env;                                              // for models that load after this
+    litMaterials().forEach(m => { m.envMapIntensity = t.env; });             // reflections dim with the light
     (world.lamps || []).forEach(m => { m.emissiveIntensity = t.lamps * 2.4; });
     renderer.toneMappingExposure = t.exposure;
     bloom.strength = t.bloom;
