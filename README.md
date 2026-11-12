@@ -40,7 +40,7 @@ js/views/             one file per page
 js/games/engine.js    shared game engine;  js/games/<id>.js  one file per game
 js/explore/           3D city engine (three.js, loaded only on city pages) and one builder per city
 js/data/cities.js     explorable cities: landmarks (lore cards) and townsfolk lines
-models/               3D models (.glb) used by the cities
+models/               3D models (.glb) used by the cities; third-party ones are credited on the About page
 tools/                local server, site test, rebuild of Riot's champion links (npm run relations)
 LORE-NOTES.md         verified lore facts and data sources, for adding content
 ```

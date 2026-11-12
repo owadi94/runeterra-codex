@@ -2,6 +2,7 @@
 // Layout (metres): centre 0,0; walls at radius 92 with the gate facing south; river at z = 130; you arrive from the south.
 import { makeKit } from './kit.js';
 import { makePeople } from './people.js';
+import { makeKnights } from './knights.js';
 import * as T from './textures.js';
 import { buildGate } from './demacia-gate.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -248,10 +249,9 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
   const stand = (role, info, at, face, extra = {}) => H.person(scene, info, [at], { role, face, ...extra });
   const people = [
     // Guards at the gate and the palace
-    stand('guard', byRole('Gate guard'), [-5, WALL_R + 7], 0, { female: false }),
-    stand('guard', byRole('Gate guard'), [5, WALL_R + 7], 0, { female: false }),
-    stand('guard', byRole('Gate guard'), [-4, P.z + 20], 0), stand('guard', byRole('Gate guard'), [4, P.z + 20], 0),
-    stroll('guard', byRole('Gate guard'), [-6, 70], [-6, 30], { female: false }),
+    // Knights at the gate, the palace steps and the main street (knights.js: a sculpted, credited model in our colours)
+    ...makeKnights(THREE, scene, [[-5, WALL_R + 7, 0], [5, WALL_R + 7, 0], [-4, P.z + 20, 0], [4, P.z + 20, 0], [-9, 34, Math.PI / 2]]
+      .map(([x, z, face]) => ({ x, z, face, info: byRole('Gate guard') })), { spearWood: K.P.wood, spearSteel: K.P.steel }),
     // Vanguard recruits drilling in the yard
     stand('recruit', byRole('Young squire'), [38, -7], 0), stand('recruit', byRole('Young squire'), [41, -7], 0),
     stand('recruit', byRole('Young squire'), [44, -7], 0), stroll('recruit', byRole('Young squire'), [30, 3], [72, 3]),
