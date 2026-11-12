@@ -254,6 +254,22 @@ button{font:inherit;color:inherit;cursor:pointer}
 .result .score small{font-size:.4em;color:var(--text-2);font-weight:600}
 
 /* ---------- Atlas ---------- */
+/* World map (our own illustration) */
+.worldmap{margin:0 0 var(--s5);padding:var(--s3);display:flex;flex-direction:column;gap:var(--s3)}
+.worldmap .scroller{overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--gold-4) transparent}
+.worldmap svg{display:block;width:100%;min-width:720px;height:auto}
+.worldmap figcaption{padding:0 var(--s2)}
+.land{cursor:pointer;outline:none}
+.land .shape{fill:#14212f;stroke:var(--gold-5);stroke-width:1.2;transition:fill .25s,stroke .25s}
+.land:hover .shape,.land:focus-visible .shape{fill:color-mix(in srgb,var(--h) 22%,#14212f);stroke:var(--h)}
+.land.on .shape{fill:color-mix(in srgb,var(--h) 34%,#14212f);stroke:var(--h);stroke-width:2}
+.land .lbl{font-family:var(--display);font-size:19px;letter-spacing:.12em;fill:var(--gold-1);text-anchor:middle;paint-order:stroke;stroke:#010a13;stroke-width:4px;pointer-events:none}
+.land .cnt{font-family:var(--ui);font-size:12px;fill:var(--h);text-anchor:middle;paint-order:stroke;stroke:#010a13;stroke-width:3px;pointer-events:none}
+.land.on .lbl{fill:#fff}
+.place text{font-family:var(--ui);font-style:italic;font-size:11.5px;fill:var(--grey-1);paint-order:stroke;stroke:#010a13;stroke-width:3px;pointer-events:none}
+.place path{fill:var(--gold-3)}
+.sea{font-family:var(--display);font-size:13px;letter-spacing:.3em;fill:#2c4a63;text-anchor:middle;pointer-events:none}
+.land:focus-visible .lbl{text-decoration:underline}
 .atlas{display:grid;grid-template-columns:240px minmax(0,1fr);gap:var(--s5);align-items:start}
 @media (max-width:860px){.atlas{grid-template-columns:minmax(0,1fr)}}
 .rlist{display:flex;flex-direction:column;border-top:1px solid var(--line)}
@@ -266,6 +282,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 .rpanel .banner{aspect-ratio:21/9;max-width:100%;border-bottom:1px solid var(--line-strong);background-position:center 18%}
 .rpanel .body{padding:var(--s6);display:flex;flex-direction:column;gap:var(--s5)}
 @media (max-width:600px){.rpanel .body{padding:var(--s4)}}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:var(--s3)}
+.gallery figure{margin:0;display:flex;flex-direction:column;gap:var(--s2)}
+.gallery img{width:100%;aspect-ratio:4/3;object-fit:cover;border:1px solid var(--gold-4)}
+.gallery figcaption{display:flex;flex-direction:column;gap:2px;font-size:var(--fs-sm)}
 .fact{padding:var(--s4);background:var(--raised);border:1px solid var(--line);display:flex;flex-direction:column;gap:var(--s1)}
 .champs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s3)}
 @media (max-width:520px){.champs{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -274,6 +294,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 
 /* ---------- Champion roster ---------- */
 .filters{display:flex;flex-wrap:wrap;gap:var(--s2)}
+.chip .n{color:var(--grey-2);font-family:var(--ui);font-size:var(--fs-xs)}
+.chip[aria-pressed="true"] .n{color:var(--gold-2)}
+@media (max-width:640px){.filters{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:calc(var(--s4)*-1);padding-inline:var(--s4);padding-bottom:var(--s1)}.filters::-webkit-scrollbar{display:none}.filters .chip{flex:none}}
 .chip{font-family:var(--display);font-size:var(--fs-xs);letter-spacing:var(--track);text-transform:uppercase;padding:var(--s2) var(--s3);background:var(--raised);border:1px solid var(--gold-5);color:var(--text-2);display:inline-flex;align-items:center;gap:var(--s2);text-decoration:none}
 .chip:hover{color:var(--gold-1);border-color:var(--gold-4)}
 .chip[aria-pressed="true"]{color:var(--gold-1);border-color:var(--gold-3);background:rgba(200,155,60,.12)}
@@ -474,7 +497,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 <section data-view="atlas" hidden>
   <div class="band section"><div class="wrap">
     <div class="title"><div class="stack"><span class="t-label">Explore</span><h2 class="t-1">Regions of Runeterra</h2></div><span class="t-sm num" id="visited"></span></div>
-    <div class="atlas"><div class="rlist" id="rlist" role="group" aria-label="Regions"></div><article class="rpanel panel" id="rpanel" aria-live="polite"></article></div>
+    <figure class="worldmap panel" id="worldmap"><div class="scroller"><svg id="mapSvg" viewBox="0 0 1000 640" role="group" aria-label="Map of Runeterra. Choose a region."></svg></div>
+      <figcaption class="t-sm">Our own illustrated map, not to scale. Choose a region to see its champions. <a href="https://map.leagueoflegends.com/" target="_blank" rel="noopener">Riot's official interactive map ↗</a></figcaption></figure>
+    <div class="atlas" id="atlasDetail"><div class="rlist" id="rlist" role="group" aria-label="Regions"></div><article class="rpanel panel" id="rpanel" aria-live="polite"></article></div>
     <div class="between panel" style="margin-top:var(--s5);padding:var(--s5)"><div class="stack" style="gap:var(--s1)"><h3 class="t-3">Official map</h3><p class="t-sm">See where every region sits on Riot's interactive map of Runeterra.</p></div><a class="btn secondary" href="https://map.leagueoflegends.com/" target="_blank" rel="noopener">Open the map</a></div>
   </div></div>
 </section>
@@ -593,7 +618,7 @@ const REGIONS=[
  {id:"void",name:"The Void",hue:"#a874e0",key:"Kai'Sa",tag:"The nothingness beyond reality",text:"A hunger as old as the universe, waiting for its masters, the Watchers, to bring the final undoing. Mortals who touch it glimpse something that can break any mind.",champs:["Kai'Sa","Cho'Gath","Kha'Zix","Vel'Koz"],fact:"Around 2500 BN, Icathia unleashed the Void in a revolt against Shurima, and its own capital was destroyed at once."},
  {id:"ionia",name:"Ionia",hue:"#e891b2",key:"Irelia",tag:"The First Lands",text:"A land of balance where the spirit realm is close, especially in the wild forests. Noxus invaded and was driven out only after years of war. Now Ionia is split over what comes next.",champs:["Irelia","Yasuo","Ahri","Karma"],fact:"The Kinkou and Shojin monks want peace and tradition. The Navori Brotherhood and Order of Shadow want to arm Ionia for revenge."},
  {id:"bilge",name:"Bilgewater",hue:"#4fb6bb",key:"Miss Fortune",tag:"Port city of the Serpent Isles",text:"A lawless harbor of pirates, smugglers and sea-monster hunters. It grew from a refuge the island's Buhru people gave to shipwrecked fortune seekers around 787 AN.",champs:["Miss Fortune","Gangplank","Twisted Fate","Graves"],fact:"Miss Fortune blew up Gangplank's ship to avenge her parents, whom he killed when she was a child."},
- {id:"shadow",name:"Shadow Isles",hue:"#6fd6bf",key:"Thresh",tag:"Once called the Blessed Isles",text:"A noble land of learning until a magical accident beneath the city of Helia tore the border between the living and spirit realms. The Black Mist now covers the isles, and it reaches farther each year.",champs:["Thresh","Kalista","Viego","Hecarim"],fact:"The Ruination began when a mad king, Viego, carried his dead queen to the hidden Waters of Life. The warden Thresh showed him the way."}
+ {id:"shadow",name:"Shadow Isles",hue:"#6fd6bf",key:"Thresh",tag:"Once called the Blessed Isles",text:"A noble land of learning until a magical accident beneath the city of Helia tore the border between the living and spirit realms. The Black Mist now covers the isles, and it reaches farther each year.",champs:["Thresh","Kalista","Viego","Hecarim"],fact:"The Ruination began with grief. When his queen was poisoned, King Viego searched for a way to bring her back, and the magic he unleashed destroyed the isles."}
 ];
 /* Each region's slug on Riot's Universe site */
 const U_SLUG={freljord:"freljord",demacia:"demacia",noxus:"noxus",bandle:"bandle-city",piltover:"piltover",zaun:"zaun",targon:"mount-targon",shurima:"shurima",ixtal:"ixtal",void:"void",ionia:"ionia",bilge:"bilgewater",shadow:"shadow-isles"};
@@ -969,53 +994,49 @@ const BOND={
   mentor:{label:"Mentor",c:"#9eabff"}, rivals:{label:"Rivals",c:"#f08c3a"}, betrayal:{label:"Betrayal",c:"#b878e8"},
   enemies:{label:"Enemies",c:"#e84057"}, linked:{label:"Linked by Riot",c:"#8a7346"}
 };
-/* Our own short summaries of each bond. Checked against Riot's Universe site before each lore update. */
+/* Our own short summaries of each bond. Checked against the official biographies on Riot's Universe site, 12 Nov 2026. */
 const STORIES=[
- ["garen","lux","family","Brother and sister of House Crownguard. Lux was born with magic, which Demacia outlaws, so she hides her gift even from the kingdom her brother serves."],
- ["darius","draven","family","Brothers who grew up poor in Noxus. Darius rose to command the empire's armies, while Draven became its showman executioner."],
- ["nasus","renekton","family","Ascended brothers of ancient Shurima. Renekton was sealed in a tomb with Xerath for thousands of years, lost his mind, and now blames Nasus for leaving him there."],
- ["yasuo","yone","family","Brothers from Ionia. Yone hunted Yasuo over a murder Yasuo was blamed for and fell to his brother's blade. He has since returned from the spirit realm."],
- ["kayle","morgana","family","Twin sisters with a celestial mother. Kayle embraced unbending justice, Morgana chose mercy for mortals, and they have stood against each other ever since."],
- ["katarina","cassiopeia","family","Sisters of the Noxian house Du Couteau. Cassiopeia was cursed into a serpent's form while raiding an ancient Shuriman tomb."],
- ["katarina","talon","allies","Talon was taken in as a boy by Katarina's father and trained as an assassin alongside her."],
- ["lucian","senna","love","Husband and wife, both Sentinels of Light. Thresh trapped Senna's soul in his lantern, and Lucian hunted him for years until she broke free."],
- ["senna","thresh","enemies","Thresh stole Senna's soul and kept it in his lantern. She escaped transformed by the Black Mist, and now turns it against him."],
- ["lucian","thresh","enemies","Lucian swore to destroy Thresh for what he did to Senna. It is the reason he became a Sentinel of Light."],
- ["lucian","akshan","allies","Fellow Sentinels of Light, fighting the Black Mist that spreads from the Shadow Isles."],
- ["xayah","rakan","love","Vastayan partners and rebels. Xayah plans the fight, Rakan turns it into a show, and neither goes anywhere without the other."],
- ["ashe","tryndamere","love","Their marriage joined two Freljord tribes into one people, a step toward Ashe's dream of uniting the north."],
- ["ashe","sejuani","rivals","Both want to rule the Freljord. Ashe hopes to unite the tribes in peace; Sejuani believes only strength and war can hold them together."],
- ["ashe","lissandra","enemies","Lissandra quietly shapes the Freljord's history to hide her own past, and Ashe's push to unite the tribes threatens her plans."],
- ["sylas","lux","betrayal","Lux secretly visited the imprisoned mage Sylas to understand her own magic. He used what he learned from her to break free."],
- ["jarvaniv","garen","allies","Demacia's crown prince and its most famous soldier, who fight side by side."],
- ["jarvaniv","shyvana","allies","Shyvana, a half-dragon, guards Demacia's crown prince and is fiercely loyal to him."],
- ["garen","katarina","rivals","A Demacian champion and a Noxian assassin who keep meeting across the battlefield. Rumor says there is more to it than war."],
- ["taliyah","yasuo","mentor","Yasuo met the young Shuriman stoneweaver on his travels and helped her learn to control her power."],
- ["shen","zed","rivals","They trained together in the Kinkou under Shen's father. Zed turned to forbidden shadow magic, killed his master and founded the Order of Shadow."],
- ["zed","kayn","mentor","Zed found Kayn as a child soldier and trained him as his finest student. Kayn now carries the Darkin scythe Rhaast."],
- ["shen","akali","mentor","Akali trained in the Kinkou under Shen, then left the order because she felt it did too little to protect Ionia."],
- ["shen","kennen","allies","Fellow members of the Kinkou, the order that keeps the balance between the material and spirit realms."],
- ["viego","thresh","allies","Thresh, a warden on the Blessed Isles, helped Viego reach the hidden Waters of Life and set the Ruination in motion."],
- ["viego","kalista","betrayal","Kalista served Viego's kingdom as a general and tried to stop his madness. Betrayed, she returned as a spirit who hunts traitors."],
- ["hecarim","kalista","betrayal","Hecarim turned against Kalista. When the Ruination struck, both were bound to the Black Mist."],
- ["azir","xerath","betrayal","Xerath was a slave Azir freed and trusted. During Azir's Ascension he struck, and Shurima fell with its emperor."],
- ["azir","sivir","family","Sivir, a desert mercenary, carries the blood of Shurima's emperors. Azir sees her as his descendant."],
- ["azir","nasus","allies","Nasus, the Ascended scholar, served Shurima and its emperors for thousands of years."],
- ["xerath","renekton","enemies","Renekton dragged Xerath into the Tomb of the Emperors to seal him away, and was trapped with him for millennia."],
- ["leona","diana","rivals","Both were raised among the sun-worshipping Solari. Diana's study of the moon branded her a heretic. Now they carry the Aspects of the Sun and the Moon."],
- ["pantheon","aatrox","enemies","Aatrox killed the Aspect of War. Its mortal host Atreus survived, took up the fallen god's weapons and became Pantheon."],
- ["jayce","viktor","rivals","Partners who built hextech together in Piltover, then split over how far its power should go."],
- ["heimerdinger","viktor","mentor","Heimerdinger brought Viktor from the undercity to the Academy as his assistant."],
- ["caitlyn","vi","allies","Piltover's sheriff and a brawler from the undercity, working side by side as enforcers."],
- ["caitlyn","jinx","enemies","Jinx loves taunting Piltover's sheriff with chaos, and Caitlyn has made catching her personal."],
- ["missfortune","gangplank","enemies","Gangplank killed Miss Fortune's parents when she was a child. Years later she blew up his ship in Bilgewater's harbor."],
- ["twistedfate","graves","betrayal","Partners in crime until a heist went wrong and Graves was left behind to be captured. They settled it in Bilgewater and teamed up again."],
- ["rengar","khazix","rivals","Kha'Zix took one of Rengar's eyes in their first fight. Rengar has hunted the Void creature ever since."],
- ["swain","darius","allies","Darius stood with Swain during his coup and now holds a seat on Swain's ruling Trifarix."],
- ["swain","leblanc","allies","LeBlanc's Black Rose helped Swain take power. Each now watches the other closely."],
- ["kaisa","kassadin","family","Kassadin is Kai'Sa's father. He searched the Void's edge for years, hoping she had survived."],
- ["kassadin","malzahar","enemies","Malzahar serves the Void as its prophet. Kassadin hunts him to stop him calling it into the world."],
- ["warwick","singed","enemies","Singed's experiments turned a dying man into the beast Warwick."]
+ ["garen","lux","family","Brother and sister of the noble Crownguard family. Lux was born with magic, which Demacia outlaws, so she hides her gift even from the kingdom her brother serves."],
+ ["darius","draven","family","Orphaned brothers from the Noxian port of Basilich. As boys, Darius was always the one who ended the brawls Draven picked. One became the Hand of Noxus, the other its showman executioner."],
+ ["nasus","renekton","family","Brothers who both became Ascended in ancient Shurima. To stop Xerath, Renekton sealed himself in a tomb with him for thousands of years, and came out mad and blaming Nasus."],
+ ["yasuo","yone","family","Half-brothers who were inseparable as children. Years later, Yasuo was blamed for a murder, Yone hunted him down and fell to his brother's blade. He has since returned from the spirit realm."],
+ ["kayle","morgana","family","Twin sisters born beneath Mount Targon during the Rune Wars. Kayle, born moments earlier, chose unbending justice. Morgana chose mercy for mortals."],
+ ["katarina","cassiopeia","family","Daughters of the Noxian house Du Couteau. Katarina took after their father and learned the blade; Cassiopeia followed their mother into politics."],
+ ["katarina","talon","allies","Talon was a street killer until General Du Couteau, Katarina's father, beat him in a fight and offered him a place. Talon agreed, but swore his service to the general alone."],
+ ["lucian","senna","love","Senna was apprenticed to Lucian's father, a Sentinel of Light, and later became Lucian's wife. When Thresh attacked, she stepped between the wraith and her husband."],
+ ["senna","thresh","enemies","Thresh caught Senna's soul in his lantern when she shielded Lucian from him. She spent years trapped inside before she broke free."],
+ ["lucian","thresh","enemies","Lucian charged Thresh recklessly and lost Senna saving him. He has hunted the wraith ever since."],
+ ["xayah","rakan","love","Vastayan partners and rebels. Xayah first noticed Rakan while he was thrilling a crowd as a performer. She plans the fight; he turns it into a show."],
+ ["ashe","tryndamere","love","To join her people with a mountain clan that was nearly wiped out, Ashe married its last great warrior, Tryndamere. He agreed reluctantly."],
+ ["ashe","sejuani","rivals","Childhood friends who shared summer hunts, until a feud between their families split their tribes. Now each wants to lead the Freljord her own way."],
+ ["sylas","lux","betrayal","After fifteen years in a Demacian cell, Sylas was visited by a young volunteer named Luxanna. She brought him books in exchange for his knowledge of magic, and he used her to break free."],
+ ["jarvaniv","garen","allies","They met as rival youths in military training and became fast friends. Garen now leads the elite Dauntless Vanguard for his prince."],
+ ["jarvaniv","shyvana","allies","Wounded and alone in the wilds, Jarvan would have died if the half-dragon Shyvana hadn't found him. She has fought at his side ever since."],
+ ["taliyah","yasuo","mentor","Yasuo met Taliyah in the snow after she fled the Noxian army, and helped her master her stone magic. When they parted, he gave her a treasured maple seed."],
+ ["shen","zed","rivals","Closest friends and the Kinkou's most promising students. Zed turned to forbidden shadow magic, led a coup against the order and founded the Order of Shadow."],
+ ["zed","kayn","mentor","Zed found Kayn after a massacre: a Noxian child soldier armed with nothing but a harvesting tool. He saw the future of the Order of Shadow in him."],
+ ["shen","akali","mentor","Shen trained Akali in stealth until she became the Fist of Shadow, but he kept urging restraint, and she drifted away from the Kinkou."],
+ ["shen","kennen","allies","When Zed's coup shattered the Kinkou, the yordle Kennen held the order together while the young Shen struggled to lead."],
+ ["viego","kalista","betrayal","Kalista was the king's niece and his most trusted general. She stopped an assassin's blade, but it was poisoned and cut Queen Isolde instead, and Viego's grief began the Ruination."],
+ ["hecarim","kalista","betrayal","Kalista trusted Hecarim's Iron Order to guard the king while she searched for a cure for the queen. That trust ended in betrayal, and both are now bound to the Black Mist."],
+ ["azir","xerath","betrayal","Azir befriended a slave boy, named him Xerath, meaning 'one who shares', and was saved by him from an assassin. Years later, Xerath destroyed Azir during his Ascension."],
+ ["azir","sivir","family","Sivir woke in the desert being tended by Azir himself. She carries his bloodline, which is why Xerath wants her dead."],
+ ["azir","nasus","allies","As a boy, Azir spent more time in the Great Library of Nasus than at weapons practice under Renekton."],
+ ["xerath","renekton","enemies","Unable to destroy Xerath, Renekton wrestled him into the Tomb of the Emperors and had Nasus seal them inside. Their fight went on in the dark for millennia."],
+ ["leona","diana","rivals","Both grew up among the sun-worshipping Solari. Leona saw the orphan Diana punished for her questions and felt for her. Now they carry the Aspects of the Sun and the Moon."],
+ ["pantheon","aatrox","enemies","Aatrox goaded the Aspect of War into battle near Mount Targon, impaled it and left its mortal host, Atreus, to die. Atreus lived, and became Pantheon."],
+ ["jayce","viktor","rivals","Viktor widened Jayce's horizons and they built hextech together. Jayce wanted to improve life with technology; Viktor wanted to fix humanity itself."],
+ ["heimerdinger","viktor","mentor","Viktor caught the eye of Professor Heimerdinger and came to work at Piltover's Academy."],
+ ["caitlyn","vi","allies","Piltover's sheriff took on a hot-headed recruit from Zaun. Rumor says the partnership has something to do with a certain blue-haired troublemaker."],
+ ["caitlyn","jinx","enemies","Jinx keeps Piltover in chaos, and Caitlyn and Vi have set traps to catch her."],
+ ["missfortune","gangplank","enemies","Gangplank murdered Miss Fortune's family in her mother's gun workshop. She rebuilt her mother's pistols and spent years planning his humiliation."],
+ ["twistedfate","graves","betrayal","Tobias, now called Twisted Fate, met Malcolm Graves over a card table and they ran cons for years. One night went wrong: Graves was taken alive while Tobias ran free."],
+ ["rengar","khazix","rivals","Rengar was sent to bring back Kha'Zix's head. The Void creature tore out one of his eyes and escaped, and each now sees the other as the only prey worth having."],
+ ["swain","darius","allies","Darius had spoken up for Swain after his disgrace in Ionia. When Swain seized the throne, Darius, sworn to Noxus rather than any ruler, stood with him."],
+ ["swain","leblanc","rivals","LeBlanc manipulated Swain when he was young and helped ensure his disgrace in Ionia. Then he did what she never expected and took Noxus for himself."],
+ ["kaisa","kassadin","family","Kassadin lost his wife and baby daughter when the Void swallowed their village. That daughter, Kai'Sa, survived inside the Void."],
+ ["kassadin","malzahar","enemies","Kassadin swore to destroy Malzahar, the prophet of the Void, and the power behind him."],
+ ["warwick","singed","enemies","Warwick barely remembers the time Singed spent experimenting on him, slowly turning a man into a beast."]
 ];
 const REL=[{"s":"norra","n":"Norra","f":"bandle-city","r":["yuumi"]},{"s":"ambessa","n":"Ambessa","f":"noxus","r":["mel","caitlyn","leblanc"]},{"s":"zaahen","n":"Zaahen","f":"unaffiliated","r":["xinzhao","yunara","kayn","varus"]},{"s":"locke","n":"Locke","f":"demacia","r":["vayne","evelynn","morgana"]},{"s":"yunara","n":"Yunara","f":"ionia","r":["xinzhao","kennen"]},{"s":"qiyana","n":"Qiyana","f":"ixtal","r":["malphite","rengar","zyra"]},{"s":"jhin","n":"Jhin","f":"ionia","r":["shen","zed","akali","hwei"]},{"s":"sett","n":"Sett","f":"ionia","r":["alistar","draven"]},{"s":"garen","n":"Garen","f":"demacia","r":["lux","jarvaniv","quinn"]},{"s":"viego","n":"Viego","f":"shadow-isles","r":["hecarim","kalista","senna","thresh","vladimir","yorick"]},{"s":"lucian","n":"Lucian","f":"unaffiliated","r":["thresh","missfortune","olaf","hecarim"]},{"s":"pyke","n":"Pyke","f":"bilgewater","r":["gangplank","missfortune"]},{"s":"graves","n":"Graves","f":"bilgewater","r":["twistedfate","gangplank","missfortune"]},{"s":"camille","n":"Camille","f":"piltover","r":["caitlyn","ezreal","jayce","viktor","vi","ekko","orianna","warwick"]},{"s":"naafiri","n":"Naafiri","f":"shurima","r":["aatrox","kayn","varus"]},{"s":"ahri","n":"Ahri","f":"ionia","r":["yasuo","lillia","monkeyking"]},{"s":"zoe","n":"Zoe","f":"mount-targon","r":["aurelionsol","pantheon"]},{"s":"rell","n":"Rell","f":"noxus","r":["leblanc","samira"]},{"s":"bard","n":"Bard","f":"unaffiliated","r":["aurelionsol","ryze"]},{"s":"talon","n":"Talon","f":"noxus","r":["katarina","quinn","cassiopeia"]},{"s":"fiddlesticks","n":"Fiddlesticks","f":"unaffiliated","r":["nocturne","shaco"]},{"s":"gangplank","n":"Gangplank","f":"bilgewater","r":["missfortune","swain","zed","illaoi","twistedfate","graves"]},{"s":"renekton","n":"Renekton","f":"shurima","r":["nasus","azir","xerath","sivir"]},{"s":"fizz","n":"Fizz","f":"unaffiliated","r":["illaoi","nami","nautilus"]},{"s":"tristana","n":"Tristana","f":"bandle-city","r":["teemo","rumble"]},{"s":"blitzcrank","n":"Blitzcrank","f":"zaun","r":["orianna","viktor"]},{"s":"kalista","n":"Kalista","f":"shadow-isles","r":["hecarim","thresh","yorick"]},{"s":"vi","n":"Vi","f":"piltover","r":["caitlyn","jinx","ekko"]},{"s":"velkoz","n":"Vel'Koz","f":"void","r":["khazix","chogath","kogmaw","reksai"]},{"s":"nunu","n":"Nunu & Willump","f":"freljord","r":["lissandra","anivia"]},{"s":"heimerdinger","n":"Heimerdinger","f":"piltover","r":["corki","gnar","ziggs","rumble","veigar"]},{"s":"taric","n":"Taric","f":"mount-targon","r":["garen","leona","diana","zoe"]},{"s":"elise","n":"Elise","f":"shadow-isles","r":["leblanc","vladimir"]},{"s":"lux","n":"Lux","f":"demacia","r":["garen","jarvaniv","galio"]},{"s":"vayne","n":"Vayne","f":"demacia","r":["evelynn","shaco","fiddlesticks"]},{"s":"karthus","n":"Karthus","f":"shadow-isles","r":["mordekaiser","thresh","yorick","soraka","kindred"]},{"s":"gwen","n":"Gwen","f":"shadow-isles","r":["viego","senna","yorick"]},{"s":"diana","n":"Diana","f":"mount-targon","r":["leona","taric","zoe","pantheon"]},{"s":"samira","n":"Samira","f":"noxus","r":["darius","leblanc"]},{"s":"udyr","n":"Udyr","f":"freljord","r":["leesin","sejuani","volibear"]},{"s":"leona","n":"Leona","f":"mount-targon","r":["diana","taric","aurelionsol","pantheon"]},{"s":"zilean","n":"Zilean","f":"unaffiliated","r":["aatrox","jax","velkoz"]},{"s":"cassiopeia","n":"Cassiopeia","f":"noxus","r":["katarina","renekton","nasus","xerath","sivir","azir","talon"]},{"s":"twistedfate","n":"Twisted Fate","f":"bilgewater","r":["graves","gangplank","missfortune"]},{"s":"kindred","n":"Kindred","f":"unaffiliated","r":["karthus","mordekaiser","yorick"]},{"s":"rumble","n":"Rumble","f":"bandle-city","r":["tristana","ziggs","heimerdinger","teemo","veigar"]},{"s":"shen","n":"Shen","f":"ionia","r":["kennen","akali","zed","jhin"]},{"s":"sejuani","n":"Sejuani","f":"freljord","r":["ashe","lissandra","olaf"]},{"s":"maokai","n":"Maokai","f":"shadow-isles","r":["malphite","zyra","yorick"]},{"s":"yone","n":"Yone","f":"ionia","r":["yasuo","lillia"]},{"s":"swain","n":"Swain","f":"noxus","r":["leblanc","darius","katarina","draven","vladimir"]},{"s":"zeri","n":"Zeri","f":"zaun","r":["ekko"]},{"s":"gragas","n":"Gragas","f":"freljord","r":["tryndamere","braum","jax","ashe"]},{"s":"nautilus","n":"Nautilus","f":"bilgewater","r":["fizz","illaoi","nami","tahmkench"]},{"s":"ksante","n":"K’Sante","f":"shurima","r":["azir","renekton","xerath"]},{"s":"thresh","n":"Thresh","f":"shadow-isles","r":["hecarim","karthus","lucian","kalista","yorick"]},{"s":"chogath","n":"Cho'Gath","f":"void","r":["kogmaw","khazix","velkoz"]},{"s":"xinzhao","n":"Xin Zhao","f":"demacia","r":["jarvaniv","yunara","sona"]},{"s":"lillia","n":"Lillia","f":"ionia","r":["ivern","ahri","yasuo"]},{"s":"aurelionsol","n":"Aurelion Sol","f":"unaffiliated","r":["soraka","leona","diana"]},{"s":"zac","n":"Zac","f":"zaun","r":["twitch"]},{"s":"malzahar","n":"Malzahar","f":"void","r":["kassadin","kaisa"]},{"s":"corki","n":"Corki","f":"bandle-city","r":["heimerdinger","veigar"]},{"s":"sion","n":"Sion","f":"noxus","r":["swain","jarvaniv","leblanc"]},{"s":"rakan","n":"Rakan","f":"ionia","r":["xayah","zed"]},{"s":"mordekaiser","n":"Mordekaiser","f":"noxus","r":["leblanc","veigar","vladimir"]},{"s":"jayce","n":"Jayce","f":"piltover","r":["ezreal","camille","caitlyn","vi","viktor","skarner"]},{"s":"singed","n":"Singed","f":"zaun","r":["warwick","riven","masteryi"]},{"s":"draven","n":"Draven","f":"noxus","r":["darius","swain"]},{"s":"soraka","n":"Soraka","f":"mount-targon","r":["aurelionsol","syndra","warwick"]},{"s":"rengar","n":"Rengar","f":"ixtal","r":["khazix","nidalee","gnar"]},{"s":"yorick","n":"Yorick","f":"shadow-isles","r":["hecarim","kalista","thresh","karthus","maokai","kindred"]},{"s":"warwick","n":"Warwick","f":"zaun","r":["camille","singed","vayne"]},{"s":"shyvana","n":"Shyvana","f":"demacia","r":["jarvaniv","quinn","sona"]},{"s":"fiora","n":"Fiora","f":"demacia","r":["jarvaniv","garen","jax"]},{"s":"anivia","n":"Anivia","f":"freljord","r":["ornn","volibear","ashe","nunu"]},{"s":"poppy","n":"Poppy","f":"demacia","r":["galio","shyvana"]},{"s":"smolder","n":"Smolder","f":"unaffiliated","r":["viego","shyvana","aurelionsol"]},{"s":"katarina","n":"Katarina","f":"noxus","r":["cassiopeia","sion","talon","garen","swain","darius"]},{"s":"syndra","n":"Syndra","f":"ionia","r":["irelia","karma"]},{"s":"skarner","n":"Skarner","f":"ixtal","r":["malphite","qiyana","milio"]},{"s":"olaf","n":"Olaf","f":"freljord","r":["sejuani","volibear","missfortune","lucian"]},{"s":"taliyah","n":"Taliyah","f":"shurima","r":["yasuo","azir","nasus","sivir","xerath"]},{"s":"gnar","n":"Gnar","f":"freljord","r":["nunu","rengar"]},{"s":"leesin","n":"Lee Sin","f":"ionia","r":["karma","udyr"]},{"s":"caitlyn","n":"Caitlyn","f":"piltover","r":["vi","jinx"]},{"s":"milio","n":"Milio","f":"ixtal","r":["neeko","nidalee","qiyana"]},{"s":"yuumi","n":"Yuumi","f":"bandle-city","r":["norra","lulu","tristana","teemo"]},{"s":"kogmaw","n":"Kog'Maw","f":"void","r":["malzahar","khazix","chogath","velkoz"]},{"s":"masteryi","n":"Master Yi","f":"ionia","r":["monkeyking","singed"]},{"s":"brand","n":"Brand","f":"unaffiliated","r":["ryze","anivia","lissandra","nasus","renekton","xerath"]},{"s":"tahmkench","n":"Tahm Kench","f":"unaffiliated","r":["evelynn","fizz","nautilus","pyke"]},{"s":"aphelios","n":"Aphelios","f":"mount-targon","r":["diana","leona"]},{"s":"xerath","n":"Xerath","f":"shurima","r":["renekton","cassiopeia","nasus","azir","sivir","taliyah","brand"]},{"s":"zyra","n":"Zyra","f":"ixtal","r":["ivern","nidalee"]},{"s":"janna","n":"Janna","f":"zaun","r":["ekko","jinx","vi","urgot"]},{"s":"jax","n":"Jax","f":"unaffiliated","r":["aatrox","fiora","kassadin","zilean"]},{"s":"ashe","n":"Ashe","f":"freljord","r":["sejuani","tryndamere","braum","lissandra"]},{"s":"tryndamere","n":"Tryndamere","f":"freljord","r":["ashe","braum","aatrox"]},{"s":"yasuo","n":"Yasuo","f":"ionia","r":["yone","taliyah","riven"]},{"s":"annie","n":"Annie","f":"unaffiliated","r":[]},{"s":"veigar","n":"Veigar","f":"bandle-city","r":["mordekaiser","leblanc"]},{"s":"shaco","n":"Shaco","f":"unaffiliated","r":["fiddlesticks","nocturne"]},{"s":"kaisa","n":"Kai'Sa","f":"void","r":["malzahar"]},{"s":"alistar","n":"Alistar","f":"unaffiliated","r":["xinzhao"]},{"s":"ivern","n":"Ivern","f":"ionia","r":["lillia"]},{"s":"missfortune","n":"Miss Fortune","f":"bilgewater","r":["gangplank","illaoi","twistedfate","graves","lucian","olaf","hecarim","ryze"]},{"s":"nilah","n":"Nilah","f":"bilgewater","r":["graves","illaoi","viego","fiddlesticks"]},{"s":"azir","n":"Azir","f":"shurima","r":["nasus","sivir","xerath","renekton","taliyah","cassiopeia"]},{"s":"nami","n":"Nami","f":"unaffiliated","r":["fizz","nautilus"]},{"s":"karma","n":"Karma","f":"ionia","r":["irelia","leesin"]},{"s":"kennen","n":"Kennen","f":"ionia","r":["akali","shen","zed"]},{"s":"rammus","n":"Rammus","f":"shurima","r":[]},{"s":"akali","n":"Akali","f":"ionia","r":["kennen","shen","zed","jhin"]},{"s":"orianna","n":"Orianna","f":"piltover","r":["blitzcrank","camille","skarner"]},{"s":"darius","n":"Darius","f":"noxus","r":["draven","katarina","swain","vladimir"]},{"s":"quinn","n":"Quinn","f":"demacia","r":["jarvaniv","garen","sona"]},{"s":"pantheon","n":"Pantheon","f":"mount-targon","r":["aatrox","aurelionsol","leona"]},{"s":"kayn","n":"Kayn","f":"ionia","r":["aatrox","varus","zed","darius"]},{"s":"lulu","n":"Lulu","f":"bandle-city","r":["veigar","gnar"]},{"s":"sona","n":"Sona","f":"demacia","r":["taric","xinzhao","ryze"]},{"s":"kled","n":"Kled","f":"noxus","r":["swain","darius","tristana","elise"]},{"s":"hecarim","n":"Hecarim","f":"shadow-isles","r":["kalista","thresh","yorick"]},{"s":"riven","n":"Riven","f":"noxus","r":["leblanc","yasuo"]},{"s":"xayah","n":"Xayah","f":"ionia","r":["rakan","zed"]},{"s":"trundle","n":"Trundle","f":"freljord","r":["lissandra","ashe","sejuani","ryze"]},{"s":"akshan","n":"Akshan","f":"shurima","r":["lucian","senna","viego","gwen"]},{"s":"aurora","n":"Aurora","f":"freljord","r":["ornn","udyr","anivia","volibear"]},{"s":"malphite","n":"Malphite","f":"ixtal","r":["ezreal","kassadin","qiyana","taliyah"]},{"s":"urgot","n":"Urgot","f":"zaun","r":["swain","ekko","camille","darius"]},{"s":"vex","n":"Vex","f":"shadow-isles","r":["lucian","senna","thresh","viego"]},{"s":"drmundo","n":"Dr. Mundo","f":"zaun","r":["ekko"]},{"s":"hwei","n":"Hwei","f":"ionia","r":["jhin","shen","zed"]},{"s":"twitch","n":"Twitch","f":"zaun","r":["zac"]},{"s":"neeko","n":"Neeko","f":"ixtal","r":["nidalee","rengar","ezreal"]},{"s":"vladimir","n":"Vladimir","f":"noxus","r":["swain","leblanc","elise","kayn"]},{"s":"kayle","n":"Kayle","f":"demacia","r":["galio","morgana","taric"]},{"s":"senna","n":"Senna","f":"unaffiliated","r":["lucian","thresh","hecarim"]},{"s":"jarvaniv","n":"Jarvan IV","f":"demacia","r":["garen","shyvana","xinzhao","lux"]},{"s":"nocturne","n":"Nocturne","f":"unaffiliated","r":["evelynn","tahmkench","zed"]},{"s":"belveth","n":"Bel’Veth","f":"void","r":["kaisa","lissandra","malzahar","velkoz"]},{"s":"evelynn","n":"Evelynn","f":"unaffiliated","r":["vayne","tahmkench","ryze"]},{"s":"sivir","n":"Sivir","f":"shurima","r":["azir","nasus","taliyah"]},{"s":"khazix","n":"Kha'Zix","f":"void","r":["chogath","kogmaw","rengar","velkoz"]},{"s":"zed","n":"Zed","f":"ionia","r":["shen","akali","kennen","gangplank","jhin","kayn"]},{"s":"monkeyking","n":"Wukong","f":"ionia","r":["masteryi","ahri"]},{"s":"ornn","n":"Ornn","f":"freljord","r":["volibear","anivia","braum"]},{"s":"leblanc","n":"LeBlanc","f":"noxus","r":["vladimir","mel","mordekaiser"]},{"s":"amumu","n":"Amumu","f":"shurima","r":[]},{"s":"morgana","n":"Morgana","f":"demacia","r":["kayle","galio","taric"]},{"s":"reksai","n":"Rek'Sai","f":"void","r":["skarner"]},{"s":"sylas","n":"Sylas","f":"demacia","r":["lux","galio"]},{"s":"briar","n":"Briar","f":"noxus","r":["sion","swain","talon","vladimir"]},{"s":"ezreal","n":"Ezreal","f":"piltover","r":["kassadin","lux","reksai"]},{"s":"lissandra","n":"Lissandra","f":"freljord","r":["ashe","sejuani","nunu"]},{"s":"nidalee","n":"Nidalee","f":"ixtal","r":["neeko","rengar"]},{"s":"renataglasc","n":"Renata Glasc","f":"zaun","r":["camille","ekko","viktor","zeri"]},{"s":"volibear","n":"Volibear","f":"freljord","r":["ornn","anivia","lissandra"]},{"s":"viktor","n":"Viktor","f":"zaun","r":["jayce","heimerdinger","blitzcrank"]},{"s":"ryze","n":"Ryze","f":"unaffiliated","r":["brand","missfortune","trundle","sona","nasus","galio","malzahar"]},{"s":"braum","n":"Braum","f":"freljord","r":["ashe","tryndamere","lissandra","ornn"]},{"s":"nasus","n":"Nasus","f":"shurima","r":["renekton","azir","xerath","sivir"]},{"s":"kassadin","n":"Kassadin","f":"void","r":["malzahar","ezreal"]},{"s":"ziggs","n":"Ziggs","f":"zaun","r":["heimerdinger","rumble","veigar"]},{"s":"aatrox","n":"Aatrox","f":"unaffiliated","r":["kayn","varus","tryndamere"]},{"s":"teemo","n":"Teemo","f":"bandle-city","r":["tristana","lulu","corki"]},{"s":"ekko","n":"Ekko","f":"zaun","r":["jinx","camille","vi","viktor","caitlyn","jayce","janna"]},{"s":"irelia","n":"Irelia","f":"ionia","r":["karma","swain"]},{"s":"seraphine","n":"Seraphine","f":"piltover","r":["skarner"]},{"s":"galio","n":"Galio","f":"demacia","r":["kayle","morgana","lux","sylas"]},{"s":"varus","n":"Varus","f":"ionia","r":["aatrox","kayn"]},{"s":"illaoi","n":"Illaoi","f":"bilgewater","r":["gangplank","missfortune","hecarim"]},{"s":"jinx","n":"Jinx","f":"zaun","r":["caitlyn","vi","ekko"]},{"s":"mel","n":"Mel","f":"noxus","r":["ambessa","jayce","leblanc"]}];
 let GRAPH=null;
@@ -1047,7 +1068,7 @@ function renderWeb(){
   if(!window.d3){$("#webSide").innerHTML=`<p class="banner-msg">The map needs a drawing library that didn't load. Check your connection, then reload the page.</p>`;return}
   if(!web)initWeb(G);
   $("#legend").innerHTML=Object.entries(BOND).map(([k,v])=>`<button class="chip" data-t="${k}" aria-pressed="${web.types.has(k)}"><i style="background:${v.c}"></i>${v.label}</button>`).join("");
-  document.querySelectorAll("#legend .chip").forEach(b=>b.onclick=()=>{const t=b.dataset.t;web.types.has(t)?web.types.delete(t):web.types.add(t);b.setAttribute("aria-pressed",web.types.has(t));draw()});
+  document.querySelectorAll("#legend .chip").forEach(b=>b.onclick=()=>{const t=b.dataset.t;web.types.has(t)?web.types.delete(t):web.types.add(t);b.setAttribute("aria-pressed",web.types.has(t));draw();drawSide()});
   requestAnimationFrame(()=>{sizeWeb();if(pendingFocus){focusNode(pendingFocus);pendingFocus=null}else if(!web.fitted){fitWeb(false);web.fitted=true}draw();drawSide()});
 }
 function initWeb(G){
@@ -1124,9 +1145,9 @@ function drawSide(){
   const G=buildGraph(),side=$("#webSide");
   if(!web||!web.sel){
     side.innerHTML=`<div class="stack" style="gap:var(--s2)"><h3 class="t-2">Story threads</h3><p class="t-sm">${STORIES.length} bonds explained. Pick one to see it on the map, or click any champion.</p></div>
-     <div class="conns">${STORIES.map(([a,b,t,txt])=>{const A=G.by[a],B=G.by[b];if(!A||!B)return"";return `<button class="conn" data-o="${a}"><img loading="lazy" alt="" src="${esc(nodeImg(A))}"><span><span class="who"><b>${esc(A.name)} & ${esc(B.name)}</b><span class="ttype" style="color:${BOND[t].c}">${BOND[t].label}</span></span><p>${esc(txt)}</p></span></button>`}).join("")}</div>`;
+     <div class="conns">${STORIES.filter(s=>web.types.has(s[2])).map(([a,b,t,txt])=>{const A=G.by[a],B=G.by[b];if(!A||!B)return"";return `<button class="conn" data-o="${a}"><img loading="lazy" alt="" src="${esc(nodeImg(A))}"><span><span class="who"><b>${esc(A.name)} & ${esc(B.name)}</b><span class="ttype" style="color:${BOND[t].c}">${BOND[t].label}</span></span><p>${esc(txt)}</p></span></button>`}).join("")}</div>`;
   }else{
-    const n=G.by[web.sel],list=G.adj[web.sel].slice().sort((x,y)=>(x.e.t==="linked")-(y.e.t==="linked")),g=GROUPS.find(x=>x.u===n.faction)||WANDERERS;
+    const n=G.by[web.sel],list=G.adj[web.sel].filter(x=>web.types.has(x.e.t)).sort((x,y)=>(x.e.t==="linked")-(y.e.t==="linked")),g=GROUPS.find(x=>x.u===n.faction)||WANDERERS;
     side.innerHTML=`<div class="side-head"><img alt="" src="${esc(nodeImg(n))}"><div class="stack" style="gap:var(--s1)"><h3 class="t-2">${esc(n.name)}</h3><span class="t-sm"><i class="swatch" style="background:${g.hue}"></i> ${esc(g.name)} · ${list.length} connections</span></div></div>
      <div class="row"><a class="btn" href="#champ-${esc(n.slug)}">Open profile</a><button class="btn secondary" id="clearSel">Show all</button></div>
      <div class="conns">${list.map(x=>connRow(x.o,x.e)).join("")||'<p class="t-sm">No known connections yet.</p>'}</div>`;
@@ -1175,14 +1196,74 @@ function rThreads(){
 
 /* ===== Atlas ===== */
 let currentRegion="demacia";
+/* ===== Fan art: original pieces made for the Codex (see higgsfield-prompts.md). Add one line per finished image. ===== */
+const FANART=[
+  // {region:"demacia",kind:"Place",title:"The white city",src:"art/demacia-city.jpg"},
+];
+function gallery(regionId){
+  const list=FANART.filter(a=>a.region===regionId);if(!list.length)return"";
+  return `<section class="stack"><h3 class="t-3">Fan art</h3><div class="gallery">${list.map(a=>`<figure><img loading="lazy" src="${esc(a.src)}" alt="${esc(a.title)}"><figcaption><span class="t-label">${esc(a.kind)}</span>${esc(a.title)}</figcaption></figure>`).join("")}</div><p class="src">Original fan art made for Runeterra Codex.</p></section>`;
+}
+
+/* ===== World map: our own schematic drawing. Positions follow the lore; coastlines are invented. ===== */
+const LAND={
+  freljord:{p:[[[70,95],[190,52],[350,38],[520,50],[610,88],[575,150],[440,166],[300,152],[180,172],[85,152]]],l:[330,110],places:[["Howling Abyss",470,92]]},
+  demacia:{p:[[[88,190],[200,180],[292,190],[300,252],[268,312],[178,322],[108,292],[78,236]]],l:[190,250],places:[["Great City of Demacia",150,290]]},
+  noxus:{p:[[[312,186],[432,176],[560,170],[606,214],[584,282],[502,300],[422,288],[332,298],[306,246]]],l:[460,226],places:[["Immortal Bastion",400,270]]},
+  piltover:{p:[[[318,318],[398,308],[412,336],[364,346],[324,340]]],l:[366,330],places:[]},
+  zaun:{p:[[[330,352],[406,346],[398,378],[350,384]]],l:[368,370],places:[]},
+  targon:{p:[[[56,338],[150,334],[174,402],[132,454],[68,434],[42,384]]],l:[108,392],places:[["Mount Targon",108,425]]},
+  shurima:{p:[[[176,430],[322,408],[480,416],[578,440],[596,506],[556,584],[420,612],[280,602],[190,566],[160,486]]],l:[380,500],places:[["Sun Disc",378,540]]},
+  ixtal:{p:[[[606,452],[682,442],[712,500],[684,560],[614,562],[592,504]]],l:[652,500],places:[["Ixaocan",650,532]]},
+  void:{p:[[[612,584],[702,578],[724,618],[640,632]]],l:[668,604],places:[["Icathia",668,624]]},
+  ionia:{p:[[[716,124],[792,102],[834,150],[804,202],[742,192],[708,162]],[[842,204],[892,192],[904,242],[864,262],[830,236]],[[758,218],[800,216],[808,252],[770,264]]],l:[780,150],places:[["Placidium of Navori",772,180]]},
+  bilge:{p:[[[798,330],[852,320],[864,362],[822,378],[792,356]],[[872,384],[904,378],[908,408],[876,414]]],l:[830,345],places:[["Slaughter Docks",828,394]]},
+  shadow:{p:[[[866,472],[932,462],[954,512],[912,544],[868,522]],[[940,552],[972,546],[978,576],[946,584]]],l:[910,500],places:[["Helia",908,530]]}
+};
+/* Seeded wobble so coastlines look hand-drawn but stay the same on every visit */
+function coast(pts,seed){
+  let s=seed;const rnd=()=>{s=(s*9301+49297)%233280;return s/233280};
+  const out=[];pts.forEach((p,i)=>{const q=pts[(i+1)%pts.length];out.push(p);for(let k=1;k<3;k++){const t=k/3,nx=-(q[1]-p[1]),ny=q[0]-p[0],len=Math.hypot(nx,ny)||1,j=(rnd()-.5)*14;out.push([p[0]+(q[0]-p[0])*t+nx/len*j,p[1]+(q[1]-p[1])*t+ny/len*j])}});
+  const n=out.length,P=i=>out[(i+n)%n];let d=`M${P(0)[0].toFixed(1)},${P(0)[1].toFixed(1)}`;
+  for(let i=0;i<n;i++){const p0=P(i-1),p1=P(i),p2=P(i+1),p3=P(i+2);
+    d+=`C${(p1[0]+(p2[0]-p0[0])/6).toFixed(1)},${(p1[1]+(p2[1]-p0[1])/6).toFixed(1)} ${(p2[0]-(p3[0]-p1[0])/6).toFixed(1)},${(p2[1]-(p3[1]-p1[1])/6).toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`}
+  return d+"Z";
+}
+function drawMap(){
+  const svg=$("#mapSvg");if(svg.dataset.drawn)return;svg.dataset.drawn="1";
+  const grat=[...Array(9)].map((_,i)=>`<line x1="${i*125}" y1="0" x2="${i*125}" y2="640"/>`).join("")+[...Array(6)].map((_,i)=>`<line x1="0" y1="${i*128}" x2="1000" y2="${i*128}"/>`).join("");
+  let html=`<defs><radialGradient id="seaG" cx="50%" cy="45%" r="70%"><stop offset="0" stop-color="#0d2238"/><stop offset="1" stop-color="#030b16"/></radialGradient>
+     <radialGradient id="mist" r=".5"><stop offset="0" stop-color="#6fd6bf" stop-opacity=".35"/><stop offset="1" stop-color="#6fd6bf" stop-opacity="0"/></radialGradient>
+     <radialGradient id="rift" r=".5"><stop offset="0" stop-color="#a874e0" stop-opacity=".55"/><stop offset="1" stop-color="#a874e0" stop-opacity="0"/></radialGradient></defs>
+    <rect width="1000" height="640" fill="url(#seaG)"/><g stroke="#16304a" stroke-width=".6" opacity=".7">${grat}</g>
+    <text class="sea" x="660" y="300">CONQUEROR'S SEA</text><text class="sea" x="250" y="392">GUARDIAN'S SEA</text>
+    <circle cx="912" cy="515" r="95" fill="url(#mist)"/><circle cx="668" cy="606" r="60" fill="url(#rift)"/>`;
+  let seed=7;
+  REGIONS.forEach(r=>{const L=LAND[r.id];if(!L)return;
+    html+=`<g class="land" data-r="${r.id}" style="--h:${r.hue}" tabindex="0" role="button" aria-label="${esc(r.name)}">${L.p.map(poly=>`<path class="shape" d="${coast(poly,seed+=13)}"/>`).join("")}
+      <text class="lbl" x="${L.l[0]}" y="${L.l[1]}">${esc(r.name.toUpperCase())}</text><text class="cnt" x="${L.l[0]}" y="${L.l[1]+17}" data-cnt="${r.id}"></text></g>`;
+    L.places.forEach(([n,x,y])=>{html+=`<g class="place"><path d="M${x},${y-4}l4,4l-4,4l-4,-4Z"/><text x="${x+7}" y="${y+4}">${esc(n)}</text></g>`});
+  });
+  /* Bandle City has no fixed place: a portal into the spirit realm */
+  html+=`<g class="land" data-r="bandle" style="--h:#b9d46e" tabindex="0" role="button" aria-label="Bandle City"><circle class="shape" cx="470" cy="368" r="30" style="stroke-dasharray:4 4"/><text class="lbl" x="470" y="372" style="font-size:14px">BANDLE CITY</text><text class="cnt" x="470" y="414" data-cnt="bandle"></text><text class="place" x="470" y="428" style="font-family:var(--ui);font-style:italic;font-size:11px;fill:#a09b8c;text-anchor:middle">somewhere in the spirit realm</text></g>`;
+  /* Wanderers: no homeland */
+  html+=`<g class="land" data-r="wanderers" style="--h:#c8aa6e" tabindex="0" role="button" aria-label="Wanderers"><rect class="shape" x="24" y="560" width="200" height="56" rx="0"/><text class="lbl" x="124" y="586" style="font-size:15px">WANDERERS</text><text class="cnt" x="124" y="604" data-cnt="wanderers"></text></g>`;
+  svg.innerHTML=html;
+  svg.querySelectorAll(".land").forEach(g=>{const go=()=>{renderAtlas(g.dataset.r);if(innerWidth<860)$("#atlasDetail").scrollIntoView({behavior:reduce?"auto":"smooth",block:"start"})};g.onclick=go;g.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go()}}});
+}
+function paintMap(id){
+  drawMap();
+  document.querySelectorAll("#mapSvg .land").forEach(g=>{g.classList.toggle("on",g.dataset.r===id);g.setAttribute("aria-pressed",g.dataset.r===id)});
+  document.querySelectorAll("#mapSvg [data-cnt]").forEach(t=>{const g=GROUPS.find(x=>x.id===t.dataset.cnt);t.textContent=UNIV&&g?`${members(g).length} champions`:""});
+}
 function renderAtlas(id){
-  pendingRegion=null;currentRegion=id;
+  pendingRegion=null;currentRegion=id;paintMap(id);
   $("#rlist").innerHTML=GROUPS.map(r=>`<button data-r="${r.id}" aria-pressed="${r.id===id}"><i class="swatch" style="background:${r.hue}"></i>${esc(r.name)}${LS.visited.includes(r.id)?'<span class="seen">Read</span>':""}</button>`).join("");
   document.querySelectorAll("#rlist button").forEach(b=>b.onclick=()=>renderAtlas(b.dataset.r));
   const r=GROUPS.find(x=>x.id===id)||REGIONS[1],list=members(r);
   $("#rpanel").innerHTML=`<div class="banner art" style="${bg(splash(idOf(r.key)))}"></div><div class="body">
    <div class="stack" style="gap:var(--s2)"><span class="t-label" style="color:${r.hue}">${esc(r.tag)}</span><h2 class="t-1">${esc(r.name)}</h2></div>
-   <p class="t-body">${esc(r.text)}</p><div class="fact"><span class="t-label">Did you know</span><p>${esc(r.fact)}</p></div>
+   <p class="t-body">${esc(r.text)}</p><div class="fact"><span class="t-label">Did you know</span><p>${esc(r.fact)}</p></div>${gallery(r.id)}
    <div class="between"><h3 class="t-3">Champions of ${esc(r.name)}</h3><span class="t-sm num">${UNIV?`${list.length} champions`:uFailed?"Showing a few. Riot's full list could not load.":"Loading the full list…"}</span></div>
    <div class="roster tall">${list.map(u=>champTile(u,true)).join("")}</div>
    ${r.u!=="unaffiliated"?`<a class="link" href="${U_SITE}region/${r.u}/" target="_blank" rel="noopener">Read about ${esc(r.name)} on Riot's Universe site ↗</a>`:""}</div>`;
@@ -1192,16 +1273,26 @@ function renderAtlas(id){
 
 /* ===== Champions roster ===== */
 function renderRoster(){
-  $("#rosterFilters").innerHTML=[{id:"all",name:"All",hue:"var(--gold-2)"},...GROUPS].map(g=>`<button class="chip" data-f="${g.id}" aria-pressed="${rosterFilter===g.id}"><i class="swatch" style="background:${g.hue}"></i>${esc(g.name)}</button>`).join("");
-  document.querySelectorAll("#rosterFilters .chip").forEach(b=>b.onclick=()=>{rosterFilter=b.dataset.f;renderRoster()});
-  const inp=$("#rosterSearch");inp.oninput=drawRoster;drawRoster();
+  const box=$("#rosterFilters");
+  if(!box.children.length){
+    box.innerHTML=[{id:"all",name:"All",hue:"var(--gold-2)"},...GROUPS].map(g=>`<button class="chip" data-f="${g.id}" aria-pressed="false"><i class="swatch" style="background:${g.hue}"></i>${esc(g.name)}<span class="n num"></span></button>`).join("");
+    box.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{rosterFilter=b.dataset.f;drawRoster()});
+    $("#rosterSearch").oninput=drawRoster;
+  }
+  drawRoster();
 }
 function drawRoster(){
+  /* Update the buttons in place, so keyboard focus stays where it was */
+  document.querySelectorAll("#rosterFilters .chip").forEach(b=>{b.setAttribute("aria-pressed",b.dataset.f===rosterFilter);const g=GROUPS.find(x=>x.id===b.dataset.f);b.querySelector(".n").textContent=UNIV?` ${g?members(g).length:UNIV.length}`:""});
   if(!UNIV){$("#roster").innerHTML=`<p class="empty" style="grid-column:1/-1">${uFailed?"We couldn't reach Riot's champion list. Check your connection, then reload the page.":"Loading every champion from Riot…"}</p>`;$("#rosterCount").textContent="";return}
-  const q=norm($("#rosterSearch").value),g=GROUPS.find(x=>x.id===rosterFilter);
+  const raw=$("#rosterSearch").value.trim(),q=norm(raw),g=GROUPS.find(x=>x.id===rosterFilter);
   const list=UNIV.filter(u=>(!g||u.faction===g.u)&&(!q||norm(u.name).includes(q)));
   $("#rosterCount").textContent=`${list.length} of ${UNIV.length} champions`;
-  $("#roster").innerHTML=list.map(u=>champTile(u,false)).join("")||`<p class="empty" style="grid-column:1/-1">No champion matches “${esc($("#rosterSearch").value)}”.</p>`;
+  if(list.length){$("#roster").innerHTML=list.map(u=>champTile(u,false)).join("");return}
+  const elsewhere=g&&q?UNIV.filter(u=>norm(u.name).includes(q)).length:0;
+  $("#roster").innerHTML=`<div class="empty" style="grid-column:1/-1;display:flex;flex-direction:column;gap:12px;align-items:center"><p>No ${g?esc(g.name)+" ":""}champion matches “${esc(raw)}”.${elsewhere?` ${elsewhere} ${elsewhere===1?"champion matches":"champions match"} in other regions.`:""}</p><div class="row" style="justify-content:center">${elsewhere?`<button class="btn secondary" id="rAll">Search all regions</button>`:""}<button class="btn secondary" id="rClear">Clear search</button></div></div>`;
+  if(elsewhere)$("#rAll").onclick=()=>{rosterFilter="all";drawRoster()};
+  $("#rClear").onclick=()=>{$("#rosterSearch").value="";drawRoster();$("#rosterSearch").focus()};
 }
 
 /* ===== Champion page ===== */
