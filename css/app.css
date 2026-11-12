@@ -243,15 +243,13 @@ button{font:inherit;color:inherit;cursor:pointer}
 .worldmap svg{display:block;width:100%;min-width:720px;height:auto}
 .worldmap figcaption{padding:0 var(--s2)}
 .land{cursor:pointer;outline:none}
-.land .shape{fill:#14212f;stroke:var(--gold-5);stroke-width:1.2;transition:fill .25s,stroke .25s}
-.land:hover .shape,.land:focus-visible .shape{fill:color-mix(in srgb,var(--h) 22%,#14212f);stroke:var(--h)}
-.land.on .shape{fill:color-mix(in srgb,var(--h) 34%,#14212f);stroke:var(--h);stroke-width:2}
-.land .lbl{font-family:var(--display);font-size:19px;letter-spacing:.12em;fill:var(--gold-1);text-anchor:middle;paint-order:stroke;stroke:#010a13;stroke-width:4px;pointer-events:none}
-.land .cnt{font-family:var(--ui);font-size:12px;fill:var(--h);text-anchor:middle;paint-order:stroke;stroke:#010a13;stroke-width:3px;pointer-events:none}
+.land .shape{fill:color-mix(in srgb,var(--h) 10%,transparent);stroke:var(--h);stroke-width:3;stroke-opacity:.55;stroke-dasharray:10 8;transition:fill .25s,stroke-opacity .25s}
+.land:hover .shape,.land:focus-visible .shape{fill:color-mix(in srgb,var(--h) 26%,transparent);stroke-opacity:1}
+.land.on .shape{fill:color-mix(in srgb,var(--h) 34%,transparent);stroke-opacity:1;stroke-width:5;stroke-dasharray:none}
+.land .lbl{font-family:var(--display);font-size:40px;letter-spacing:.12em;fill:var(--gold-1);text-anchor:middle;paint-order:stroke;stroke:#010a13;stroke-width:9px;pointer-events:none}
+.land .cnt{font-family:var(--ui);font-weight:600;font-size:26px;fill:var(--h);text-anchor:middle;paint-order:stroke;stroke:#010a13;stroke-width:7px;pointer-events:none}
+.land .hint{font-family:var(--ui);font-style:italic;font-size:22px;fill:var(--grey-1);text-anchor:middle;paint-order:stroke;stroke:#010a13;stroke-width:6px;pointer-events:none}
 .land.on .lbl{fill:#fff}
-.place text{font-family:var(--ui);font-style:italic;font-size:11.5px;fill:var(--grey-1);paint-order:stroke;stroke:#010a13;stroke-width:3px;pointer-events:none}
-.place path{fill:var(--gold-3)}
-.sea{font-family:var(--display);font-size:13px;letter-spacing:.3em;fill:#2c4a63;text-anchor:middle;pointer-events:none}
 .land:focus-visible .lbl{text-decoration:underline}
 .atlas{display:grid;grid-template-columns:240px minmax(0,1fr);gap:var(--s5);align-items:start}
 @media (max-width:860px){.atlas{grid-template-columns:minmax(0,1fr)}}
