@@ -4,3 +4,4 @@ node_modules/
 
 # Reference models from the owner (blueprints only, never published)
 /*.glb
+/*.zip

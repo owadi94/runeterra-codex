@@ -3,6 +3,7 @@
 import { makeKit } from './kit.js';
 import { makePeople } from './people.js';
 import { makeKnights } from './knights.js';
+import { demacianProps } from './props.js';
 import * as T from './textures.js';
 import { buildGate } from './demacia-gate.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -176,8 +177,9 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
   add(new THREE.CylinderGeometry(2.8, 1.4, 0.7, 28), M.stone2, 0, 4.6, 0);
   add(new THREE.CylinderGeometry(0.45, 0.6, 2.2, 12), M.stone, 0, 6, 0);
   add(new THREE.SphereGeometry(0.9, 18, 12), M.gold, 0, 7.6, 0);
-  const stallColors = [['#1f4f9a', '#e9e2cf'], ['#9a2f2f', '#f0d48a'], ['#2f6f45', '#e9e2cf'], ['#c89b3c', '#1f4f9a']];
-  [0.6, 1.3, 2.1, 3.9, 4.6, 5.4].forEach((a, i) => K.stall(scene, Math.sin(a) * 16, Math.cos(a) * 16, a + Math.PI, stallColors[i % 4]));
+  // Demacian market tents on the diagonals, between the streets, opening towards the fountain
+  const tents = [1, 3, 5, 7].map(k => { const a = k * Math.PI / 4; return [Math.sin(a) * 24, Math.cos(a) * 24, a + Math.PI]; });
+  tents.forEach(([x, z]) => circle(x, z, 3.4));
   [0.6, 1.3, 2.1, 3.9, 4.6, 5.4].forEach(a => circle(Math.sin(a) * 16, Math.cos(a) * 16, 2.3));
   [[11, 11, 0.8], [-11, 11, -0.8], [11, -11, 2.3], [-11, -11, -2.3]].forEach(([x, z, r]) => K.bench(scene, x, z, r));
 
@@ -223,8 +225,11 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
   K.hedge(scene, -14, WALL_R + 20, 10); K.hedge(scene, 14, WALL_R + 20, 10);
 
   /* ---- Painted props around the city ---- */
-  [-7.5, 7.5].forEach(x => { K.bannerStand(scene, x, WALL_R + 14, 0); circle(x, WALL_R + 14, 0.8); });          // the road into the gate
-  [-7.5, 7.5].forEach(x => { K.bannerStand(scene, x, P.z + 22, 0); circle(x, P.z + 22, 0.8); });                // palace steps
+  // Banner poles (props.js): the road into the gate, the palace steps and the four corners of the plaza
+  const flags = [[-7.5, WALL_R + 14, 0], [7.5, WALL_R + 14, 0], [-7.5, P.z + 22, 0], [7.5, P.z + 22, 0],
+    [-10, 21, 0], [10, 21, 0], [-10, -21, Math.PI], [10, -21, Math.PI]];
+  flags.forEach(([x, z]) => circle(x, z, 0.6));
+  demacianProps(THREE, scene, { tents, flags, banner: T.grandBanner(THREE) });
   [-12, 12].forEach(x => { K.chest(scene, x, P.z + 18, 0); circle(x, P.z + 18, 1.2); });
   [[-20, 6, 0.3], [20, -6, -2.8], [6, -20, 1.4]].forEach(([x, z, r]) => { K.table(scene, x, z, r); circle(x, z, 1.5); });   // market tables
   K.weaponRack(scene, -52, 26, Math.PI / 2); circle(-52, 26, 2);                                                   // by the Mageseeker post
@@ -256,9 +261,9 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
     stand('recruit', byRole('Young squire'), [38, -7], 0), stand('recruit', byRole('Young squire'), [41, -7], 0),
     stand('recruit', byRole('Young squire'), [44, -7], 0), stroll('recruit', byRole('Young squire'), [30, 3], [72, 3]),
     // Market and plaza
-    stand('baker', byRole('Baker'), [16 * Math.sin(1.3) - 1.2, 16 * Math.cos(1.3) + 1.5], 1.3 + Math.PI),
-    stand('merchant', byRole('River merchant'), [16 * Math.sin(4.6) + 1.2, 16 * Math.cos(4.6)], 4.6 + Math.PI),
-    stand('merchant', chatter[0], [16 * Math.sin(2.1), 16 * Math.cos(2.1) + 1.4], 2.1 + Math.PI),
+    stand('baker', byRole('Baker'), [20 * Math.sin(Math.PI / 4), 20 * Math.cos(Math.PI / 4)], Math.PI / 4 + Math.PI),
+    stand('merchant', byRole('River merchant'), [20 * Math.sin(5 * Math.PI / 4), 20 * Math.cos(5 * Math.PI / 4)], Math.PI / 4),
+    stand('merchant', chatter[0], [20 * Math.sin(3 * Math.PI / 4), 20 * Math.cos(3 * Math.PI / 4)], 3 * Math.PI / 4 + Math.PI),
     stand('musician', byRole('Street musician'), [9, 9], -0.8),
     stroll('noble', chatter[2], [-12, -12], [-12, -30], { female: true }), stroll('noble', chatter[3], [12, -14], [12, -32], { female: false }),
     stroll('washer', byRole('Washerwoman'), [-22, -3], [-62, -3], { female: true }),

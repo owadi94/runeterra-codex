@@ -1,6 +1,14 @@
 // Townsfolk: original characters with a jointed body, a painted face, clothes and gear by role.
 // Stylized shading: banded (toon) light with a warm rim light, for a painted game-art look.
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+
+/* Women's heads: a sculpted head and three hairstyles from "Pocolov Hair 07, 15, 17" by pocolov (Sketchfab, CC BY 4.0),
+   cut at the neck, scaled so the head is 1 unit tall and centred on the skull. Skin and hair colours are ours, per person. */
+const HEADS_URL = new URL('../../models/townswoman-heads.glb', import.meta.url).href;
+const EYES = [[-0.135, 0.02, 0.291], [0.135, 0.02, 0.291]];   // eye centres in the head's units
+const HAIRS = ['hair07', 'hair15', 'hair17'];
 
 /* Roles: what each kind of person wears and carries. Colours are picked per person for variety. */
 export const ROLES = {
@@ -93,6 +101,37 @@ export function makePeople(THREE, rnd, painted) {
   const CLOTH = [0x3d6fb6, 0x8c4a3a, 0x5b7d3a, 0xc7a34d, 0x6b5a8c, 0xe8e2d4, 0x2f6f73, 0x9a3d52, 0x7d5a3c, 0x4b5a72];
   const pickOf = list => list[Math.floor(rnd() * list.length)];
 
+  /* Sculpted heads load once and are shared; each woman gets her own skin and hair colour */
+  let heads = null;
+  const sculpted = () => heads || (heads = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(HEADS_URL).catch(err => { console.warn('Heads did not load', err); return null; }));
+  const hairCache = new Map();
+  function hairMaterial(src, color) {
+    const key = src.uuid + color;
+    if (!hairCache.has(key)) {
+      const m = new THREE.MeshToonMaterial({ map: src.map, gradientMap: ramp, alphaTest: 0.35, side: THREE.DoubleSide, color: new THREE.Color(color).multiplyScalar(2.6) });
+      hairCache.set(key, m);
+    }
+    return hairCache.get(key);
+  }
+  const irisM = new THREE.MeshToonMaterial({ color: 0x3a2618, gradientMap: ramp }), whiteM = new THREE.MeshToonMaterial({ color: 0xf4f1ea, gradientMap: ramp });
+  /** Swap the painted head for the sculpted one. withHair: false under hoods, scarves and helmets. */
+  function sculptHead(head, oldFace, skin, hairColor, eyeColor, withHair) {
+    sculpted().then(g => {
+      if (!g) return;
+      const s = new THREE.Group(); s.scale.setScalar(0.32);
+      const h = g.scene.getObjectByName('head').clone(); h.material = skin; s.add(h);
+      if (withHair) { const src = g.scene.getObjectByName(pickOf(HAIRS)), hair = src.clone(); hair.material = hairMaterial(src.material, hairColor); s.add(hair); }
+      const iris = new THREE.MeshToonMaterial({ color: eyeColor, gradientMap: ramp });
+      EYES.forEach(([x, y, z]) => {
+        const w = new THREE.Mesh(new THREE.SphereGeometry(0.05, 12, 8), whiteM); w.position.set(x, y, z - 0.03); w.scale.set(1, 0.7, 0.5); s.add(w);
+        const i = new THREE.Mesh(new THREE.SphereGeometry(0.026, 10, 8), iris); i.position.set(x, y + 0.002, z - 0.004); i.scale.set(1, 1, 0.45); s.add(i);
+        const p = new THREE.Mesh(new THREE.SphereGeometry(0.012, 8, 6), irisM); p.position.set(x, y + 0.002, z + 0.004); p.scale.set(1, 1, 0.4); p.material = irisM; s.add(p);
+      });
+      s.traverse(o => { if (o.isMesh) { o.castShadow = true; } });
+      oldFace.visible = false; head.add(s);
+    });
+  }
+
   /** Build a person. Returns { mesh, update(dt, now) }. Faces +z in its own space. */
   function person(scene, info, path, opts = {}) {
     const roleName = opts.role || 'citizen', role = ROLES[roleName], adv = !!role.adventurer;
@@ -181,6 +220,7 @@ export function makePeople(THREE, rnd, painted) {
     if (hairStyle === 'braid') { hp.push([cap(), hairM]); hp.push([tf(new THREE.CylinderGeometry(0.03, 0.02, 0.38, 8), 0, -0.2, -0.1, 0.2), hairM]); }
     if (!female && rnd() < 0.35 && !role.helm) hp.push([tf(new THREE.SphereGeometry(0.085, 12, 8, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), 0, -0.035, 0.035, 0, 0, 0, 1, 1.1, 0.9), hairM]);   // beard
     if (role.helm === 'cap') { hp.push([cap(1.1), steel]); hp.push([tf(new THREE.TorusGeometry(0.126, 0.012, 6, 18), 0, 0.01, 0, Math.PI / 2), gold]); }
+    const faceParts = hp.length;                              // everything after this is headgear
     if (role.helm === 'great') {                               // closed great helm after the blueprint knight, with our blue plume
       hp.push([tf(new THREE.SphereGeometry(0.13, 20, 14), 0, 0.02, 0, 0, 0, 0, 0.98, 1.22, 1.05), steel]);
       hp.push([tf(new THREE.BoxGeometry(0.15, 0.016, 0.04), 0, 0.035, 0.122), dark]);                          // visor slit
@@ -200,7 +240,9 @@ export function makePeople(THREE, rnd, painted) {
     if (role.hat === 'cap') hp.push([tf(new THREE.CylinderGeometry(0.11, 0.125, 0.09, 14), 0, 0.1, -0.01, -0.15), toon(0xf3eee2)]);
     if (role.hat === 'wide') { hp.push([tf(new THREE.CylinderGeometry(0.09, 0.11, 0.12, 14), 0, 0.12, 0), toon(0x5a3b22)]); hp.push([tf(new THREE.CylinderGeometry(0.22, 0.22, 0.015, 18), 0, 0.07, 0), toon(0x5a3b22)]); }
     if (role.hat === 'scarf') hp.push([tf(new THREE.SphereGeometry(0.13, 16, 10, 0, Math.PI * 2, 0, Math.PI / 1.7), 0, 0.01, -0.01, -0.3), toon(pickOf([0xb5452e, 0x2f6f73, 0xc7a34d]))]);
-    const headMesh = bake(hp); headMesh.scale.setScalar(1.08); head.add(headMesh);
+    const faceMesh = bake(hp.slice(0, faceParts)); faceMesh.scale.setScalar(1.08); head.add(faceMesh);
+    if (hp.length > faceParts) { const gear = bake(hp.slice(faceParts)); gear.scale.setScalar(1.08); head.add(gear); }
+    if (female && !role.helm) sculptHead(head, faceMesh, skin, hairM.color.getHex(), pickOf(['#4a6fa5', '#5a3b1e', '#3f6b3a', '#6b6b6b']), hairStyle !== 'none' && !role.hat);
 
     /* Arms: shoulder -> elbow -> hand, with held items on the hands */
     const arm = side => {
