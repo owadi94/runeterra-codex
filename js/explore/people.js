@@ -4,7 +4,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 /* Roles: what each kind of person wears and carries. Colours are picked per person for variety. */
 export const ROLES = {
-  guard:      { armor: 'full', helm: 'plume', tabard: true, shield: true, spear: true, cloak: 0x1f4f9a },
+  guard:      { armor: 'full', helm: 'great', tabard: true, shield: true, spear: true, cloak: 0x1f4f9a },
   recruit:    { armor: 'half', helm: 'cap', tabard: true, sword: true },
   baker:      { apron: 0xf3eee2, hat: 'cap', carry: 'bread' },
   merchant:   { robe: true, hat: 'wide', satchel: true },
@@ -14,6 +14,7 @@ export const ROLES = {
   musician:   { hat: 'cap', lute: true, cloak: 0x7a2f3a },
   noble:      { coat: true, gold: true, hat: 'none', cloak: 0x2a3f78 },
   citizen:    {},
+  adventurer: { adventurer: true, hood: 'deep', sabre: true },                 // a travelling blade: hood, braid, corset, coat
 };
 
 export function makePeople(THREE, rnd, painted) {
@@ -72,6 +73,19 @@ export function makePeople(THREE, rnd, painted) {
     faceCache.set(key, t); return t;
   }
 
+  /* ---- Chainmail: rings painted on a small tile ---- */
+  const mailMap = (() => {
+    const W = 64, c = document.createElement('canvas'); c.width = c.height = W; const g = c.getContext('2d');
+    g.fillStyle = '#5d636c'; g.fillRect(0, 0, W, W);
+    for (let r = 0; r < 8; r++) for (let k = -1; k < 9; k++) {
+      const x = k * 8 + (r % 2) * 4 + 4, y = r * 8 + 4;
+      g.strokeStyle = '#2d3138'; g.lineWidth = 2.6; g.beginPath(); g.arc(x, y + 0.8, 3.4, 0, 7); g.stroke();
+      g.strokeStyle = '#c9ced6'; g.lineWidth = 1.6; g.beginPath(); g.arc(x, y, 3.4, Math.PI * 1.05, Math.PI * 1.95); g.stroke();
+    }
+    const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(12, 4); t.colorSpace = THREE.SRGBColorSpace;
+    return t;
+  })();
+
   /* ---- Palettes ---- */
   const SKIN = [0xf3cfb0, 0xe2b08a, 0xc68b62, 0x9a6440, 0x6e432a, 0xf0c39c];
   const HAIR = [0x2a1d14, 0x4a2f1c, 0x7a5230, 0xc49a5a, 0xe1c58a, 0x8f8f8f, 0x161616, 0xa4502a];
@@ -81,9 +95,15 @@ export function makePeople(THREE, rnd, painted) {
 
   /** Build a person. Returns { mesh, update(dt, now) }. Faces +z in its own space. */
   function person(scene, info, path, opts = {}) {
-    const role = ROLES[opts.role || 'citizen'], female = opts.female ?? rnd() < 0.45;
-    const skin = toon(pickOf(SKIN)), hairM = toon(pickOf(HAIR));
-    const shirt = toon(opts.color || pickOf(CLOTH)), pantsM = toon(pickOf([0x3b3227, 0x4a3b2c, 0x2f3540, 0x5a4a38]));
+    const roleName = opts.role || 'citizen', role = ROLES[roleName], adv = !!role.adventurer;
+    const female = opts.female ?? (adv || rnd() < 0.45);
+    const skin = toon(pickOf(SKIN)), hairM = toon(adv ? 0xc3c4c8 : pickOf(HAIR));
+    /* Blouse and corset (after the blueprint traveller): the traveller and most townswomen */
+    const corset = adv || (roleName === 'citizen' && female && rnd() < 0.75);
+    const shirt = toon(corset ? 0xece6da : opts.color || pickOf(CLOTH));
+    const corsetM = toon(adv ? 0x6a1820 : pickOf([0x6a1820, 0x2f4f3a, 0x2a3f78, 0x5a3b22, 0x7a2f3a]));
+    const pantsM = toon(adv ? 0xe4ddd0 : pickOf([0x3b3227, 0x4a3b2c, 0x2f3540, 0x5a4a38]));
+    const mail = toon(0xffffff, mailMap), dark = toon(0x15130f);
     const boots = toon(0x3a2617), steel = painted.steel, gold = painted.gold, leather = toon(0x6b4426), wood = painted.wood;
     const tabardM = new THREE.MeshToonMaterial({ map: painted.cloth.map, gradientMap: ramp, side: THREE.DoubleSide });
     const armored = role.armor === 'full', half = role.armor === 'half', robe = role.robe || role.dress || role.coat;
@@ -95,18 +115,51 @@ export function makePeople(THREE, rnd, painted) {
     const torsoShape = female ? [[0.15, -0.02], [0.135, 0.15], [0.16, 0.34], [0.165, 0.44], [0.07, 0.52]] : [[0.16, -0.02], [0.15, 0.15], [0.18, 0.34], [0.19, 0.46], [0.08, 0.52]];
     torso.push([tf(lathe(torsoShape), 0, 0, 0, 0, 0, 0, 1, 1, 0.72), armored || half ? steel : shirt]);
     torso.push([tf(cyl(0.055, 0.06, 0.12, 0.56), 0, 0, 0), skin]);
-    if (armored || half) {
+    if (armored) {
+      /* Plate after the blueprint knight: ridged breastplate, chest trim, gorget, layered pauldrons, faulds over a mail skirt */
+      torso.push([tf(new THREE.BoxGeometry(0.014, 0.34, 0.03), 0, 0.25, 0.128), steel]);
+      torso.push([tf(new THREE.TorusGeometry(0.182, 0.012, 6, 20), 0, 0.37, 0, Math.PI / 2, 0, 0, 1, 0.74, 1), gold]);
+      torso.push([tf(new THREE.TorusGeometry(0.17, 0.016, 6, 18), 0, 0.02, 0, Math.PI / 2, 0, 0, 1, 0.72, 1), gold]);
+      torso.push([cyl(0.09, 0.12, 0.1, 0.53, 14), steel]);
+      torso.push([tf(new THREE.TorusGeometry(0.092, 0.012, 6, 16), 0, 0.58, 0, Math.PI / 2), gold]);
+      [-1, 1].forEach(s => [[0.142, 0.468, gold], [0.132, 0.475, steel], [0.117, 0.412, steel], [0.1, 0.358, steel]].forEach(([r, y, m]) =>
+        torso.push([tf(new THREE.SphereGeometry(r, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2), s * 0.21, y, 0, 0, 0, s * -0.55, 1, 0.75, 1.1), m])));
+      torso.push([tf(lathe([[0.168, 0.0], [0.19, -0.07]], 16), 0, 0, 0, 0, 0, 0, 1, 1, 0.76), steel]);
+      torso.push([tf(lathe([[0.19, -0.07], [0.205, -0.14]], 16), 0, 0, 0, 0, 0, 0, 1, 1, 0.78), steel]);
+      torso.push([tf(new THREE.TorusGeometry(0.205, 0.01, 6, 20), 0, -0.14, 0, Math.PI / 2, 0, 0, 1, 0.78, 1), gold]);
+      torso.push([tf(lathe([[0.205, -0.13], [0.228, -0.43]], 18), 0, 0, 0, 0, 0, 0, 1, 1, 0.8), mail]);
+    }
+    if (half) {
       torso.push([tf(new THREE.TorusGeometry(0.17, 0.022, 6, 18), 0, 0.02, 0, Math.PI / 2, 0, 0, 1, 0.72, 1), gold]);
       torso.push([tf(new THREE.TorusGeometry(0.1, 0.02, 6, 16), 0, 0.5, 0, Math.PI / 2, 0, 0, 1, 0.8, 1), gold]);
-      [-1, 1].forEach(s => torso.push([tf(new THREE.SphereGeometry(0.115, 12, 8, 0, Math.PI * 2, 0, Math.PI / 1.9), s * 0.21, 0.45, 0, 0, 0, s * -0.5, 1, 0.8, 1.1), armored ? gold : steel]));
+      [-1, 1].forEach(s => torso.push([tf(new THREE.SphereGeometry(0.115, 12, 8, 0, Math.PI * 2, 0, Math.PI / 1.9), s * 0.21, 0.45, 0, 0, 0, s * -0.5, 1, 0.8, 1.1), steel]));
+      torso.push([tf(lathe([[0.205, -0.1], [0.222, -0.36]], 18), 0, 0, 0, 0, 0, 0, 1, 1, 0.8), mail]);
+    }
+    if (corset) {
+      torso.push([tf(lathe([[0.168, 0.0], [0.153, 0.14], [0.172, 0.3], [0.152, 0.37]], 16), 0, 0, 0, 0, 0, 0, 1.04, 1, 0.77), corsetM]);
+      [0.0, 0.37].forEach(y => torso.push([tf(new THREE.TorusGeometry(y ? 0.152 : 0.168, 0.009, 6, 18), 0, y, 0, Math.PI / 2, 0, 0, 1.04, 0.77, 1), gold]));
+      for (let k = 0; k < 4; k++) [-0.55, 0.55].forEach(a => torso.push([tf(new THREE.BoxGeometry(0.06, 0.007, 0.006), 0, 0.07 + k * 0.075, 0.127, 0, 0, a), dark]));
+    }
+    if (adv) {
+      /* Open coat with tails, gold edges at the opening, a slung belt with pouches, a sabre and a hooked knife */
+      const coat = toon(0x6a1820, null, { side: THREE.DoubleSide });
+      torso.push([tf(new THREE.CylinderGeometry(0.19, 0.27, 0.62, 16, 1, true, 0.55, Math.PI * 2 - 1.1), 0, -0.3, 0, 0, 0, 0, 1, 1, 0.8), coat]);
+      [0.55, -0.55].forEach(a => torso.push([tf(new THREE.BoxGeometry(0.02, 0.62, 0.02), Math.sin(a) * 0.235, -0.3, Math.cos(a) * 0.235 * 0.8), gold]));
+      torso.push([tf(new THREE.TorusGeometry(0.19, 0.02, 6, 18), 0, -0.03, 0, Math.PI / 2 + 0.12, 0, 0, 1, 0.76, 1), leather]);
+      [-1, 1].forEach(s => torso.push([tf(new THREE.BoxGeometry(0.08, 0.1, 0.06), s * 0.18, -0.06, 0.05, 0, s * 0.8), leather]));
+      torso.push([tf(new THREE.CylinderGeometry(0.02, 0.014, 0.72, 6), -0.21, -0.36, -0.06, -0.35, 0, 0.32), dark]);              // scabbard
+      torso.push([tf(new THREE.BoxGeometry(0.11, 0.02, 0.03), -0.17, -0.02, 0.04, -0.35, 0, 0.32), gold]);                        // guard
+      torso.push([tf(new THREE.CylinderGeometry(0.014, 0.014, 0.12, 6), -0.15, 0.04, 0.06, -0.35, 0, 0.32), leather]);           // grip
+      torso.push([tf(new THREE.BoxGeometry(0.03, 0.26, 0.008), 0.21, -0.2, 0.04, 0, 0, -0.2), steel]);                             // hooked knife
+      torso.push([tf(new THREE.TorusGeometry(0.04, 0.008, 4, 10, Math.PI), 0.2, -0.05, 0.04, 0, 0, 1.2), steel]);
     }
     if (robe) torso.push([lathe([[0.17, -0.55], [0.165, -0.3], [0.165, 0], [0.17, 0.1]]), shirt]);                  // long robe or dress skirt
-    else torso.push([lathe([[0.2, -0.22], [0.175, -0.05], [0.165, 0.06]]), armored || half ? toon(0x3a3f4a) : shirt]); // tunic hem
+    else if (!armored && !half && !adv) torso.push([lathe([[0.2, -0.22], [0.175, -0.05], [0.165, 0.06]]), corset ? corsetM : shirt]); // tunic hem
     if (role.coat) { torso.push([tf(new THREE.TorusGeometry(0.17, 0.018, 6, 18), 0, -0.55, 0, Math.PI / 2), gold]); torso.push([tf(new THREE.BoxGeometry(0.02, 0.52, 0.01), 0, 0.22, 0.125), gold]); }
     torso.push([tf(new THREE.TorusGeometry(0.168, 0.025, 6, 18), 0, 0.06, 0, Math.PI / 2, 0, 0, 1, 0.74, 1), leather]);   // belt
     if (role.satchel || rnd() < 0.4) torso.push([tf(new THREE.BoxGeometry(0.11, 0.12, 0.06), 0.15, 0.0, 0.08, 0, 0.6), leather]);
     if (role.apron) torso.push([tf(new THREE.PlaneGeometry(0.28, 0.6), 0, 0.02, 0.125), toon(role.apron, null, { side: THREE.DoubleSide })]);
-    if (role.tabard) torso.push([tf(new THREE.PlaneGeometry(0.24, 0.72), 0, 0.06, armored ? 0.14 : 0.135), tabardM]);
+    if (role.tabard) torso.push([tf(new THREE.PlaneGeometry(armored ? 0.22 : 0.24, armored ? 0.86 : 0.72), 0, armored ? -0.02 : 0.06, armored ? 0.15 : 0.135), tabardM]);
     if (role.cloak) torso.push([tf(new THREE.CylinderGeometry(0.22, 0.3, 1.0, 12, 1, true, Math.PI * 0.6, Math.PI * 0.8), 0, 0.05, -0.02, 0, 0, 0, 1, 1, 0.85), toon(role.cloak, null, { side: THREE.DoubleSide })]);
     if (role.lute) { torso.push([tf(new THREE.SphereGeometry(0.15, 12, 10), 0.02, 0.15, -0.17, 0, 0, 0, 1, 1.25, 0.45), wood]); torso.push([tf(new THREE.BoxGeometry(0.04, 0.42, 0.03), 0.02, 0.48, -0.17, 0, 0, 0.12), wood]); }
     if (role.sword) torso.push([tf(new THREE.BoxGeometry(0.035, 0.7, 0.02), -0.2, -0.25, 0.05, 0, 0, 0.12), steel], [tf(new THREE.BoxGeometry(0.16, 0.03, 0.04), -0.17, 0.1, 0.05, 0, 0, 0.12), gold]);
@@ -127,14 +180,23 @@ export function makePeople(THREE, rnd, painted) {
     if (hairStyle === 'bun') { hp.push([cap(), hairM]); hp.push([tf(new THREE.SphereGeometry(0.055, 10, 8), 0, 0.08, -0.11), hairM]); }
     if (hairStyle === 'braid') { hp.push([cap(), hairM]); hp.push([tf(new THREE.CylinderGeometry(0.03, 0.02, 0.38, 8), 0, -0.2, -0.1, 0.2), hairM]); }
     if (!female && rnd() < 0.35 && !role.helm) hp.push([tf(new THREE.SphereGeometry(0.085, 12, 8, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), 0, -0.035, 0.035, 0, 0, 0, 1, 1.1, 0.9), hairM]);   // beard
-    if (role.helm === 'plume') {
-      hp.push([cap(1.12), steel]);
-      hp.push([tf(new THREE.BoxGeometry(0.03, 0.12, 0.03), 0, -0.01, 0.13), steel]);                          // nasal guard
-      hp.push([tf(new THREE.TorusGeometry(0.128, 0.015, 6, 18), 0, 0.01, 0, Math.PI / 2), gold]);
-      hp.push([tf(new THREE.BoxGeometry(0.035, 0.12, 0.26), 0, 0.17, -0.03), toon(0x1f4f9a)]);                // plume
-    }
     if (role.helm === 'cap') { hp.push([cap(1.1), steel]); hp.push([tf(new THREE.TorusGeometry(0.126, 0.012, 6, 18), 0, 0.01, 0, Math.PI / 2), gold]); }
-    if (role.hood) hp.push([tf(new THREE.SphereGeometry(0.145, 16, 10, 0, Math.PI * 2, 0, Math.PI * 0.62), 0, 0.01, -0.015, -0.35), toon(role.cloak)]);
+    if (role.helm === 'great') {                               // closed great helm after the blueprint knight, with our blue plume
+      hp.push([tf(new THREE.SphereGeometry(0.13, 20, 14), 0, 0.02, 0, 0, 0, 0, 0.98, 1.22, 1.05), steel]);
+      hp.push([tf(new THREE.BoxGeometry(0.15, 0.016, 0.04), 0, 0.035, 0.122), dark]);                          // visor slit
+      for (let k = -2; k <= 2; k++) hp.push([tf(new THREE.BoxGeometry(0.008, 0.045, 0.03), k * 0.02, -0.05, 0.125), dark]);   // breaths
+      hp.push([tf(new THREE.TorusGeometry(0.14, 0.012, 6, 22, Math.PI), 0, 0.02, 0, 0, Math.PI / 2, 0, 1, 1.2, 1), gold]);   // crest
+      [-1, 1].forEach(s => hp.push([tf(new THREE.TorusGeometry(0.06, 0.009, 6, 12, Math.PI * 1.2), s * 0.127, 0.02, 0.02, 0, Math.PI / 2, 0.4), gold]));
+      hp.push([tf(new THREE.BoxGeometry(0.03, 0.09, 0.22), 0, 0.2, -0.04), toon(0x1f4f9a)]);                  // plume
+    }
+    if (role.hood === 'deep') {                               // deep hood with a drape, silver braid over the shoulder
+      const hoodM = toon(0xd9d4c8, null, { side: THREE.DoubleSide });
+      hp.push([cap(1.0), hairM]);
+      hp.push([tf(new THREE.SphereGeometry(0.152, 18, 12, Math.PI / 2 + 0.85, Math.PI * 2 - 1.7, 0, Math.PI * 0.6), 0, 0.012, -0.02, -0.3), hoodM]);   // open at the face
+      hp.push([tf(new THREE.CylinderGeometry(0.13, 0.21, 0.3, 14, 1, true, Math.PI * 0.55, Math.PI * 0.9), 0, -0.17, -0.02), hoodM]);
+      for (let k = 0; k < 9; k++) { const t = k / 8; hp.push([tf(new THREE.SphereGeometry(0.03 - t * 0.008, 8, 6), -0.07 - t * 0.06 + (k % 2) * 0.012, -0.06 - t * 0.4, 0.07 + t * 0.07), hairM]); }
+      hp.push([tf(new THREE.CylinderGeometry(0.008, 0.016, 0.05, 6), -0.13, -0.5, 0.14), hairM]);
+    } else if (role.hood) hp.push([tf(new THREE.SphereGeometry(0.145, 16, 10, Math.PI / 2 + 0.85, Math.PI * 2 - 1.7, 0, Math.PI * 0.62), 0, 0.01, -0.015, -0.3), toon(role.cloak, null, { side: THREE.DoubleSide })]);
     if (role.hat === 'cap') hp.push([tf(new THREE.CylinderGeometry(0.11, 0.125, 0.09, 14), 0, 0.1, -0.01, -0.15), toon(0xf3eee2)]);
     if (role.hat === 'wide') { hp.push([tf(new THREE.CylinderGeometry(0.09, 0.11, 0.12, 14), 0, 0.12, 0), toon(0x5a3b22)]); hp.push([tf(new THREE.CylinderGeometry(0.22, 0.22, 0.015, 18), 0, 0.07, 0), toon(0x5a3b22)]); }
     if (role.hat === 'scarf') hp.push([tf(new THREE.SphereGeometry(0.13, 16, 10, 0, Math.PI * 2, 0, Math.PI / 1.7), 0, 0.01, -0.01, -0.3), toon(pickOf([0xb5452e, 0x2f6f73, 0xc7a34d]))]);
@@ -143,11 +205,13 @@ export function makePeople(THREE, rnd, painted) {
     /* Arms: shoulder -> elbow -> hand, with held items on the hands */
     const arm = side => {
       const sh = new THREE.Group(); sh.position.set(side * 0.215, 0.45, 0); pelvis.add(sh);
-      const upper = [[cyl(0.048, 0.042, 0.3, -0.15), armored ? steel : shirt]];
-      if (armored) upper.push([tf(new THREE.TorusGeometry(0.05, 0.012, 6, 12), 0, -0.29, 0, Math.PI / 2), gold]);
+      const upper = [[corset ? lathe([[0.046, 0], [0.064, -0.12], [0.058, -0.25], [0.044, -0.3]], 12) : cyl(0.048, 0.042, 0.3, -0.15), armored ? mail : shirt]];
+      if (armored) { upper.push([tf(new THREE.SphereGeometry(0.058, 10, 8), 0, -0.3, 0), steel]); upper.push([tf(new THREE.TorusGeometry(0.057, 0.009, 6, 12), 0, -0.3, 0, Math.PI / 2), gold]); }
       sh.add(bake(upper));
       const el = new THREE.Group(); el.position.y = -0.3; sh.add(el);
-      const lower = [[cyl(0.04, 0.034, 0.27, -0.135), armored || half ? steel : role.coat ? shirt : skin], [tf(new THREE.SphereGeometry(0.042, 10, 8), 0, -0.3, 0.01, 0, 0, 0, 0.8, 1.1, 0.7), armored ? steel : skin]];
+      const lower = [[corset ? lathe([[0.044, 0], [0.058, -0.12], [0.05, -0.2], [0.034, -0.245]], 12) : cyl(0.04, 0.034, 0.27, -0.135), armored || half ? steel : role.coat || corset ? shirt : skin], [tf(new THREE.SphereGeometry(0.042, 10, 8), 0, -0.3, 0.01, 0, 0, 0, 0.8, 1.1, 0.7), armored ? steel : skin]];
+      if (armored) { lower.push([tf(new THREE.CylinderGeometry(0.064, 0.045, 0.09, 12), 0, -0.225, 0), steel]); lower.push([tf(new THREE.TorusGeometry(0.063, 0.008, 6, 14), 0, -0.18, 0, Math.PI / 2), gold]); }   // flared gauntlet
+      if (corset) lower.push([tf(new THREE.TorusGeometry(0.036, 0.008, 6, 12), 0, -0.25, 0, Math.PI / 2), gold]);   // cuff
       if (side > 0 && role.spear) {                                   // held upright: the forearm points forward, so the shaft runs along its z axis
         lower.push([tf(new THREE.CylinderGeometry(0.016, 0.016, 2.3, 6), 0, -0.29, 0.45, Math.PI / 2), wood]);
         lower.push([tf(new THREE.ConeGeometry(0.04, 0.22, 6), 0, -0.29, 1.68, Math.PI / 2), steel]);
@@ -169,9 +233,17 @@ export function makePeople(THREE, rnd, painted) {
     /* Legs: hip -> knee -> boot */
     const leg = side => {
       const hip = new THREE.Group(); hip.position.set(side * 0.09, 0, 0); pelvis.add(hip);
-      hip.add(bake([[cyl(0.072, 0.058, 0.45, -0.225), armored ? steel : pantsM]]));
+      hip.add(bake([[adv ? cyl(0.088, 0.072, 0.45, -0.225) : cyl(0.072, 0.058, 0.45, -0.225), armored ? steel : pantsM]]));
       const knee = new THREE.Group(); knee.position.y = -0.45; hip.add(knee);
-      knee.add(bake([[cyl(0.055, 0.045, 0.44, -0.22), armored || half ? steel : boots], [tf(new THREE.BoxGeometry(0.1, 0.07, 0.22), 0, -0.45, 0.04), boots]]));
+      const shin = armored ? [   // knee cop, greave and a pointed steel boot
+        [cyl(0.055, 0.045, 0.44, -0.22), steel], [tf(new THREE.SphereGeometry(0.066, 10, 8), 0, 0, 0.02, 0, 0, 0, 1, 1, 0.9), steel],
+        [tf(new THREE.TorusGeometry(0.064, 0.008, 6, 14), 0, -0.02, 0.01, Math.PI / 2), gold],
+        [tf(new THREE.BoxGeometry(0.1, 0.07, 0.2), 0, -0.45, 0.03), steel], [tf(new THREE.ConeGeometry(0.045, 0.08, 8), 0, -0.45, 0.17, Math.PI / 2), steel],
+      ] : adv ? [   // wide trousers into tall boots with a folded top
+        [cyl(0.072, 0.062, 0.16, -0.08), pantsM], [cyl(0.064, 0.05, 0.3, -0.29), toon(0x5a1d1c)],
+        [tf(new THREE.TorusGeometry(0.066, 0.016, 6, 14), 0, -0.145, 0, Math.PI / 2), toon(0x5a1d1c)], [tf(new THREE.BoxGeometry(0.1, 0.07, 0.22), 0, -0.45, 0.04), boots],
+      ] : [[cyl(0.055, 0.045, 0.44, -0.22), half ? steel : boots], [tf(new THREE.BoxGeometry(0.1, 0.07, 0.22), 0, -0.45, 0.04), boots]];
+      knee.add(bake(shin));
       return { hip, knee };
     };
     const LL = leg(-1), RL = leg(1);

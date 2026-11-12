@@ -238,6 +238,11 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
     { role: 'Noble', line: 'Order, duty, and a good tailor. That is all a city needs.' },
     { role: 'Townsperson', line: 'My cousin joined the Vanguard last spring. He writes that the drills never end.' },
   ];
+  const travellers = [
+    { role: 'Traveller', line: 'They searched my bags for anything magical at the gate. Twice. Demacia takes no chances.' },
+    { role: 'Sword for hire', line: 'Caravans pay well for a blade on the road north. Demacia pays fair, if your papers are in order.' },
+    { role: 'Traveller', line: 'I came for the market. Nowhere else will you find steel this fine, or rules this strict.' },
+  ];
   const H = makePeople(THREE, rnd, K.P);
   const stroll = (role, info, a, b, extra = {}) => H.person(scene, info, [a, b], { role, ...extra });
   const stand = (role, info, at, face, extra = {}) => H.person(scene, info, [at], { role, face, ...extra });
@@ -268,6 +273,9 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
     stroll('citizen', chatter[4], [-3, 104], [-3, 150]),
     stand('washer', byRole('Washerwoman'), [-14, RIVER_Z - RIVER_HALF - 3], Math.PI, { female: true }),
     stroll('citizen', chatter[3], [24, -3], [70, -3]), stroll('washer', byRole('Washerwoman'), [62, 3], [26, 3], { female: true }),
+    // Travelling blades: hooded, silver-braided, a sabre at the hip
+    stand('adventurer', travellers[0], [-5.5, WALL_R + 29], 0.3), stroll('adventurer', travellers[1], [-2, 60], [-2, 26]),
+    stand('adventurer', travellers[2], [16 * Math.sin(3.4), 16 * Math.cos(3.4) - 1.4], 3.4 + Math.PI),
   ];
 
   const barges = []; scene.traverse(o => { if (o.userData.bob !== undefined) barges.push(o); });
