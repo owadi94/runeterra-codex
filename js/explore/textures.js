@@ -180,6 +180,24 @@ export function grandBanner(THREE) {
   const t = tex(THREE, c); t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping; return t;
 }
 
+/** A deep blue inlay strip for pillars (128 x 1024) with a column of gold marks: our own simple shapes, not any real script. */
+export function runeInlay(THREE) {
+  const W = 128, H = 1024, [c, g] = canvas(W, H);
+  paintedBase(g, W, H, '#244a9e', '#0d2257');
+  strokes(g, W, H, ['rgba(120,160,240,.2)', 'rgba(0,10,40,.3)'], 80, 120, 6);
+  g.strokeStyle = '#d9b25a'; g.lineWidth = 8; g.strokeRect(4, 4, W - 8, H - 8);
+  g.strokeStyle = '#e8c06a'; g.fillStyle = '#e8c06a'; g.lineWidth = 6; g.lineCap = 'round';
+  const marks = [
+    y => { g.beginPath(); g.arc(64, y, 16, 0, Math.PI * 2); g.stroke(); },
+    y => { g.beginPath(); g.moveTo(40, y - 14); g.lineTo(64, y + 14); g.lineTo(88, y - 14); g.stroke(); },
+    y => { g.beginPath(); g.moveTo(64, y - 18); g.lineTo(64, y + 18); g.moveTo(46, y - 4); g.lineTo(82, y - 4); g.stroke(); },
+    y => { g.beginPath(); g.moveTo(64, y - 16); g.lineTo(82, y); g.lineTo(64, y + 16); g.lineTo(46, y); g.closePath(); g.fill(); },
+    y => { g.beginPath(); g.moveTo(44, y + 14); g.lineTo(64, y - 16); g.lineTo(84, y + 14); g.moveTo(52, y + 2); g.lineTo(76, y + 2); g.stroke(); },
+  ];
+  for (let i = 0, y = 70; y < H - 60; i++, y += 78) marks[(i * 3) % marks.length](y);
+  const t = tex(THREE, c); t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping; return t;
+}
+
 /** Cut stone blocks with mortar lines (walls, towers). */
 export function stoneBlocks(THREE, base = [236, 230, 218], repeat = [1, 1]) {
   const W = 512, H = 512, [c, g] = canvas(W, H), [b, bg] = canvas(W, H);

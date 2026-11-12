@@ -54,7 +54,9 @@ LORE-NOTES.md         verified lore facts and data sources, for adding content
 - **A 3D model:** make one picture of one object on a plain background (our own design), turn it into a model with
   TRELLIS on Hugging Face (MIT licence), then shrink it before adding it to `models/`:
   `npx @gltf-transform/cli optimize in.glb out.glb --compress meshopt --simplify-ratio 0.3 --texture-compress webp --texture-size 2048`.
-  Load it with GLTFLoader plus MeshoptDecoder (see the gate in `js/explore/demacia.js`).
+  Load it with GLTFLoader plus MeshoptDecoder (see the winged guardian in `js/explore/demacia.js`).
+  Generated models work best as a reference or for organic shapes (statues): rebuild architecture in code with our
+  sharp textures, as `js/explore/demacia-gate.js` does for the gate.
 - **Support links:** fill in `js/config.js`.
 
 ## Legal
