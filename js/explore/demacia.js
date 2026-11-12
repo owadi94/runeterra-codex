@@ -1,9 +1,8 @@
 // The Great City of Demacia: our own design in Demacia's white stone, slate blue and gold.
 // Layout (metres): centre 0,0; walls at radius 92 with the gate facing south; river at z = 130; you arrive from the south.
 import { makeKit } from './kit.js';
-import { makePeople } from './people.js';
+import { makeTownsfolk } from './townsfolk.js';
 import { makeKnights } from './knights.js';
-import { makeValkyries } from './valkyries.js';
 import { demacianProps } from './props.js';
 import * as T from './textures.js';
 import { buildGate } from './demacia-gate.js';
@@ -255,17 +254,17 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
     { role: 'Sword for hire', line: 'Caravans pay well for a blade on the road north. Demacia pays fair, if your papers are in order.' },
     { role: 'Traveller', line: 'I came for the market. Nowhere else will you find steel this fine, or rules this strict.' },
   ];
-  const H = makePeople(THREE, rnd, K.P);
-  const stroll = (role, info, a, b, extra = {}) => H.person(scene, info, [a, b], { role, ...extra });
-  const stand = (role, info, at, face, extra = {}) => H.person(scene, info, [at], { role, face, ...extra });
+  const folk = makeTownsfolk(THREE, scene, rnd);
+  const stroll = (role, info, a, b, extra = {}) => folk.person(info, [a, b], { role, ...extra });
+  const stand = (role, info, at, face, extra = {}) => folk.person(info, [at], { role, face, ...extra });
   const people = [
     // Guards at the gate and the palace
     // Knights at the gate, the palace steps and the main street (knights.js: a sculpted, credited model in our colours)
     ...makeKnights(THREE, scene, [[-5, WALL_R + 7, 0], [5, WALL_R + 7, 0], [-4, P.z + 20, 0], [4, P.z + 20, 0], [-9, 34, Math.PI / 2]]
       .map(([x, z, face]) => ({ x, z, face, info: byRole('Gate guard') })), { spearWood: K.P.wood, spearSteel: K.P.steel }),
-    // Warrior women of the Vanguard (valkyries.js: a sculpted, credited model; each has her own looks)
-    ...makeValkyries(THREE, scene, [[-7, WALL_R - 9, Math.PI], [7, WALL_R - 9, Math.PI], [-10, P.z + 18, 0], [10, P.z + 18, 0], [52, 12, -Math.PI / 2], [-14, -12, 0.6]]
-      .map(([x, z, face], i) => ({ x, z, face, info: wardens[i % wardens.length] })), rnd),
+    // Women of the Vanguard: the same Demacian plate, helmet off (knights.js)
+    ...makeKnights(THREE, scene, [[-7, WALL_R - 9, Math.PI], [7, WALL_R - 9, Math.PI], [-10, P.z + 18, 0], [10, P.z + 18, 0], [52, 12, -Math.PI / 2], [-14, -12, 0.6]]
+      .map(([x, z, face], i) => ({ x, z, face, info: wardens[i % wardens.length], female: true })), { spearWood: K.P.wood, spearSteel: K.P.steel }),
     // Vanguard recruits drilling in the yard
     stand('recruit', byRole('Young squire'), [38, -7], 0), stand('recruit', byRole('Young squire'), [41, -7], 0),
     stand('recruit', byRole('Young squire'), [44, -7], 0), stroll('recruit', byRole('Young squire'), [30, 3], [72, 3]),

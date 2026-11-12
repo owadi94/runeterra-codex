@@ -262,7 +262,7 @@ export async function openCity(host, city, build) {
     const hit = ray.intersectObjects(world.people.map(p => p.mesh), true)[0];
     if (!hit || hit.distance > 40) return;
     let o = hit.object; while (o && !o.userData.person) o = o.parent;
-    if (o) say(o.userData.person);
+    if (o) { say(o.userData.person); o.userData.onTalk?.(player); }
   }
 
   /* ---- Guided tour: glide along the city's route, pausing at each landmark ---- */
@@ -319,7 +319,7 @@ export async function openCity(host, city, build) {
     sun.position.set(player.x + sunDir.x * 400, sunDir.y * 400, player.z + sunDir.z * 400);
     sky.position.copy(camera.position); stars.position.copy(camera.position);
 
-    world.people.forEach(p => p.update(dt, now));
+    world.people.forEach(p => p.update(dt, now, player));
     if (world.update) world.update(dt, now);
     if (!autoChecked && quality === 'high') {
       fpsFrames++;
