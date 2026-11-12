@@ -1,6 +1,7 @@
 // The Great City of Demacia: our own design in Demacia's white stone, slate blue and gold.
 // Layout (metres): centre 0,0; walls at radius 92 with the gate facing south; river at z = 130; you arrive from the south.
 import { makeKit } from './kit.js';
+import { makePeople } from './people.js';
 import * as T from './textures.js';
 
 const WALL_R = 92, RIVER_Z = 130, RIVER_HALF = 10, ROAD = 8;
@@ -217,22 +218,45 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
   K.weaponRack(scene, -52, 26, Math.PI / 2); circle(-52, 26, 2);                                                   // by the Mageseeker post
 
   /* ---- Townsfolk ---- */
-  const say = i => lines[i % Math.max(1, lines.length)] || { role: 'Townsperson', line: 'Good day to you.' };
+  /* Lines come from cities.js by role; ordinary townsfolk get one of these. */
+  const byRole = role => lines.find(l => l.role === role) || { role, line: 'Good day to you.' };
+  const chatter = [
+    { role: 'Townsperson', line: 'Mind the carts on the east road. They come through fast on market days.' },
+    { role: 'Townsperson', line: 'Have you seen the guardians at the gate at sunset? The gold catches the light.' },
+    { role: 'Noblewoman', line: 'The palace gardens are lovely this season, if you are ever invited inside.' },
+    { role: 'Noble', line: 'Order, duty, and a good tailor. That is all a city needs.' },
+    { role: 'Townsperson', line: 'My cousin joined the Vanguard last spring. He writes that the drills never end.' },
+  ];
+  const H = makePeople(THREE, rnd, K.P);
+  const stroll = (role, info, a, b, extra = {}) => H.person(scene, info, [a, b], { role, ...extra });
+  const stand = (role, info, at, face, extra = {}) => H.person(scene, info, [at], { role, face, ...extra });
   const people = [
-    K.villager(scene, say(0), [[-5, WALL_R + 7]], { guard: true, face: 0 }),
-    K.villager(scene, say(0), [[5, WALL_R + 7]], { guard: true, face: 0 }),
-    K.villager(scene, say(1), [[16 * Math.sin(1.3) - 1.2, 16 * Math.cos(1.3) + 1.5]], { face: 1.3 + Math.PI }),
-    K.villager(scene, say(4), [[16 * Math.sin(4.6) + 1.2, 16 * Math.cos(4.6)]], { face: 4.6 + Math.PI }),
-    K.villager(scene, say(2), [[30, -3], [70, -3]]),
-    K.villager(scene, say(3), [[-24, 4], [-60, 4]]),
-    K.villager(scene, say(4), [[24, RIVER_Z - RIVER_HALF - 6], [62, RIVER_Z - RIVER_HALF - 6]]),
-    K.villager(scene, say(5), [[4, 150], [4, 190]]),
-    K.villager(scene, say(6), [[-4, 64], [-4, 26]]),
-    K.villager(scene, say(7), [[9, 9]], { face: -0.8 }),
-    K.villager(scene, say(2), [[4, -14], [4, -40]]),
-    K.villager(scene, say(1), [[-30, -4], [-80, -4]]),
-    K.villager(scene, say(5), [[-4, 20], [-4, 60]]),
-    K.villager(scene, say(6), [[20, 4], [60, 4]]),
+    // Guards at the gate and the palace
+    stand('guard', byRole('Gate guard'), [-5, WALL_R + 7], 0, { female: false }),
+    stand('guard', byRole('Gate guard'), [5, WALL_R + 7], 0, { female: false }),
+    stand('guard', byRole('Gate guard'), [-4, P.z + 20], 0), stand('guard', byRole('Gate guard'), [4, P.z + 20], 0),
+    stroll('guard', byRole('Gate guard'), [-6, 70], [-6, 30], { female: false }),
+    // Vanguard recruits drilling in the yard
+    stand('recruit', byRole('Young squire'), [38, -7], 0), stand('recruit', byRole('Young squire'), [41, -7], 0),
+    stand('recruit', byRole('Young squire'), [44, -7], 0), stroll('recruit', byRole('Young squire'), [30, 3], [72, 3]),
+    // Market and plaza
+    stand('baker', byRole('Baker'), [16 * Math.sin(1.3) - 1.2, 16 * Math.cos(1.3) + 1.5], 1.3 + Math.PI),
+    stand('merchant', byRole('River merchant'), [16 * Math.sin(4.6) + 1.2, 16 * Math.cos(4.6)], 4.6 + Math.PI),
+    stand('merchant', chatter[0], [16 * Math.sin(2.1), 16 * Math.cos(2.1) + 1.4], 2.1 + Math.PI),
+    stand('musician', byRole('Street musician'), [9, 9], -0.8),
+    stroll('noble', chatter[2], [-12, -12], [-12, -30], { female: true }), stroll('noble', chatter[3], [12, -14], [12, -32], { female: false }),
+    stroll('washer', byRole('Washerwoman'), [-22, -3], [-62, -3], { female: true }),
+    stroll('citizen', chatter[1], [3, 22], [3, 80]), stroll('citizen', chatter[4], [-3, 80], [-3, 24]),
+    stroll('citizen', chatter[0], [22, 3], [64, 3]), stroll('citizen', chatter[1], [-64, 3], [-24, 3]),
+    stroll('baker', byRole('Baker'), [3, -12], [3, -36]),
+    // Workers and travellers
+    stroll('stonemason', byRole('Old stonemason'), [-26, -5], [-58, -5], { female: false }),
+    stroll('merchant', byRole('River merchant'), [24, RIVER_Z - RIVER_HALF - 6], [62, RIVER_Z - RIVER_HALF - 6]),
+    stand('stonemason', byRole('Old stonemason'), [30, RIVER_Z - RIVER_HALF - 6], Math.PI, { female: false }),
+    stroll('pilgrim', byRole('Pilgrim'), [4, 150], [4, 192]), stroll('pilgrim', byRole('Pilgrim'), [-4, 190], [-4, 104]),
+    stroll('citizen', chatter[4], [-3, 104], [-3, 150]),
+    stand('washer', byRole('Washerwoman'), [-14, RIVER_Z - RIVER_HALF - 3], Math.PI, { female: true }),
+    stroll('citizen', chatter[3], [24, -3], [70, -3]), stroll('washer', byRole('Washerwoman'), [62, 3], [26, 3], { female: true }),
   ];
 
   const barges = []; scene.traverse(o => { if (o.userData.bob !== undefined) barges.push(o); });

@@ -22,10 +22,11 @@ const ORDER = ['day', 'sunset', 'night'];
 export async function openCity(host, city, build) {
   host.innerHTML = `<div class="x-loading"><p class="t-body">Building ${esc(city.name)}…</p></div>`;
   const THREE = await import('three');
-  const [{ EffectComposer }, { RenderPass }, { UnrealBloomPass }, { OutputPass }, { GTAOPass }, { Sky }, { RoomEnvironment }] = await Promise.all([
+  const [{ EffectComposer }, { RenderPass }, { UnrealBloomPass }, { OutputPass }, { GTAOPass }, { Sky }, { RoomEnvironment }, { ShaderPass }] = await Promise.all([
     import('three/addons/postprocessing/EffectComposer.js'), import('three/addons/postprocessing/RenderPass.js'),
     import('three/addons/postprocessing/UnrealBloomPass.js'), import('three/addons/postprocessing/OutputPass.js'),
     import('three/addons/postprocessing/GTAOPass.js'), import('three/addons/objects/Sky.js'), import('three/addons/environments/RoomEnvironment.js'),
+    import('three/addons/postprocessing/ShaderPass.js'),
   ]);
   let alive = true;
   const lowEnd = matchMedia('(pointer: coarse)').matches || (navigator.hardwareConcurrency || 8) <= 4;
@@ -78,6 +79,23 @@ export async function openCity(host, city, build) {
   const bloom = new UnrealBloomPass(new THREE.Vector2(2, 2), 0.2, 0.5, 0.92);
   composer.addPass(bloom);
   composer.addPass(new OutputPass());
+  /* Painted colour grade: richer colour, cool teal shadows, warm highlights, a soft vignette. */
+  const grade = new ShaderPass({
+    uniforms: { tDiffuse: { value: null }, saturation: { value: 1.22 }, contrast: { value: 1.06 }, vignette: { value: 0.32 } },
+    vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+    fragmentShader: `uniform sampler2D tDiffuse; uniform float saturation, contrast, vignette; varying vec2 vUv;
+      void main(){
+        vec4 c = texture2D(tDiffuse, vUv);
+        float l = dot(c.rgb, vec3(0.299, 0.587, 0.114));
+        c.rgb = mix(vec3(l), c.rgb, saturation);
+        c.rgb = (c.rgb - 0.5) * contrast + 0.5;
+        c.rgb += mix(vec3(-0.015, 0.02, 0.045), vec3(0.045, 0.02, -0.03), smoothstep(0.2, 0.85, l));
+        float d = distance(vUv, vec2(0.5));
+        c.rgb *= 1.0 - vignette * smoothstep(0.35, 0.85, d);
+        gl_FragColor = vec4(clamp(c.rgb, 0.0, 1.0), c.a);
+      }`,
+  });
+  composer.addPass(grade);
   const applyQuality = () => {
     ao.enabled = quality === 'high';
     renderer.setPixelRatio(quality === 'high' ? Math.min(devicePixelRatio || 1, 1.5) : 1);
