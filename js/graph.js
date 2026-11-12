@@ -1,6 +1,7 @@
 // Who is connected to whom: our explained bonds plus Riot's related-champion links.
 import { STORIES } from './data/lore.js';
 import { RELATIONS } from './data/relations.js';
+import { REASONS } from './data/reasons.js';
 
 let graph = null;
 
@@ -13,7 +14,9 @@ export function getGraph() {
   const edges = new Map();
   STORIES.forEach(([a, b, t, txt]) => { if (by[a] && by[b]) edges.set(key(a, b), { a, b, t, txt }); });
   RELATIONS.forEach(r => r.r.forEach(t => {
-    if (by[t] && t !== r.s && !edges.has(key(r.s, t))) edges.set(key(r.s, t), { a: r.s, b: t, t: 'linked' });
+    if (!by[t] || t === r.s || edges.has(key(r.s, t))) return;
+    const why = REASONS[key(r.s, t)];                         // tools/build-reasons.mjs: the bond and why, in our words
+    edges.set(key(r.s, t), { a: r.s, b: t, t: why?.t || 'linked', txt: why?.txt, story: why?.story, riot: true });
   }));
   const list = [...edges.values()], adj = {};
   nodes.forEach(n => { adj[n.slug] = []; });
@@ -25,9 +28,10 @@ export function getGraph() {
 /** Explained bonds first, then Riot's links. */
 export const connectionsOf = slug => (getGraph().adj[slug] || []).slice().sort((x, y) => (x.e.t === 'linked') - (y.e.t === 'linked'));
 
-export const bondText = e => (e.t === 'linked'
-  ? 'Riot links these two on its Universe site. Their stories cross; read both biographies to see how.'
-  : e.txt);
+export const bondText = e => e.txt || "Their paths cross in Riot's stories; open either profile to read more.";
+
+/** Riot's own story page for a bond, when both champions appear in one. */
+export const storyUrl = e => (e.story ? `https://universe.leagueoflegends.com/en_US/story/${e.story.slug}/` : null);
 
 /** Breadth-first search: distance from `from` to every reachable champion, and the step before each. */
 export function bfs(from) {

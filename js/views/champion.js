@@ -4,7 +4,7 @@ import { $, esc, cap, bg, plain } from '../ui.js';
 import { UNIV, uFailed, U_SITE, ddIdFor, splashFor, iconFor, titleOf, championDetail, universeChampion, spellIcon, passiveIcon } from '../riot.js';
 import { BOND } from '../data/lore.js';
 import { groupOf } from '../components.js';
-import { connectionsOf, getGraph, bondText } from '../graph.js';
+import { connectionsOf, getGraph, bondText, storyUrl } from '../graph.js';
 import { to } from '../router.js';
 
 const KEYS = ['Q', 'W', 'E', 'R'];
@@ -74,7 +74,8 @@ function connections(slug, u) {
   if (!list.length) return '';
   return `<section class="stack"><div class="between"><h2 class="t-2">Connections</h2><a class="btn secondary" href="${to.webFocus(esc(slug))}">See ${esc(u.name)} in the Web</a></div>
     <div class="conns">${list.map(x => { const n = G.by[x.o], b = BOND[x.e.t];
-      return `<a class="conn" href="${to.champion(esc(x.o))}" style="text-decoration:none;color:inherit"><img loading="lazy" alt="" src="${esc(iconFor(n))}"><span><span class="who"><b>${esc(n.name)}</b><span class="ttype" style="color:${b.c}">${b.label}</span></span><p>${esc(bondText(x.e))}</p></span></a>`; }).join('')}</div></section>`;
+      const story = storyUrl(x.e);
+      return `<div class="conn"><a href="${to.champion(esc(x.o))}"><img loading="lazy" alt="${esc(n.name)}" src="${esc(iconFor(n))}"></a><span><span class="who"><a class="plain" href="${to.champion(esc(x.o))}"><b>${esc(n.name)}</b></a><span class="ttype" style="color:${b.c}">${b.label}</span></span><p>${esc(bondText(x.e))}</p>${story ? `<a class="story-link" href="${esc(story)}" target="_blank" rel="noopener">Read “${esc(x.e.story.title)}” on Riot's site</a>` : ''}</span></div>`; }).join('')}</div></section>`;
 }
 
 function sidebar(u, g, dd, races, regionCount) {

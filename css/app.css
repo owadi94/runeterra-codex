@@ -348,6 +348,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 .conn b{font-family:var(--display);font-weight:400;letter-spacing:.04em;text-transform:uppercase;font-size:var(--fs-sm)}
 .conn p{font-size:var(--fs-sm);color:var(--text-2);margin-top:2px;line-height:1.5}
 .conn:hover b{color:#fff}
+.conn a.plain{color:inherit;text-decoration:none}
+.story-link,.story-tag{display:inline-block;margin-top:var(--s1);font-size:var(--fs-xs,12px);color:var(--gold-3);letter-spacing:.02em}
+.story-link:hover{color:var(--gold-1)}
 .ttype{font-family:var(--display);font-size:10px;letter-spacing:var(--track-wide);text-transform:uppercase}
 .side-head{display:flex;gap:var(--s4);align-items:center}
 .side-head img{width:64px;height:64px;border:2px solid var(--gold-3)}

@@ -169,7 +169,7 @@ function paint() {
 
 const row = (other, e) => {
   const n = web.G.by[other], b = BOND[e.t];
-  return `<button class="conn" data-o="${esc(other)}"><img loading="lazy" alt="" src="${esc(iconFor(n))}"><span><span class="who"><b>${esc(n.name)}</b><span class="ttype" style="color:${b.c}">${b.label}</span></span><p>${esc(bondText(e))}</p></span></button>`;
+  return `<button class="conn" data-o="${esc(other)}"><img loading="lazy" alt="" src="${esc(iconFor(n))}"><span><span class="who"><b>${esc(n.name)}</b><span class="ttype" style="color:${b.c}">${b.label}</span></span><p>${esc(bondText(e))}</p>${e.story ? `<span class="story-tag">Story: “${esc(e.story.title)}”</span>` : ''}</span></button>`;
 };
 function drawSide() {
   const G = web.G, side = $('#webSide');

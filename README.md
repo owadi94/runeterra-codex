@@ -48,6 +48,9 @@ LORE-NOTES.md         verified lore facts and data sources, for adding content
 ## Adding things
 - **A game:** create `js/games/<id>.js` that calls `register({ id, init, render })`, import it in `js/main.js`,
   and add its card to `js/data/games.js`.
+- **Why two champions are linked (the Web):** add or fix a line in `tools/written-bonds.mjs` (our own words, researched from
+  Riot's biographies and the fandom wiki's Relations notes; `node tools/fetch-wiki-relations.mjs` collects those notes),
+  then run `node tools/build-reasons.mjs`. Bond types are never guessed: every type on the site was checked.
 - **A bond story:** add a line to `STORIES` in `js/data/lore.js` after checking it against the official biographies.
 - **Fan art:** save the image in `art/` and add a line to `FANART` in `js/data/lore.js`.
 - **A city:** add it to `js/data/cities.js`, write `js/explore/<city>.js` (see demacia.js), and register the builder in `js/views/explore.js`.

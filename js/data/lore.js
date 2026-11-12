@@ -73,7 +73,7 @@ export const PAIRS=[
 export const BOND={
   family:{label:"Family",c:"#e9c46a"}, love:{label:"Love",c:"#ef8fb6"}, allies:{label:"Allies",c:"#4fc3c7"},
   mentor:{label:"Mentor",c:"#9eabff"}, rivals:{label:"Rivals",c:"#f08c3a"}, betrayal:{label:"Betrayal",c:"#b878e8"},
-  enemies:{label:"Enemies",c:"#e84057"}, linked:{label:"Linked by Riot",c:"#8a7346"}
+  enemies:{label:"Enemies",c:"#e84057"}, linked:{label:"Crossed paths",c:"#8a7346"}
 };
 
 /* Our own short summaries of each bond. Checked against the official biographies on Riot's Universe site, 12 Nov 2026. */
