@@ -6,3 +6,5 @@ node_modules/
 /*.glb
 /*.zip
 tools/.cache/
+/*.png
+/*.fbx

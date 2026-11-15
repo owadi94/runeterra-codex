@@ -4,10 +4,10 @@
 export const CITIES = [
   {
     id: 'demacia-capital', region: 'demacia', name: 'The Great City of Demacia', ready: true,
-    blurb: 'Cross the river bridge, pass the winged guardians at the gate and walk the white streets of the kingdom that outlawed magic.',
+    blurb: 'Cross the river bridge, pass the stone guardians of the Last Gate and walk the white streets of the kingdom that outlawed magic.',
     landmarks: [
       { id: 'bridge', name: 'The river crossing', kind: 'scene', x: 0, z: 128, text: 'Barges carry grain and wool from the river farms into the city. Everyone who comes to the capital from the south crosses here.' },
-      { id: 'gate', name: 'The great gate', kind: 'lore', x: 0, z: 92, text: 'Demacia was founded by refugees fleeing the Rune Wars, people who wanted a haven from sorcery. The gate is the first thing every visitor sees: pale stone, gold trim, and winged guardians watching the road.' },
+      { id: 'gate', name: 'The Last Gate', kind: 'lore', x: 0, z: 92, text: "The main way into the Great City. Its road runs straight past the homes of the noble families to King's Rock at the heart of the capital. Demacia was founded as a refuge from sorcery after the Rune Wars, and its walls are built with petricite, a pale stone that dampens magic." },
       { id: 'walls', name: 'The petricite walls', kind: 'lore', x: 58, z: 62, text: 'The walls are built of petricite, a white stone that dulls magic. It is what makes Demacia a refuge from sorcery, and part of why mages are distrusted here.' },
       { id: 'plaza', name: 'The royal plaza', kind: 'lore', x: 0, z: 8, text: 'The heart of the city. Demacia crowned its first king in 292 AN, and the kingdom still prizes justice, honor and duty above all.' },
       { id: 'palace', name: 'The royal palace', kind: 'lore', x: 0, z: -46, text: 'Seat of the Lightshield kings. Their heir, Prince Jarvan IV, trained beside Garen Crownguard and counts him as his closest friend.' },

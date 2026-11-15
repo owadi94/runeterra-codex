@@ -5,7 +5,8 @@ import { makeTownsfolk } from './townsfolk.js';
 import { makeKnights } from './knights.js';
 import { demacianProps } from './props.js';
 import * as T from './textures.js';
-import { buildGate } from './demacia-gate.js';
+import { placeLastGate } from './last-gate.js';
+import { stoneMaterial, grassMaterial } from './stone.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
@@ -24,7 +25,7 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
   const circle = (x, z, r) => colliders.push({ x, z, r });
 
   /* ---- Ground: rolling grass outside, cobbles inside, dirt road ---- */
-  const grassT = T.grass(THREE, [120, 120]);
+  const grassMat = grassMaterial(THREE, { env: scene.userData.env ?? 1 });   // scanned grass (stone.js)
   /* Gentle hills, flat near the city, the road and the river. */
   const height = (x, z) => {
     const h = (Math.sin(x * 0.012) + Math.cos(-z * 0.015) + Math.sin((x - z) * 0.007)) * 4;
@@ -34,7 +35,7 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
   const pos = groundGeo.attributes.position;
   for (let i = 0; i < pos.count; i++) pos.setZ(i, height(pos.getX(i), -pos.getY(i)));   // the plane is rotated: its y is world -z
   groundGeo.computeVertexNormals();
-  flat(groundGeo, K.std({ map: grassT.map }), 0, 0, 0);
+  flat(groundGeo, grassMat, 0, 0, 0);
   const cobT = T.cobbles(THREE, [214, 205, 188], [64, 64]);
   flat(new THREE.CircleGeometry(WALL_R + 2, 72), K.std({ map: cobT.map, bumpMap: cobT.bump, bumpScale: 1.5 }), 0, 0, 0.05);
   const roadT = T.cobbles(THREE, [196, 186, 166], [5, 60]);
@@ -81,9 +82,8 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
   for (let i = 0; i < 5; i++) { K.barrel(scene, 26 + i * 7, RIVER_Z - RIVER_HALF - 4); K.crate(scene, 29 + i * 7, RIVER_Z - RIVER_HALF - 4.5, 0.9); }
 
   /* ---- City walls with crenellations, wall towers ---- */
-  const SEG = 48, segLen = (2 * Math.PI * WALL_R) / SEG, gateGap = 0.2;    // the gate model fills the gap
-  const wallMat = M.stone.clone(); wallMat.map = M.stone.map.clone(); wallMat.map.repeat.set(3, 2.5); wallMat.map.needsUpdate = true;
-  wallMat.bumpMap = M.stone.bumpMap.clone(); wallMat.bumpMap.repeat.set(3, 2.5); wallMat.bumpMap.needsUpdate = true;
+  const SEG = 48, segLen = (2 * Math.PI * WALL_R) / SEG, gateGap = 0.1;    // the ring wall runs into the Last Gate's pylons
+  const wallMat = stoneMaterial(THREE, 'blocks', { env: scene.userData.env ?? 1 });   // real cut stone (stone.js)
   const wallGeo = new THREE.BoxGeometry(segLen + 0.5, 13, 3.4), merlon = new THREE.BoxGeometry(1.5, 1.6, 3.6), walk = new THREE.BoxGeometry(segLen + 0.5, 0.6, 4.6);
   for (let i = 0; i < SEG; i++) {
     const a = (i / SEG) * Math.PI * 2;                       // 0 points south (+z), where the gate is
@@ -92,16 +92,15 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
     add(wallGeo, wallMat, x, 6.5, z, { ry: a });
     add(walk, M.stone2, x, 13.1, z, { ry: a });
     for (let k = -1; k <= 1; k++) add(merlon, M.stone2, x + Math.cos(a) * k * 4 + Math.sin(a) * 1.4, 14.2, z - Math.sin(a) * k * 4 + Math.cos(a) * 1.4, { ry: a });
-    if (i % 4 === 2) { K.tower(scene, x, z, 4.8, 20); circle(x, z, 5.4); }
+    if (i % 4 === 2 && Math.abs(Math.atan2(Math.sin(a), Math.cos(a))) > 0.4) { K.tower(scene, x, z, 4.8, 20); circle(x, z, 5.4); }   // none beside the gate
   }
 
-  /* ---- The Gate of the Winged Guardians (demacia-gate.js) ---- */
-  const gate = buildGate(THREE, scene, { K, add, z: WALL_R });
-  gate.colliders.forEach(([x, z, w, d]) => box(x, z, w, d));
-  [-30, -52, 30, 52].forEach(x => { const a = Math.asin(x / WALL_R); K.bannerCloth(scene, x, 7.5, Math.cos(a) * WALL_R + 1.9, a, 7); });
+  /* ---- The Last Gate (last-gate.js): our concept art made 3D, its walls meeting the city wall ---- */
+  placeLastGate(THREE, scene, { wallR: WALL_R, circle, box });
+  [-52, 52].forEach(x => { const a = Math.asin(x / WALL_R); K.bannerCloth(scene, x, 7.5, Math.cos(a) * WALL_R + 1.9, a, 7); });
 
   /* ---- Pillars of the gate's design around the whole wall: white stone, a blue inlay, a gold diamond and a winged guardian ---- */
-  const statues = [...gate.statues];                                                 // [x, y, z, facing]
+  const statues = [];                                                                // [x, y, z, facing]
   const runes = new THREE.MeshStandardMaterial({ map: T.runeInlay(THREE), roughness: 0.55 });
   const pillarGeo = new THREE.BoxGeometry(3.8, 22.4, 5), capGeo = new THREE.BoxGeometry(4.4, 0.8, 5.6);
   const stripGeo = new THREE.BoxGeometry(1, 14, 0.12), gemGeo = new THREE.OctahedronGeometry(0.75);
@@ -135,7 +134,7 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
 
   /* ---- Houses ---- */
   const spots = [];
-  const keepClear = [[0, -60, 36], [44, -18, 19], [-44, 16, 13], [-70, 16, 13], [0, 0, 27]];
+  const keepClear = [[0, -60, 36], [44, -18, 19], [-44, 16, 13], [-70, 16, 13], [0, 0, 27], [0, 70, 58], [0, 46, 58]];   // last two: the Last Gate's entry square
   for (let tries = 0; tries < 3000 && spots.length < 170; tries++) {
     const a = rnd() * Math.PI * 2, r = 27 + rnd() * (WALL_R - 34), x = Math.sin(a) * r, z = Math.cos(a) * r;
     const variant = Math.floor(rnd() * 6), scale = 0.92 + rnd() * 0.18, half = 6.2 * scale;
@@ -208,8 +207,8 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
   K.cart(scene, -60, -4.5, 0.1); K.crate(scene, -63, -5.2); K.crate(scene, -63.6, -4.1, 0.8);
 
   /* ---- Street lamps, carts and barrels along the roads ---- */
-  for (let t = 26; t < WALL_R - 6; t += 13) [[t, 9.4], [-t, -9.4], [9.4, -t], [-9.4, t]].forEach(([x, z]) => K.lampPost(scene, x, z));
-  for (let z = WALL_R + 12; z < 200; z += 15) K.lampPost(scene, 8.6, z);
+  for (let t = 26; t < WALL_R - 6; t += 13) [[t, 9.4], [-t, -9.4], [9.4, -t], [-9.4, t]].filter(([x, z]) => !(z > 30 && Math.abs(x) < 60)).forEach(([x, z]) => K.lampPost(scene, x, z));   // none in the gate square
+  for (let z = WALL_R + 27; z < 200; z += 15) K.lampPost(scene, 8.6, z);
   K.cart(scene, 12, 60, 1.6); K.cart(scene, -12, -26, -1.5);
   [[13, 30], [-13, 46], [30, 12], [-28, -12]].forEach(([x, z]) => { K.barrel(scene, x, z); K.crate(scene, x + 1.1, z + 0.4, 0.8); });
 
@@ -222,11 +221,11 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
     if (r < 220) circle(x, z, 1.2);
   }
   K.trees(scene, tspots);
-  K.hedge(scene, -14, WALL_R + 20, 10); K.hedge(scene, 14, WALL_R + 20, 10);
+  K.hedge(scene, -16, WALL_R + 30, 10); K.hedge(scene, 16, WALL_R + 30, 10);
 
   /* ---- Painted props around the city ---- */
   // Banner poles (props.js): the road into the gate, the palace steps and the four corners of the plaza
-  const flags = [[-7.5, WALL_R + 14, 0], [7.5, WALL_R + 14, 0], [-7.5, P.z + 22, 0], [7.5, P.z + 22, 0],
+  const flags = [[-7.5, P.z + 22, 0], [7.5, P.z + 22, 0],
     [-10, 21, 0], [10, 21, 0], [-10, -21, Math.PI], [10, -21, Math.PI]];
   flags.forEach(([x, z]) => circle(x, z, 0.6));
   demacianProps(THREE, scene, { tents, flags, banner: T.grandBanner(THREE) });
@@ -260,7 +259,7 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
   const people = [
     // Guards at the gate and the palace
     // Knights at the gate, the palace steps and the main street (knights.js: a sculpted, credited model in our colours)
-    ...makeKnights(THREE, scene, [[-5, WALL_R + 7, 0], [5, WALL_R + 7, 0], [-4, P.z + 20, 0], [4, P.z + 20, 0], [-9, 34, Math.PI / 2]]
+    ...makeKnights(THREE, scene, [[-4, WALL_R + 15, 0], [4, WALL_R + 15, 0], [-4, P.z + 20, 0], [4, P.z + 20, 0], [-9, 34, Math.PI / 2]]
       .map(([x, z, face]) => ({ x, z, face, info: byRole('Gate guard') })), { spearWood: K.P.wood, spearSteel: K.P.steel }),
     // Women of the Vanguard: the same Demacian plate, helmet off (knights.js)
     ...makeKnights(THREE, scene, [[-7, WALL_R - 9, Math.PI], [7, WALL_R - 9, Math.PI], [-10, P.z + 18, 0], [10, P.z + 18, 0], [52, 12, -Math.PI / 2], [-14, -12, 0.6]]
@@ -273,6 +272,8 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
     stand('merchant', byRole('River merchant'), [20 * Math.sin(5 * Math.PI / 4), 20 * Math.cos(5 * Math.PI / 4)], Math.PI / 4),
     stand('merchant', chatter[0], [20 * Math.sin(3 * Math.PI / 4), 20 * Math.cos(3 * Math.PI / 4)], 3 * Math.PI / 4 + Math.PI),
     stand('musician', byRole('Street musician'), [9, 9], -0.8),
+    // A townsman by the road into the plaza
+    stand('citizen', { role: 'Townsman', line: 'Welcome to the Great City. Mind the Mageseekers, and you will have no trouble here.' }, [-4.5, 26], Math.PI, { female: false }),
     stroll('noble', chatter[2], [-12, -12], [-12, -30], { female: true }), stroll('noble', chatter[3], [12, -14], [12, -32], { female: false }),
     stroll('washer', byRole('Washerwoman'), [-22, -3], [-62, -3], { female: true }),
     stroll('citizen', chatter[1], [3, 22], [3, 80]), stroll('citizen', chatter[4], [-3, 80], [-3, 24]),
@@ -315,7 +316,8 @@ export function buildDemacia(THREE, scene, { seeded, people: lines = [] }) {
       if (Math.hypot(x, z) > 400) return true;
       if (Math.abs(z - RIVER_Z) < RIVER_HALF + 0.8 && Math.abs(x) > 4.4) return true;   // only the bridge crosses the river
       const d = Math.hypot(x, z);
-      if (Math.abs(d - WALL_R) < 2.8 && !(z > 0 && Math.abs(x) < 1.6)) return true;   // only the gate's door lets you through
+      // the wall ring; across the Last Gate's width its own walls (colliders) block, so only its doorway lets you through
+      if (Math.abs(d - WALL_R) < 2.8 && !(z > 0 && Math.abs(x) < 4.2)) return true;
       for (const c of colliders) {
         if (c.r !== undefined) { if (Math.hypot(x - c.x, z - c.z) < c.r + 0.5) return true; }
         else if (x > c.x0 - 0.5 && x < c.x1 + 0.5 && z > c.z0 - 0.5 && z < c.z1 + 0.5) return true;
