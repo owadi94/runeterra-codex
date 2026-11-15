@@ -43,7 +43,7 @@ export const championDetail = id => getJSON(`${DD}${VER}/data/en_US/champion/${i
 export const universeChampion = slug => getJSON(`${U_API}champions/${slug}/index.json`);
 
 /* ---- Art ---- */
-export const splash = id => `${DD}img/champion/splash/${id}_0.jpg`;
+export const splash = (id, skin = 0) => `${DD}img/champion/splash/${id}_${skin}.jpg`;   // skin: the skin number (0 = original art)
 export const loading = id => `${DD}img/champion/loading/${id}_0.jpg`;
 export const square = id => `${DD}${VER}/img/champion/${id}.png`;
 export const spellIcon = file => `${DD}${VER}/img/spell/${file}`;

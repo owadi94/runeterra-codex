@@ -366,6 +366,22 @@ button{font:inherit;color:inherit;cursor:pointer}
 .path .arrow{width:18px;height:2px}
 .goal{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s4);padding:var(--s4);border:1px solid var(--gold-3);background:rgba(200,155,60,.07)}
 .goal img{width:56px;height:56px;border:2px solid var(--gold-3)}
+/* Threads: bond labels on the route, the how-to, the compass, and options that say why two champions are linked */
+.path .link{font-family:var(--display);font-size:10px;letter-spacing:var(--track-wide);text-transform:uppercase;border:1px solid;padding:1px var(--s2)}
+.howto{border:1px dashed var(--gold-4);padding:var(--s3) var(--s4);color:var(--text-2);font-size:var(--fs-sm);max-width:80ch}
+.howto b{display:block;color:var(--gold-1);margin-bottom:var(--s1)}
+.compass{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--s3);padding:var(--s3) var(--s4);border:1px solid var(--line);border-left-width:4px;background:var(--raised)}
+.compass b{color:var(--gold-1)} .compass span:last-child{color:var(--text-2);font-size:var(--fs-sm)}
+.compass.warm{border-left-color:var(--green)} .compass.cold{border-left-color:var(--red)} .compass.same,.compass.start{border-left-color:var(--gold-3)}
+.choices.threads{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:560px){.choices.threads{grid-template-columns:1fr}}
+.choices.threads .choice{display:grid;grid-template-columns:44px 1fr;grid-template-rows:auto auto auto;column-gap:var(--s3);row-gap:2px;align-items:start;text-align:left}
+.choices.threads .choice .icon{grid-row:1 / span 3;width:44px;height:44px}
+.choices.threads .choice span{text-align:left}
+.choices.threads .choice .who em{font-style:normal;font-weight:400;color:var(--text-2);font-size:var(--fs-xs)}
+.choices.threads .choice .why{font-weight:400;font-size:var(--fs-xs);color:var(--text-2);line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.choices.threads .choice[data-visited]{opacity:.6}
+.choice.hint{border-color:var(--gold-1);box-shadow:0 0 0 2px var(--gold-3),0 0 18px rgba(200,155,60,.4)}
 
 /* ---------- Support ---------- */
 .ways{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s4)}
